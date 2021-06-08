@@ -1,6 +1,5 @@
 //
 //  cpp_methods.cpp
-//  C_and_Swift
 //
 //  Created by Andrew Trotman on 6/06/21.
 //

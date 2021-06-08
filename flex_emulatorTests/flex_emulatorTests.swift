@@ -1,14 +1,13 @@
 //
-//  C_and_SwiftTests.swift
-//  C_and_SwiftTests
+//  flex_emulatorTests.swift
 //
 //  Created by Andrew Trotman on 6/06/21.
 //
 
 import XCTest
-@testable import C_and_Swift
+@testable import flex_emulator
 
-class C_and_SwiftTests: XCTestCase {
+class flex_emulator: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

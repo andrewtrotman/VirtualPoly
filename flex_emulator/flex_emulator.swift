@@ -1,6 +1,5 @@
 //
-//  C_and_SwiftApp.swift
-//  C_and_Swift
+//  flex_emulator.swift
 //
 //  Created by Andrew Trotman on 6/06/21.
 //
@@ -8,7 +7,7 @@
 import SwiftUI
 
 @main
-struct C_and_SwiftApp: App
+struct flex_emulator: App
 	{
 	var body: some Scene
 		{

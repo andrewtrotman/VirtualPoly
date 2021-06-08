@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		49F70B0D266C523000408DAE /* C_and_SwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0C266C523000408DAE /* C_and_SwiftApp.swift */; };
+		49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0C266C523000408DAE /* flex_emulator.swift */; };
 		49F70B0F266C523000408DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0E266C523000408DAE /* ContentView.swift */; };
 		49F70B11266C523100408DAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49F70B10266C523100408DAE /* Assets.xcassets */; };
 		49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49F70B13266C523100408DAE /* Preview Assets.xcassets */; };
-		49F70B1F266C523100408DAE /* C_and_SwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B1E266C523100408DAE /* C_and_SwiftTests.swift */; };
-		49F70B2A266C523100408DAE /* C_and_SwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B29266C523100408DAE /* C_and_SwiftUITests.swift */; };
+		49F70B1F266C523100408DAE /* flex_emulatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B1E266C523100408DAE /* flex_emulatorTests.swift */; };
+		49F70B2A266C523100408DAE /* flex_emulatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B29266C523100408DAE /* flex_emulatorUITests.swift */; };
 		49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B38266C527100408DAE /* cpp_methods.cpp */; };
 /* End PBXBuildFile section */
 
@@ -35,18 +35,18 @@
 
 /* Begin PBXFileReference section */
 		49F70B09266C523000408DAE /* flex_emulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flex_emulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		49F70B0C266C523000408DAE /* C_and_SwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftApp.swift; sourceTree = "<group>"; };
+		49F70B0C266C523000408DAE /* flex_emulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flex_emulator.swift; sourceTree = "<group>"; };
 		49F70B0E266C523000408DAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		49F70B10266C523100408DAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49F70B13266C523100408DAE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		49F70B15266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49F70B1A266C523100408DAE /* flex_emulatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flex_emulatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49F70B1E266C523100408DAE /* C_and_SwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftTests.swift; sourceTree = "<group>"; };
+		49F70B1E266C523100408DAE /* flex_emulatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flex_emulatorTests.swift; sourceTree = "<group>"; };
 		49F70B20266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49F70B25266C523100408DAE /* flex_emulatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flex_emulatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49F70B29266C523100408DAE /* C_and_SwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftUITests.swift; sourceTree = "<group>"; };
+		49F70B29266C523100408DAE /* flex_emulatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flex_emulatorUITests.swift; sourceTree = "<group>"; };
 		49F70B2B266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49F70B37266C527100408DAE /* C_and_Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "C_and_Swift-Bridging-Header.h"; sourceTree = "<group>"; };
+		49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "flex_emulator-Bridging-Header.h"; sourceTree = "<group>"; };
 		49F70B38266C527100408DAE /* cpp_methods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpp_methods.cpp; sourceTree = "<group>"; };
 		49F70B39266C527100408DAE /* cpp_methods.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpp_methods.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,9 +79,9 @@
 		49F70B00266C523000408DAE = {
 			isa = PBXGroup;
 			children = (
-				49F70B0B266C523000408DAE /* C_and_Swift */,
-				49F70B1D266C523100408DAE /* C_and_SwiftTests */,
-				49F70B28266C523100408DAE /* C_and_SwiftUITests */,
+				49F70B0B266C523000408DAE /* flex_emulator */,
+				49F70B1D266C523100408DAE /* flex_emulatorTests */,
+				49F70B28266C523100408DAE /* flex_emulatorUITests */,
 				49F70B0A266C523000408DAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -96,19 +96,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		49F70B0B266C523000408DAE /* C_and_Swift */ = {
+		49F70B0B266C523000408DAE /* flex_emulator */ = {
 			isa = PBXGroup;
 			children = (
-				49F70B0C266C523000408DAE /* C_and_SwiftApp.swift */,
+				49F70B0C266C523000408DAE /* flex_emulator.swift */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
 				49F70B39266C527100408DAE /* cpp_methods.hpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
 				49F70B12266C523100408DAE /* Preview Content */,
-				49F70B37266C527100408DAE /* C_and_Swift-Bridging-Header.h */,
+				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
-			path = C_and_Swift;
+			path = flex_emulator;
 			sourceTree = "<group>";
 		};
 		49F70B12266C523100408DAE /* Preview Content */ = {
@@ -119,22 +119,22 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		49F70B1D266C523100408DAE /* C_and_SwiftTests */ = {
+		49F70B1D266C523100408DAE /* flex_emulatorTests */ = {
 			isa = PBXGroup;
 			children = (
-				49F70B1E266C523100408DAE /* C_and_SwiftTests.swift */,
+				49F70B1E266C523100408DAE /* flex_emulatorTests.swift */,
 				49F70B20266C523100408DAE /* Info.plist */,
 			);
-			path = C_and_SwiftTests;
+			path = flex_emulatorTests;
 			sourceTree = "<group>";
 		};
-		49F70B28266C523100408DAE /* C_and_SwiftUITests */ = {
+		49F70B28266C523100408DAE /* flex_emulatorUITests */ = {
 			isa = PBXGroup;
 			children = (
-				49F70B29266C523100408DAE /* C_and_SwiftUITests.swift */,
+				49F70B29266C523100408DAE /* flex_emulatorUITests.swift */,
 				49F70B2B266C523100408DAE /* Info.plist */,
 			);
-			path = C_and_SwiftUITests;
+			path = flex_emulatorUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -269,7 +269,7 @@
 			files = (
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
-				49F70B0D266C523000408DAE /* C_and_SwiftApp.swift in Sources */,
+				49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,7 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49F70B1F266C523100408DAE /* C_and_SwiftTests.swift in Sources */,
+				49F70B1F266C523100408DAE /* flex_emulatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +285,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49F70B2A266C523100408DAE /* C_and_SwiftUITests.swift in Sources */,
+				49F70B2A266C523100408DAE /* flex_emulatorUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,9 +428,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"C_and_Swift/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = C_and_Swift/Info.plist;
+				INFOPLIST_FILE = flex_emulator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -438,7 +438,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Pinnated.C-and-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "C_and_Swift/C_and_Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -452,9 +452,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"C_and_Swift/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = C_and_Swift/Info.plist;
+				INFOPLIST_FILE = flex_emulator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -462,7 +462,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Pinnated.C-and-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "C_and_Swift/C_and_Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -474,7 +474,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = C_and_SwiftTests/Info.plist;
+				INFOPLIST_FILE = flex_emulatorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -495,7 +495,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = C_and_SwiftTests/Info.plist;
+				INFOPLIST_FILE = flex_emulatorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -515,7 +515,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = C_and_SwiftUITests/Info.plist;
+				INFOPLIST_FILE = flex_emulatorUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -525,7 +525,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = C_and_Swift;
+				TEST_TARGET_NAME = flex_emulator;
 			};
 			name = Debug;
 		};
@@ -534,7 +534,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = C_and_SwiftUITests/Info.plist;
+				INFOPLIST_FILE = flex_emulatorUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -544,7 +544,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = C_and_Swift;
+				TEST_TARGET_NAME = flex_emulator;
 			};
 			name = Release;
 		};
