@@ -2972,5 +2972,3 @@ if (cost < 0)
 
 return cost;
 }
-
-

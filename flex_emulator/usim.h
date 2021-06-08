@@ -5,9 +5,10 @@
 	Substantial re-factoring (c) 2010 Andrew Trotman
 	Ported to Mac 2021 Andrew Trotman
 */
-
 #ifndef __usim_h__
 #define __usim_h__
+
+#include <deque>
 
 #include "misc.h"
 
@@ -21,6 +22,9 @@ public:
 	int halted;					// are we in the halted state?
 	byte memory[0x10000];	// memory
 	word ir, pc;				// internal register and program counter
+
+	std::deque<byte> keyboard_input;
+	std::deque<byte> serial_output;
 
 protected:
 	virtual byte read(word offset);
@@ -37,6 +41,9 @@ public:
 	virtual void halt(void);
 	virtual void reset(void) = 0;
 	virtual void invalid(const char * = 0);
+
+	virtual void queue_key_press(byte key);
+	virtual word  dequeue_serial_output(void);
 } ;
 
 #endif // __usim_h__
