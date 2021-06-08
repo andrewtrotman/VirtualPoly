@@ -34,16 +34,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		49F70B09266C523000408DAE /* C_and_Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = C_and_Swift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49F70B09266C523000408DAE /* flex_emulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flex_emulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49F70B0C266C523000408DAE /* C_and_SwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftApp.swift; sourceTree = "<group>"; };
 		49F70B0E266C523000408DAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		49F70B10266C523100408DAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49F70B13266C523100408DAE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		49F70B15266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49F70B1A266C523100408DAE /* C_and_SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = C_and_SwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49F70B1A266C523100408DAE /* flex_emulatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flex_emulatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49F70B1E266C523100408DAE /* C_and_SwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftTests.swift; sourceTree = "<group>"; };
 		49F70B20266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49F70B25266C523100408DAE /* C_and_SwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = C_and_SwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49F70B25266C523100408DAE /* flex_emulatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flex_emulatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49F70B29266C523100408DAE /* C_and_SwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C_and_SwiftUITests.swift; sourceTree = "<group>"; };
 		49F70B2B266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49F70B37266C527100408DAE /* C_and_Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "C_and_Swift-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -89,9 +89,9 @@
 		49F70B0A266C523000408DAE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49F70B09266C523000408DAE /* C_and_Swift.app */,
-				49F70B1A266C523100408DAE /* C_and_SwiftTests.xctest */,
-				49F70B25266C523100408DAE /* C_and_SwiftUITests.xctest */,
+				49F70B09266C523000408DAE /* flex_emulator.app */,
+				49F70B1A266C523100408DAE /* flex_emulatorTests.xctest */,
+				49F70B25266C523100408DAE /* flex_emulatorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,9 +140,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		49F70B08266C523000408DAE /* C_and_Swift */ = {
+		49F70B08266C523000408DAE /* flex_emulator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49F70B2E266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_Swift" */;
+			buildConfigurationList = 49F70B2E266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulator" */;
 			buildPhases = (
 				49F70B05266C523000408DAE /* Sources */,
 				49F70B06266C523000408DAE /* Frameworks */,
@@ -152,14 +152,14 @@
 			);
 			dependencies = (
 			);
-			name = C_and_Swift;
+			name = flex_emulator;
 			productName = C_and_Swift;
-			productReference = 49F70B09266C523000408DAE /* C_and_Swift.app */;
+			productReference = 49F70B09266C523000408DAE /* flex_emulator.app */;
 			productType = "com.apple.product-type.application";
 		};
-		49F70B19266C523100408DAE /* C_and_SwiftTests */ = {
+		49F70B19266C523100408DAE /* flex_emulatorTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49F70B31266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_SwiftTests" */;
+			buildConfigurationList = 49F70B31266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulatorTests" */;
 			buildPhases = (
 				49F70B16266C523100408DAE /* Sources */,
 				49F70B17266C523100408DAE /* Frameworks */,
@@ -170,14 +170,14 @@
 			dependencies = (
 				49F70B1C266C523100408DAE /* PBXTargetDependency */,
 			);
-			name = C_and_SwiftTests;
+			name = flex_emulatorTests;
 			productName = C_and_SwiftTests;
-			productReference = 49F70B1A266C523100408DAE /* C_and_SwiftTests.xctest */;
+			productReference = 49F70B1A266C523100408DAE /* flex_emulatorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		49F70B24266C523100408DAE /* C_and_SwiftUITests */ = {
+		49F70B24266C523100408DAE /* flex_emulatorUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49F70B34266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_SwiftUITests" */;
+			buildConfigurationList = 49F70B34266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulatorUITests" */;
 			buildPhases = (
 				49F70B21266C523100408DAE /* Sources */,
 				49F70B22266C523100408DAE /* Frameworks */,
@@ -188,9 +188,9 @@
 			dependencies = (
 				49F70B27266C523100408DAE /* PBXTargetDependency */,
 			);
-			name = C_and_SwiftUITests;
+			name = flex_emulatorUITests;
 			productName = C_and_SwiftUITests;
-			productReference = 49F70B25266C523100408DAE /* C_and_SwiftUITests.xctest */;
+			productReference = 49F70B25266C523100408DAE /* flex_emulatorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -216,7 +216,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 49F70B04266C523000408DAE /* Build configuration list for PBXProject "C_and_Swift" */;
+			buildConfigurationList = 49F70B04266C523000408DAE /* Build configuration list for PBXProject "flex_emulator" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -229,9 +229,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				49F70B08266C523000408DAE /* C_and_Swift */,
-				49F70B19266C523100408DAE /* C_and_SwiftTests */,
-				49F70B24266C523100408DAE /* C_and_SwiftUITests */,
+				49F70B08266C523000408DAE /* flex_emulator */,
+				49F70B19266C523100408DAE /* flex_emulatorTests */,
+				49F70B24266C523100408DAE /* flex_emulatorUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -294,12 +294,12 @@
 /* Begin PBXTargetDependency section */
 		49F70B1C266C523100408DAE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49F70B08266C523000408DAE /* C_and_Swift */;
+			target = 49F70B08266C523000408DAE /* flex_emulator */;
 			targetProxy = 49F70B1B266C523100408DAE /* PBXContainerItemProxy */;
 		};
 		49F70B27266C523100408DAE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49F70B08266C523000408DAE /* C_and_Swift */;
+			target = 49F70B08266C523000408DAE /* flex_emulator */;
 			targetProxy = 49F70B26266C523100408DAE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -485,7 +485,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/C_and_Swift.app/C_and_Swift";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flex_emulator.app/flex_emulator";
 			};
 			name = Debug;
 		};
@@ -506,7 +506,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/C_and_Swift.app/C_and_Swift";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flex_emulator.app/flex_emulator";
 			};
 			name = Release;
 		};
@@ -551,7 +551,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49F70B04266C523000408DAE /* Build configuration list for PBXProject "C_and_Swift" */ = {
+		49F70B04266C523000408DAE /* Build configuration list for PBXProject "flex_emulator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49F70B2C266C523100408DAE /* Debug */,
@@ -560,7 +560,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49F70B2E266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_Swift" */ = {
+		49F70B2E266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49F70B2F266C523100408DAE /* Debug */,
@@ -569,7 +569,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49F70B31266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_SwiftTests" */ = {
+		49F70B31266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulatorTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49F70B32266C523100408DAE /* Debug */,
@@ -578,7 +578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49F70B34266C523100408DAE /* Build configuration list for PBXNativeTarget "C_and_SwiftUITests" */ = {
+		49F70B34266C523100408DAE /* Build configuration list for PBXNativeTarget "flex_emulatorUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49F70B35266C523100408DAE /* Debug */,
