@@ -43,7 +43,7 @@ public:
 	virtual void invalid(const char * = 0);
 
 	virtual void queue_key_press(byte key);
-	virtual word  dequeue_serial_output(void);
+	virtual word dequeue_serial_output(void);
 } ;
 
 #endif // __usim_h__

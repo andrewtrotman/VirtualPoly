@@ -8,30 +8,36 @@
 #define cpp_methods_hpp
 
 #include <stdio.h>
-
-class something
-	{
-	public:
-		int get_int(int x, int y);
-	};
+#include "mc6809.h"
 
 extern "C"
 	{
-const void *something_construct()
-	{
-	return (const void *)new something();
-	}
+	const void *machine_construct()
+		{
+		mc6809 *machine = new mc6809();
+		machine->reset();
+		return (const void *)machine;
+		}
 
-void something_destruct(const void *object)
-	{
-	delete (something *)object;
-	}
+	void machine_destruct(const void *object)
+		{
+		delete (mc6809 *)object;
+		}
 
-int something_add(const void *object, int a, int b)
-	{
-	return ((something *)object)->get_int(a, b);
-	}
+	void machine_step(const void *object)
+		{
+		((mc6809 *)object)->step();
+		}
 
+	void machine_queue_key_press(const void *object, char key)
+		{
+		((mc6809 *)object)->queue_key_press(key);
+		}
+
+	int machine_dequeue_serial_output(const void *object)
+		{
+		return ((mc6809 *)object)->dequeue_serial_output();
+		}
 }
 
 #endif /* cpp_methods_hpp */

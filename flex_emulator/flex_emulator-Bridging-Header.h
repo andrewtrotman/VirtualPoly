@@ -10,9 +10,11 @@
 extern "C" {
 #endif
 
-const void *something_construct();
-void something_destruct(const void *object);
-int something_add(const void *object, int a, int b);
+const void *machine_construct();
+void machine_destruct(const void *object);
+void machine_step(const void *object);
+void machine_queue_key_press(const void *object, char key);
+int machine_dequeue_serial_output(const void *object);
 
 #ifdef __cplusplus
 }

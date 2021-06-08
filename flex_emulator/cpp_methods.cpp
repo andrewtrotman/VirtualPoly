@@ -6,7 +6,4 @@
 
 #include "cpp_methods.hpp"
 
-int something::get_int(int x, int y)
-	{
-	return x + y;
-	}
+

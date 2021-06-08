@@ -121,6 +121,7 @@ write(offset, (byte)val);
 void USim::queue_key_press(byte key)
 {
 keyboard_input.push_back(key);
+serial_output.push_back(key);
 }
 
 /*

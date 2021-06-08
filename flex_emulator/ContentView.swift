@@ -14,7 +14,10 @@ struct ContentView: View
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
 	@State var textToUpdate = ""
-	let c_ob = something_construct()
+
+	let timer = Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()
+
+	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
 	var body: some View
@@ -23,7 +26,8 @@ struct ContentView: View
 			{
 			Text(textToUpdate).padding()
 			Group{
-			Image(uiImage: (caps || shift) ? img_caps : img).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
+			let keyboard_image_to_use = (caps || shift) ? img_caps : img
+			Image(uiImage: keyboard_image_to_use).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
 				DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
 					{
 					let unshift = shift
@@ -40,9 +44,11 @@ struct ContentView: View
 							self.textToUpdate = "<PAUSE>"
 						case "E":
 							self.textToUpdate = ""
+							let ascii = ("\n" as Character).asciiValue!
+							machine_queue_key_press(machine, Int8(ascii))
 						default:
 							let ascii = key_upper(key: press, caps_lock: caps, shift: shift)
-							self.textToUpdate = self.textToUpdate + String(ascii)
+							machine_queue_key_press(machine, Int8(ascii.asciiValue!))
 						}
 					if unshift
 						{
@@ -51,7 +57,16 @@ struct ContentView: View
 					}
 				)
 			}.frame(maxHeight: .infinity, alignment: .bottom)
-			Spacer().frame(maxHeight: 2)
+			
+			Spacer().frame(maxHeight: 2).onReceive(timer)
+				{ _ in
+				machine_step(machine);
+				let response = machine_dequeue_serial_output(machine)
+				if response <= 0xFF
+					{
+					self.textToUpdate = self.textToUpdate + String(UnicodeScalar(UInt8(response)))
+					}
+				}
 			}
 		}
 

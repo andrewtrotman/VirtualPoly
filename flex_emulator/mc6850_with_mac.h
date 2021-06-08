@@ -13,6 +13,9 @@
 */
 class mc6850_with_mac : public mc6850
 {
+private:
+	mc6890 *owner;
+
 protected:
 	virtual byte poll(void)
 		{
@@ -28,9 +31,9 @@ protected:
 		}
 
 public:
-	mc6850_with_mac(long hInstance, const char *title, long mode = 0) :
+	mc6850_with_mac(mc6809 *owner) :
+		owner(owner),
 		mc6850(),
-		terminal(hInstance)
 		{
 		create_window(title, mode);
 		}
