@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49B31D75266F508400706439 /* mc6809.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D74266F508400706439 /* mc6809.cpp */; };
+		49B31D78266F50EF00706439 /* usim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D76266F50EF00706439 /* usim.cpp */; };
 		49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0C266C523000408DAE /* flex_emulator.swift */; };
 		49F70B0F266C523000408DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0E266C523000408DAE /* ContentView.swift */; };
 		49F70B11266C523100408DAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49F70B10266C523100408DAE /* Assets.xcassets */; };
@@ -34,6 +36,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		49B31D73266F508400706439 /* mc6809.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6809.h; sourceTree = "<group>"; };
+		49B31D74266F508400706439 /* mc6809.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6809.cpp; sourceTree = "<group>"; };
+		49B31D76266F50EF00706439 /* usim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = usim.cpp; sourceTree = "<group>"; };
+		49B31D77266F50EF00706439 /* usim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usim.h; sourceTree = "<group>"; };
+		49B31D79266F512300706439 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
+		49B31D7A266F518D00706439 /* typedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typedefs.h; sourceTree = "<group>"; };
 		49F70B09266C523000408DAE /* flex_emulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flex_emulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49F70B0C266C523000408DAE /* flex_emulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flex_emulator.swift; sourceTree = "<group>"; };
 		49F70B0E266C523000408DAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -101,6 +109,12 @@
 			children = (
 				49F70B0C266C523000408DAE /* flex_emulator.swift */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
+				49B31D74266F508400706439 /* mc6809.cpp */,
+				49B31D73266F508400706439 /* mc6809.h */,
+				49B31D76266F50EF00706439 /* usim.cpp */,
+				49B31D7A266F518D00706439 /* typedefs.h */,
+				49B31D77266F50EF00706439 /* usim.h */,
+				49B31D79266F512300706439 /* misc.h */,
 				49F70B39266C527100408DAE /* cpp_methods.hpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
@@ -267,6 +281,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49B31D78266F50EF00706439 /* usim.cpp in Sources */,
+				49B31D75266F508400706439 /* mc6809.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
 				49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */,
