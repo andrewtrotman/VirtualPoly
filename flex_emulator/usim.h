@@ -23,9 +23,6 @@ public:
 	byte memory[0x10000];	// memory
 	word ir, pc;				// internal register and program counter
 
-	std::deque<byte> keyboard_input;
-	std::deque<byte> serial_output;
-
 protected:
 	virtual byte read(word offset);
 	virtual void write(word offset, byte val);
@@ -42,8 +39,8 @@ public:
 	virtual void reset(void) = 0;
 	virtual void invalid(const char * = 0);
 
-	virtual void queue_key_press(byte key);
-	virtual word dequeue_serial_output(void);
+	virtual void queue_key_press(byte key) = 0;
+	virtual word dequeue_serial_output(void) = 0;
 } ;
 
 #endif // __usim_h__

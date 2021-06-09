@@ -15,7 +15,7 @@ struct ContentView: View
 	@State var shift = false			// shift key is down
 	@State var textToUpdate = ""
 
-	let timer = Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()
+	let timer = Timer.publish(every: 0.0, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
@@ -24,7 +24,8 @@ struct ContentView: View
 		{
 		VStack
 			{
-			Text(textToUpdate).padding()
+			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
+
 			Group{
 			let keyboard_image_to_use = (caps || shift) ? img_caps : img
 			Image(uiImage: keyboard_image_to_use).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
@@ -60,7 +61,10 @@ struct ContentView: View
 			
 			Spacer().frame(maxHeight: 2).onReceive(timer)
 				{ _ in
-				machine_step(machine);
+				for _ in 1...100
+					{
+					machine_step(machine);
+					}
 				let response = machine_dequeue_serial_output(machine)
 				if response <= 0xFF
 					{

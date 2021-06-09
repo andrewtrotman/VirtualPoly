@@ -113,28 +113,3 @@ void USim::write_word(word offset, word val)
 write(offset++, (byte)(val >> 8));
 write(offset, (byte)val);
 }
-
-/*
-	USIM::QUEUE_KEY_PRESS()
-	-----------------------
-*/
-void USim::queue_key_press(byte key)
-{
-keyboard_input.push_back(key);
-serial_output.push_back(key);
-}
-
-/*
-	USIM::DEQUEUE_SERIAL_OUTPUT()
-	-----------------------------
-*/
-word USim::dequeue_serial_output(void)
-{
-if (serial_output.empty())
-	return 0xFFFF;
-
-word answer = serial_output.front();
-serial_output.pop_front();
-
-return answer;
-}
