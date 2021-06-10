@@ -15,17 +15,28 @@ struct ContentView: View
 	@State var shift = false			// shift key is down
 	@State var textToUpdate = ""
 
+	@State var frame_buffer: UnsafeMutablePointer<UInt8>?
+	var offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
 	let timer = Timer.publish(every: 0.0, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
+	@State var img_screen = UIImage(named: "PolyKeyboard")!
+
 	var body: some View
 		{
 		VStack
 			{
 			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
-
+			Image(uiImage: img_screen).resizable().aspectRatio(contentMode: .fit).onAppear(perform:
+				{
+				let data = offscreen_bitmap.data!
+				frame_buffer = data.assumingMemoryBound(to: UInt8.self)
+				drawContentIntoBitmap()
+				let i = offscreen_bitmap.makeImage()!
+				img_screen = UIImage(cgImage: i)
+				})
 			Group{
 			let keyboard_image_to_use = (caps || shift) ? img_caps : img
 			Image(uiImage: keyboard_image_to_use).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
@@ -63,7 +74,7 @@ struct ContentView: View
 				{ _ in
 				for _ in 1...100
 					{
-					machine_step(machine);
+//					machine_step(machine);
 					}
 				let response = machine_dequeue_serial_output(machine)
 				if response <= 0xFF
@@ -142,6 +153,35 @@ struct ContentView: View
 			}
 
 		return key
+		}
+
+	/*
+		DRAWCONTENTINTOBITMAP()
+		-----------------------
+	*/
+	func drawContentIntoBitmap()
+		{
+		for y in 0...(240 - 1)
+			{
+			let base = y * 240 * 4
+			for x in 0...(480 - 1)
+				{
+				let offset = base + x * 4
+				/*
+				red = dataType[offset]
+				green   = dataType[offset + 1]
+				blue = dataType[offset + 2]
+				alpha  = dataType[offset + 3]
+				*/
+				frame_buffer![offset + 1] = UInt8(128)
+				}
+			}
+
+
+		offscreen_bitmap.scaleBy(x: UIScreen.main.scale, y: UIScreen.main.scale)  // convert to points dimensions
+		offscreen_bitmap.setStrokeColor (UIColor.red.cgColor)
+		offscreen_bitmap.setLineWidth (5.0)
+		offscreen_bitmap.strokeEllipse(in: CGRect(x: 50, y: 50, width: 100, height: 100))
 		}
 	}
 
