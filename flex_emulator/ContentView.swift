@@ -31,11 +31,9 @@ struct ContentView: View
 			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
 			Image(uiImage: img_screen).resizable().aspectRatio(contentMode: .fit).onAppear(perform:
 				{
-				let data = offscreen_bitmap.data!
-				frame_buffer = data.assumingMemoryBound(to: UInt8.self)
+				frame_buffer = offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 				drawContentIntoBitmap()
-				let i = offscreen_bitmap.makeImage()!
-				img_screen = UIImage(cgImage: i)
+				img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
 				})
 			Group{
 			let keyboard_image_to_use = (caps || shift) ? img_caps : img
