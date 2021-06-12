@@ -16,13 +16,13 @@ struct ContentView: View
 	@State var textToUpdate = ""
 
 	@State var frame_buffer: UnsafeMutablePointer<UInt8>?
-	var offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+	let offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
 	let timer = Timer.publish(every: 0.0, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
-	@State var img_screen = UIImage(named: "PolyKeyboard")!
+	@State var img_screen = UIImage(named: "480x240")!
 
 	var body: some View
 		{
@@ -156,32 +156,69 @@ struct ContentView: View
 	/*
 		DRAWCONTENTINTOBITMAP()
 		-----------------------
+		red = dataType[offset]
+		green   = dataType[offset + 1]
+		blue = dataType[offset + 2]
+		alpha  = dataType[offset + 3]
 	*/
 	func drawContentIntoBitmap()
 		{
-		for y in 0...(240 - 1)
+		let pixel_map = offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
+		let on: UInt32 = 0x0000FF
+		let off: UInt32 = 0x000000
+		let ch = 65
+		let glyph_base = 0
+		let from = (ch - 32 + glyph_base) * 10;
+
+
+		for y in 0 ..< 10
 			{
-			let base = y * 240 * 4
-			for x in 0...(480 - 1)
+			let pos = get_saa5050_font()[from + y];
+
+			var into = y * 480
+
+			for x in 2 ..< 8
 				{
-				let offset = base + x * 4
-				/*
-				red = dataType[offset]
-				green   = dataType[offset + 1]
-				blue = dataType[offset + 2]
-				alpha  = dataType[offset + 3]
-				*/
-				frame_buffer![offset + 1] = UInt8(128)
+				if (pos & (0x80 >> x)) != 0
+					{
+					pixel_map[into] = on
+					pixel_map[into + 1] = on
+					into = into + 2
+					}
+				else
+					{
+					pixel_map[into] = off
+					pixel_map[into + 1] = off
+					into = into + 2
+					}
 				}
 			}
-
-
-		offscreen_bitmap.scaleBy(x: UIScreen.main.scale, y: UIScreen.main.scale)  // convert to points dimensions
-		offscreen_bitmap.setStrokeColor (UIColor.red.cgColor)
-		offscreen_bitmap.setLineWidth (5.0)
-		offscreen_bitmap.strokeEllipse(in: CGRect(x: 50, y: 50, width: 100, height: 100))
 		}
 	}
+
+		/*
+		for x in 0 ..< 480
+			{
+			for y in 0 ..< 240
+				{
+				let offset = (x + y * 480) * 4
+				if x < 1 || x > 450 || y < 1 || y > 230
+					{
+					frame_buffer![offset] = UInt8(0xFF)
+					}
+				else
+					{
+					frame_buffer![offset + 1] = UInt8(0xFF)
+					}
+				}
+			}
+		*/
+		/*
+			offscreen_bitmap.scaleBy(x: UIScreen.main.scale, y: UIScreen.main.scale)  // convert to points dimensions
+			offscreen_bitmap.setStrokeColor (UIColor.red.cgColor)
+			offscreen_bitmap.setLineWidth (5.0)
+			offscreen_bitmap.strokeEllipse(in: CGRect(x: 50, y: 50, width: 100, height: 100))
+		*/
 
 /*
 	STRUCT CONTENTVIEW_PREVIEWS

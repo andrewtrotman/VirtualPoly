@@ -38,6 +38,12 @@ extern "C"
 		{
 		return ((computer *)object)->dequeue_serial_output();
 		}
+
+	unsigned char *get_saa5050_font(void)
+		{
+		return saa5050_font;
+		}
+
 }
 
 #endif /* cpp_methods_hpp */
