@@ -24,11 +24,15 @@ struct ContentView: View
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
 	@State var img_screen = UIImage(named: "480x240")!
 
+	@State var terminal_screen = [UInt8](repeating: 32, count: 40*24)
+	@State var terminal_row = 23
+	@State var terminal_column = 0
+
 	var body: some View
 		{
 		VStack
 			{
-			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
+//			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
 			Image(uiImage: img_screen).resizable().aspectRatio(contentMode: .fit).onAppear(perform:
 				{
 				frame_buffer = offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
@@ -169,7 +173,6 @@ struct ContentView: View
 		let ch = 65
 		let glyph_base = 0
 		let from = (ch - 32 + glyph_base) * 10;
-
 
 		for y in 0 ..< 10
 			{
