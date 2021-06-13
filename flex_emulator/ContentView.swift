@@ -13,11 +13,12 @@ struct ContentView: View
 	{
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
-	@State var textToUpdate = ""
 
 	@State var frame_buffer: UnsafeMutablePointer<UInt8>?
 	let offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
-	let timer = Timer.publish(every: 0.0, on: .main, in: .common).autoconnect()
+	let CPU_speed:Int64 = 1000000			// 1 MHz
+	let iOS_timer_speed:Int64 = 10				// trigger an iOS timer 10 times a second
+	let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
@@ -32,7 +33,6 @@ struct ContentView: View
 		{
 		VStack
 			{
-//			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
 			Image(uiImage: img_screen).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
 				{
 				for x in 0 ..< (40 * 24)
@@ -59,9 +59,8 @@ struct ContentView: View
 						case "S":
 							shift = true
 						case "P":
-							self.textToUpdate = "<PAUSE>"
+							break
 						case "E":
-							self.textToUpdate = ""
 							let ascii = ("\n" as Character).asciiValue!
 							machine_queue_key_press(machine, Int8(ascii))
 						default:
@@ -78,24 +77,26 @@ struct ContentView: View
 			
 			Spacer().frame(maxHeight: 2).onReceive(timer)
 				{ _ in
-				for _ in 1...100
+				let end_cycle = machine_cycles_spent(machine) + CPU_speed / iOS_timer_speed
+				while (machine_cycles_spent(machine) < end_cycle)
 					{
 					machine_step(machine);
 					}
 
-				var response: Int32 = 0
-				repeat
+				var screen_did_change = false
+				var response = machine_dequeue_serial_output(machine)
+				while (response <= 0xFF)
 					{
+					print_character(raw_character: UInt8(response & 0xFF))
+					screen_did_change = true
 					response = machine_dequeue_serial_output(machine)
-					if (response <= 0xFF)
-						{
-						print_character(raw_character: UInt8(response & 0xFF))
-						self.textToUpdate = self.textToUpdate + String(UnicodeScalar(UInt8(response)))
-						render_text_screen()
-						img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
-						}
 					}
-				while response <= 0xFF
+
+				if screen_did_change
+					{
+					render_text_screen()
+					img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
+					}
 				}
 			}
 		}

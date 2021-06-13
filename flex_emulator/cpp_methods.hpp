@@ -39,10 +39,17 @@ extern "C"
 		return ((computer *)object)->dequeue_serial_output();
 		}
 
+	long long machine_cycles_spent(const void *object)
+		{
+		return ((computer *)object)->cycles;
+		}
+
 	unsigned char *get_saa5050_font(void)
 		{
 		return saa5050_font;
 		}
+
+
 
 }
 
