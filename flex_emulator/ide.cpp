@@ -36,6 +36,7 @@ ide::ide()
 ide::~ide()
 	{
 	/* Nothing */
+	// LOAD THE DISK HERE
 	}
 
 /*
