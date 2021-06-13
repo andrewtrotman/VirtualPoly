@@ -5,6 +5,20 @@
 */
 import SwiftUI
 
+class image_changer: ObservableObject
+	{
+	var counter = 0
+
+	let offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+	@Published public var image = UIImage(named: "480x240")!
+	public var frame_buffer: UnsafeMutablePointer<UInt8>?
+
+	init()
+		{
+		/* Nothing */
+		}
+	}
+
 /*
 	STRUCT CONTENTVIEW
 	------------------
@@ -14,16 +28,14 @@ struct ContentView: View
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
 
-	@State var frame_buffer: UnsafeMutablePointer<UInt8>?
-	let offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
 	let CPU_speed:Int64 = 1000000			// 1 MHz
-	let iOS_timer_speed:Int64 = 10				// trigger an iOS timer 10 times a second
-	let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+	let iOS_timer_speed:Int64 = 100				// do CPU_speed/iOS_timer_speed cycles per timer interrupt
+	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
 	let img = UIImage(named: "PolyKeyboard")!
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
-	@State var img_screen = UIImage(named: "480x240")!
+	@StateObject var img_screen = image_changer()
 
 	@State var terminal_screen = [UInt8](repeating: 33, count: 40 * 24)
 	@State var terminal_row = 0
@@ -33,15 +45,15 @@ struct ContentView: View
 		{
 		VStack
 			{
-			Image(uiImage: img_screen).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
+			Image(uiImage: img_screen.image).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
 				{
 				for x in 0 ..< (40 * 24)
 					{
 					terminal_screen[x] = UInt8((x % 26) + 65)
 					}
-				frame_buffer = offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
+				img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 				render_text_screen()
-				img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
+				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 				})
 			Group{
 			let keyboard_image_to_use = (caps || shift) ? img_caps : img
@@ -95,7 +107,7 @@ struct ContentView: View
 				if screen_did_change
 					{
 					render_text_screen()
-					img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
+					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 					}
 				}
 			}
@@ -237,7 +249,7 @@ struct ContentView: View
 	*/
 	func drawContentIntoBitmap(screen_x: Int, screen_y: Int, character: UInt8)
 		{
-		let pixel_map = offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
+		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
 		let on: UInt32 = 0x00FFFFFF
 		let off: UInt32 = 0x00000000
 		let glyph_base = 0
