@@ -24,8 +24,8 @@ struct ContentView: View
 	let img_caps = UIImage(named: "PolyKeyboardShift")!
 	@State var img_screen = UIImage(named: "480x240")!
 
-	@State var terminal_screen = [UInt8](repeating: 32, count: 40*24)
-	@State var terminal_row = 23
+	@State var terminal_screen = [UInt8](repeating: 33, count: 40 * 24)
+	@State var terminal_row = 0
 	@State var terminal_column = 0
 
 	var body: some View
@@ -33,10 +33,14 @@ struct ContentView: View
 		VStack
 			{
 //			Text(textToUpdate).padding().font(.system(size: 10, weight: .heavy, design: .monospaced))
-			Image(uiImage: img_screen).resizable().aspectRatio(contentMode: .fit).onAppear(perform:
+			Image(uiImage: img_screen).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
 				{
+				for x in 0 ..< (40 * 24)
+					{
+					terminal_screen[x] = UInt8((x % 26) + 65)
+					}
 				frame_buffer = offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
-				drawContentIntoBitmap()
+				render_text_screen()
 				img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
 				})
 			Group{
@@ -76,13 +80,22 @@ struct ContentView: View
 				{ _ in
 				for _ in 1...100
 					{
-//					machine_step(machine);
+					machine_step(machine);
 					}
-				let response = machine_dequeue_serial_output(machine)
-				if response <= 0xFF
+
+				var response: Int32 = 0
+				repeat
 					{
-					self.textToUpdate = self.textToUpdate + String(UnicodeScalar(UInt8(response)))
+					response = machine_dequeue_serial_output(machine)
+					if (response <= 0xFF)
+						{
+						print_character(raw_character: UInt8(response & 0xFF))
+						self.textToUpdate = self.textToUpdate + String(UnicodeScalar(UInt8(response)))
+						render_text_screen()
+						img_screen = UIImage(cgImage: offscreen_bitmap.makeImage()!)
+						}
 					}
+				while response <= 0xFF
 				}
 			}
 		}
@@ -158,6 +171,62 @@ struct ContentView: View
 		}
 
 	/*
+		PRINT_CHARACTER()
+		-----------------
+	*/
+	func print_character(raw_character: UInt8)
+		{
+		let character = (raw_character < 32 || raw_character > 0x7F) ? 32 : raw_character
+
+		/*
+			Check for scrolling
+		*/
+		if (terminal_column >= 40)
+			{
+			terminal_column = 0
+			terminal_row = terminal_row + 1
+			}
+		if (terminal_row >= 24)
+			{
+			/*
+				Scroll
+			*/
+			for byte in 40 ..< (40 * 24)
+				{
+				terminal_screen[byte - 40] = terminal_screen[byte]
+				}
+			/*
+				Blank the bottom row
+			*/
+			for byte in (23 * 40) ..< (24 * 40)
+				{
+				terminal_screen[byte] = 32
+				}
+			/*
+				Go to the bottom row
+			*/
+			terminal_row = 23
+			}
+		terminal_screen[terminal_row * 40 + terminal_column] = character
+		terminal_column = terminal_column + 1
+		}
+
+	/*
+		RENDER_TEXT_SCREEN()
+		--------------------
+	*/
+	func render_text_screen()
+		{
+		for x in 0 ..< 40
+			{
+			for y in 0 ..< 24
+				{
+				drawContentIntoBitmap(screen_x: x, screen_y: y, character: terminal_screen[y * 40 + x])
+				}
+			}
+		}
+
+	/*
 		DRAWCONTENTINTOBITMAP()
 		-----------------------
 		red = dataType[offset]
@@ -165,20 +234,18 @@ struct ContentView: View
 		blue = dataType[offset + 2]
 		alpha  = dataType[offset + 3]
 	*/
-	func drawContentIntoBitmap()
+	func drawContentIntoBitmap(screen_x: Int, screen_y: Int, character: UInt8)
 		{
 		let pixel_map = offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
-		let on: UInt32 = 0x0000FF
-		let off: UInt32 = 0x000000
-		let ch = 65
+		let on: UInt32 = 0x00FFFFFF
+		let off: UInt32 = 0x00000000
 		let glyph_base = 0
-		let from = (ch - 32 + glyph_base) * 10;
+		let from = (Int(character) - 32 + glyph_base) * 10
 
 		for y in 0 ..< 10
 			{
-			let pos = get_saa5050_font()[from + y];
-
-			var into = y * 480
+			let pos = get_saa5050_font()[from + y]
+			var into = (screen_x * 12 + screen_y * 10 * 480) + (y * 480)
 
 			for x in 2 ..< 8
 				{
@@ -198,30 +265,6 @@ struct ContentView: View
 			}
 		}
 	}
-
-		/*
-		for x in 0 ..< 480
-			{
-			for y in 0 ..< 240
-				{
-				let offset = (x + y * 480) * 4
-				if x < 1 || x > 450 || y < 1 || y > 230
-					{
-					frame_buffer![offset] = UInt8(0xFF)
-					}
-				else
-					{
-					frame_buffer![offset + 1] = UInt8(0xFF)
-					}
-				}
-			}
-		*/
-		/*
-			offscreen_bitmap.scaleBy(x: UIScreen.main.scale, y: UIScreen.main.scale)  // convert to points dimensions
-			offscreen_bitmap.setStrokeColor (UIColor.red.cgColor)
-			offscreen_bitmap.setLineWidth (5.0)
-			offscreen_bitmap.strokeEllipse(in: CGRect(x: 50, y: 50, width: 100, height: 100))
-		*/
 
 /*
 	STRUCT CONTENTVIEW_PREVIEWS
