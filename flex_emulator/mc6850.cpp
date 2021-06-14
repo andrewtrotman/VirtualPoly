@@ -33,7 +33,7 @@ byte mc6850::in(void)
 */
 byte mc6850::poll(void)
 	{
-	return input.empty();
+	return !input.empty();
 	}
 
 /*

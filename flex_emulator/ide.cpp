@@ -3,8 +3,55 @@
 	-------
 	Minimalistic IDE controller, just enough to work with FLEX
 */
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "ide.h"
+
+/*
+	READ_ENTIRE_FILE()
+	------------------
+*/
+size_t read_entire_file(const std::string &filename, std::string &into)
+	{
+	FILE *fp;							// "C" pointer to the file
+	struct stat details;				// file system's details of the file
+	size_t file_length = 0;			// length of the file in bytes
+
+	if ((fp = fopen(filename.c_str(), "rb")) != nullptr)
+		{
+		if (fstat(fileno(fp), &details) == 0)
+			if ((file_length = details.st_size) != 0)
+				{
+				into.resize(file_length);
+				if (fread(&into[0], details.st_size, 1, fp) != 1)
+					into.resize(0);
+				}
+		fclose(fp);
+		}
+
+	return file_length;
+	}
+
+/*
+	WRITE_ENTIRE_FILE()
+	-------------------
+*/
+bool write_entire_file(const std::string &filename, const std::string &buffer)
+	{
+	FILE *fp;						// "C" file to write to
+
+	if ((fp = fopen(filename.c_str(), "wb")) == nullptr)
+		return false;
+
+	size_t success = fwrite(&buffer[0], buffer.size(), 1, fp);
+
+	fclose(fp);
+
+	return success == 1 ? true : false;
+	}
 
 /*
 	IDE::IDE()
@@ -27,6 +74,8 @@ ide::ide()
 		*into = 'Z';
 	current = identify_buffer;
 	end = identify_buffer + sizeof(identify_buffer);
+
+	read_entire_file("/Users/andrew/programming/flex_emulator/flex_emulator/aspt.img", disk);
 	}
 
 /*
@@ -36,7 +85,6 @@ ide::ide()
 ide::~ide()
 	{
 	/* Nothing */
-	// LOAD THE DISK HERE
 	}
 
 /*
@@ -122,7 +170,7 @@ void ide::write(word address, byte value)
 				uint32_t disk_number = (disk_head_register >> 4) & 0x01;
 				status_register = disk_number == 0 ? 0x40 : 0x50;
 				uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
-				current = disk + sector * 512;
+				current = ((uint8_t *)&disk[0]) + sector * 512;
 				end = current + 512 * sector_count_register;
 				}
 			break;

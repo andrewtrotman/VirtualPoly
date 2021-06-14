@@ -49,7 +49,8 @@ struct ContentView: View
 				{
 				for x in 0 ..< (40 * 24)
 					{
-					terminal_screen[x] = UInt8((x % 26) + 65)
+//					terminal_screen[x] = UInt8((x % 26) + 65)
+					terminal_screen[x] = 32
 					}
 				img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 				render_text_screen()
@@ -73,8 +74,7 @@ struct ContentView: View
 						case "P":
 							break
 						case "E":
-							let ascii = ("\n" as Character).asciiValue!
-							machine_queue_key_press(machine, Int8(ascii))
+							machine_queue_key_press(machine, 0x0D)
 						default:
 							let ascii = key_upper(key: press, caps_lock: caps, shift: shift)
 							machine_queue_key_press(machine, Int8(ascii.asciiValue!))
@@ -189,8 +189,21 @@ struct ContentView: View
 	*/
 	func print_character(raw_character: UInt8)
 		{
-		let character = (raw_character < 32 || raw_character > 0x7F) ? 32 : raw_character
+		var character = raw_character
 
+		if raw_character < 32 || raw_character >= 0x7F
+			{
+			character = 32;
+			}
+
+		/*
+			CR (0x0D) is the new line character
+		*/
+		if raw_character == 0x0D
+			{
+			terminal_row = terminal_row + 1
+			terminal_column = 0;
+			}
 		/*
 			Check for scrolling
 		*/
@@ -220,8 +233,12 @@ struct ContentView: View
 			*/
 			terminal_row = 23
 			}
-		terminal_screen[terminal_row * 40 + terminal_column] = character
-		terminal_column = terminal_column + 1
+
+		if raw_character != 0x0D && raw_character != 0x0A && raw_character != 0x7F
+			{
+			terminal_screen[terminal_row * 40 + terminal_column] = character
+			terminal_column = terminal_column + 1
+			}
 		}
 
 	/*

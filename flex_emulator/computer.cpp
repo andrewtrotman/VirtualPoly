@@ -2,7 +2,9 @@
 	COMPUTER.CPP
 	------------
 */
-#include "ROM.h"
+#include "ROM_Pinnated.h"
+#include "ROM_TinyBasic.h"
+#include "ROM_FLEX.h"
 #include "computer.h"
 
 /*
@@ -12,7 +14,7 @@
 computer::computer() :
 	terminal(keyboard_input, serial_output)
 	{
-	memcpy(memory + 0xF000, eprom, 0x1000);
+	memcpy(memory + 0xF000, eprom_TinyBasic, 0x1000);
 
 	/* Nothing */
 	}
@@ -90,7 +92,6 @@ void computer::write(word address, byte value)
 void computer::queue_key_press(byte key)
 {
 keyboard_input.push_back(key);
-serial_output.push_back(key);
 }
 
 /*

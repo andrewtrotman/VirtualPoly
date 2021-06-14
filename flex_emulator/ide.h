@@ -12,6 +12,8 @@
 */
 #pragma once
 
+#include <string>
+
 #include "typedefs.h"
 
 /*
@@ -30,8 +32,8 @@ class ide
 		byte identify_buffer[512];	// the value of the device identify block
 		byte *current;					// current point on the disk
 		byte *end;						// end of the current sector
-		byte *disk;						// the disk (we only support 1)
-		
+		std::string disk;	// the buffer containing the disk
+
 		byte data_register;
 		byte feature_register;
 		byte error_register;
