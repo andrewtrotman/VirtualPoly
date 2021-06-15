@@ -28,8 +28,8 @@ struct ContentView: View
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
 
-	let CPU_speed:Int64 = 3000000			// 1 MHz
-	let iOS_timer_speed:Int64 = 100				// do CPU_speed/iOS_timer_speed cycles per timer interrupt
+	let CPU_speed:Int64 = 3000000			// 1000000 is 1 MHz
+	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
