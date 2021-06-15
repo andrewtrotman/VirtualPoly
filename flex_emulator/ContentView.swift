@@ -191,6 +191,10 @@ struct ContentView: View
 		{
 		var character = raw_character
 
+		if (raw_character == 0)
+			{
+			return
+			}
 		if raw_character < 32 || raw_character >= 0x7F
 			{
 			character = 32;
