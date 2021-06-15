@@ -28,7 +28,7 @@ struct ContentView: View
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
 
-	let CPU_speed:Int64 = 1000000			// 1 MHz
+	let CPU_speed:Int64 = 3000000			// 1 MHz
 	let iOS_timer_speed:Int64 = 100				// do CPU_speed/iOS_timer_speed cycles per timer interrupt
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 
@@ -49,8 +49,7 @@ struct ContentView: View
 				{
 				for x in 0 ..< (40 * 24)
 					{
-//					terminal_screen[x] = UInt8((x % 26) + 65)
-					terminal_screen[x] = 32
+					terminal_screen[x] = 32		// fill with spaces at the start
 					}
 				img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 				render_text_screen()
@@ -203,7 +202,7 @@ struct ContentView: View
 		/*
 			CR (0x0D) is the new line character
 		*/
-		if raw_character == 0x0D
+		if raw_character == 0x0A
 			{
 			terminal_row = terminal_row + 1
 			terminal_column = 0;

@@ -14,9 +14,7 @@
 computer::computer() :
 	terminal(keyboard_input, serial_output)
 	{
-	memcpy(memory + 0xF000, eprom_TinyBasic, 0x1000);
-
-	/* Nothing */
+	memcpy(memory + 0xF000, eprom_FLEX, 0x1000);
 	}
 
 /*
@@ -32,6 +30,7 @@ computer::~computer()
 	COMPUTER::READ()
 	----------------
 	E004-E005 ACIA  (MC6850)
+	E010-E017 IDE hard drive controller
 	F000-FFFF ROM
 */
 byte computer::read(word address)
@@ -49,6 +48,20 @@ byte computer::read(word address)
 			break;
 
 		/*
+			IDE hard disk controller
+		*/
+		case 0xE010:
+		case 0xE011:
+		case 0xE012:
+		case 0xE013:
+		case 0xE014:
+		case 0xE015:
+		case 0xE016:
+		case 0xE017:
+			answer = hard_drive.read(address - 0xE010);
+			break;
+
+		/*
 			Computer Memory
 		*/
 		default:
@@ -62,6 +75,7 @@ byte computer::read(word address)
 	COMPUTER::WRITE()
 	-----------------
 	E004-E005 ACIA  (MC6850)
+	E010-E017 IDE hard drive controller
 	F000-FFFF ROM
 */
 void computer::write(word address, byte value)
@@ -74,6 +88,20 @@ void computer::write(word address, byte value)
 		case 0xE004:
 		case 0xE005:
 			terminal.write(address - 0xE004, value);
+			break;
+
+		/*
+			IDE hard disk controller
+		*/
+		case 0xE010:
+		case 0xE011:
+		case 0xE012:
+		case 0xE013:
+		case 0xE014:
+		case 0xE015:
+		case 0xE016:
+		case 0xE017:
+			hard_drive.write(address - 0xE010, value);
 			break;
 
 		/*

@@ -2,6 +2,7 @@
 	COMPUTER.H
 	----------
 */
+#include "ide.h"
 #include "mc6809.h"
 #include "mc6850.h"
 #include "saa5050_font.h"
@@ -16,6 +17,7 @@ class computer : public mc6809
 		std::deque<byte> keyboard_input;
 		std::deque<byte> serial_output;
 		mc6850 terminal;
+		ide hard_drive;
 
 	public:
 		computer();

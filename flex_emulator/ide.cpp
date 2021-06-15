@@ -99,8 +99,12 @@ byte ide::read(word address)
 		{
 		case 0:
 			if (command_register == command_identfy || command_register == command_read_sector)
+				{
 				if (current < end)
 					value = *current++;
+				if (current == end)
+					status_register = 0x50;
+				}
 			break;
 		case 1:
 			value = error_register;
