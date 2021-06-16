@@ -143,6 +143,13 @@ void ide::write(word address, byte value)
 		{
 		case 0:
 			data_register = value;
+			if (command_register ==  command_write_sector)
+				{
+				if (current < end)
+					*current++ = value;
+				if (current == end)
+					status_register = 0x50;
+				}
 			break;
 		case 1:
 			feature_register = value;
@@ -160,8 +167,12 @@ void ide::write(word address, byte value)
 			cylinder_high_register = value;
 			break;
 		case 6:
-			 disk_head_register = value;
+			{
+			disk_head_register = value;
+			uint32_t disk_number = (disk_head_register >> 4) & 0x01;
+			status_register = disk_number == 0 ? 0x50 : 0x40;
 			break;
+			}
 		case 7:
 			command_register = value;
 			if (command_register == command_identfy)
@@ -169,13 +180,17 @@ void ide::write(word address, byte value)
 				current = identify_buffer;
 				end = identify_buffer + 512;
 				}
-			else if (command_register == command_read_sector)
+			else if (command_register == command_read_sector || command_register == command_write_sector)
 				{
 				uint32_t disk_number = (disk_head_register >> 4) & 0x01;
-				status_register = disk_number == 0 ? 0x40 : 0x50;
-				uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
-				current = ((uint8_t *)&disk[0]) + sector * 512;
-				end = current + 512 * sector_count_register;
+				if (disk_number == 0)
+					{
+					uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
+					current = ((uint8_t *)&disk[0]) + sector * 512;
+					end = current + 512 * sector_count_register;
+					}
+				else
+					current = end = NULL;
 				}
 			break;
 		}
