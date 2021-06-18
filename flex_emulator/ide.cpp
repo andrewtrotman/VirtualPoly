@@ -2,6 +2,16 @@
 	IDE.CPP
 	-------
 	Minimalistic IDE controller, just enough to work with FLEX
+
+	commands for flex_vfs:
+		new aspt.img t254,s254
+		mount 0 aspt.dsk
+		rdbootfile bootsector.bin
+		wrboot 0
+		import 0 FLEX/FLEX.COR
+		import 0 FLEX/*
+		umount 0
+		quit
 */
 #include <stdio.h>
 #include <unistd.h>
@@ -10,6 +20,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "ide.h"
+
+#define SECTOR_SIZE 256
 
 /*
 	READ_ENTIRE_FILE()
@@ -77,7 +89,11 @@ ide::ide()
 	end = identify_buffer + sizeof(identify_buffer);
 
 	CFBundleRef mb = CFBundleGetMainBundle();
-	CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.img"), NULL, NULL);
+	#if (SECTOR_SIZE == 512)
+		CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.img"), NULL, NULL);
+	#else
+		CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.dsk"), NULL, NULL);
+	#endif
 	CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
 	CFStringEncoding encoding_method = CFStringGetSystemEncoding();
 	const char *filename = CFStringGetCStringPtr(path, encoding_method);
@@ -153,7 +169,7 @@ void ide::write(word address, byte value)
 		{
 		case 0:
 			data_register = value;
-			if (command_register ==  command_write_sector)
+			if (command_register == command_write_sector)
 				{
 				if (current < end)
 					*current++ = value;
@@ -196,8 +212,8 @@ void ide::write(word address, byte value)
 				if (disk_number == 0)
 					{
 					uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
-					current = ((uint8_t *)&disk[0]) + sector * 512;
-					end = current + 512 * sector_count_register;
+					current = ((uint8_t *)&disk[0]) + sector * SECTOR_SIZE;
+					end = current + SECTOR_SIZE * sector_count_register;
 					}
 				else
 					current = end = NULL;

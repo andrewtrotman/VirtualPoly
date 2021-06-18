@@ -231,8 +231,8 @@ FLEX_READ
 	LBSR	ata_ide_wait_for_not_busy		; wait until not busy
 
 	LBSR	FLEX_READ_256						; read the first 256 bytes
-	LDX	#$F000								; discard second half of IDE sector by writing it to ROM
-	LBSR	FLEX_READ_256						; read the second 256 bytes
+;	LDX	#$F000								; discard second half of IDE sector by writing it to ROM
+;	LBSR	FLEX_READ_256						; read the second 256 bytes
 
 	LBSR	ata_ide_err_to_flex
 	RTS
@@ -276,10 +276,10 @@ FLEX_WRITE
 	STA	ata_ide_command
 	LBSR	ata_ide_wait_for_not_busy		; wait until not busy
 
-	PSHS	X
+;	PSHS	X
 	LBSR	FLEX_WRITE_256						; read the first 256 bytes
-	PULS	X
-	LBSR	FLEX_WRITE_256						; read the second 256 bytes
+;	PULS	X
+;	LBSR	FLEX_WRITE_256						; read the second 256 bytes
 
 	LBSR	ata_ide_wait_for_not_busy		; wait until not busy
 	LBSR	ata_ide_err_to_flex
