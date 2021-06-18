@@ -1,3 +1,5 @@
+#include "ROM_FLEX.h"
+
 /* [lwtools 4.18] bios.asm */
 const unsigned char eprom_FLEX[] =
 {

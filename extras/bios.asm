@@ -61,7 +61,7 @@ finish
 	LDA #$00
 	LDB #$01
 	LBSR FLEX_READ
-	JMP $C100
+	JMP BUFFER
 
 	LBRA finish			; if we get here then start over (but it can't get here!)
 

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <CoreFoundation/CoreFoundation.h>
 
 #include "ide.h"
 
@@ -75,7 +76,16 @@ ide::ide()
 	current = identify_buffer;
 	end = identify_buffer + sizeof(identify_buffer);
 
-	read_entire_file("/Users/andrew/programming/flex_emulator/flex_emulator/aspt.img", disk);
+	CFBundleRef mb = CFBundleGetMainBundle();
+	CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.img"), NULL, NULL);
+	CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+	CFStringEncoding encoding_method = CFStringGetSystemEncoding();
+	const char *filename = CFStringGetCStringPtr(path, encoding_method);
+	
+	read_entire_file(filename, disk);
+
+	CFRelease(url);
+	CFRelease(path);
 	}
 
 /*
