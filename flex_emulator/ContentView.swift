@@ -124,27 +124,31 @@ struct ContentView: View
 	*/
 	func compute_key_press(size: CGSize, location: CGPoint) -> Character
 		{
+		let zero_row =   "                "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
 		let third_row =  "Casdfghjkl;@@   "
 		let fourth_row = "Szxcvbnm,./SS   "
 		let key_width = size.width / 13.0
-		let key_height = size.height / 5.0
+		let key_height = size.height / 6.0
 
 		let row_number = Int(location.y / key_height)
 		switch row_number
 			{
 			case 0:
 				let key = Int(location.x / key_width)
-				return first_row[first_row.index(first_row.startIndex, offsetBy: key)]
+				return zero_row[first_row.index(first_row.startIndex, offsetBy: key)]
 			case 1:
+				let key = Int(location.x / key_width)
+				return first_row[first_row.index(first_row.startIndex, offsetBy: key)]
+			case 2:
 				var key = Int((location.x - key_width / 2) / key_width)
 				key = key < 0 ? 0 : key
 				return second_row[second_row.index(second_row.startIndex, offsetBy: key)]
-			case 2:
+			case 3:
 				let key = Int(location.x / key_width)
 				return third_row[third_row.index(third_row.startIndex, offsetBy: key)]
-			case 3:
+			case 4:
 				var key = Int((location.x - key_width / 2) / key_width)
 				key = key < 0 ? 0 : key
 				return fourth_row[fourth_row.index(fourth_row.startIndex, offsetBy: key)]
