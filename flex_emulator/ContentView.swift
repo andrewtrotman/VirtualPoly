@@ -27,6 +27,7 @@ struct ContentView: View
 	{
 	@State var caps = false				// caps lock is down
 	@State var shift = false			// shift key is down
+	@State var control = false			// cotrol key is down
 
 	let CPU_speed:Int64 = 3000000			// 1000000 is 1 MHz
 	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
@@ -66,6 +67,8 @@ struct ContentView: View
 					let press = compute_key_press(size: geometry, location: $0.location)
 					switch (press)
 						{
+						case "K":
+							control = !control
 						case "C":
 							caps = !caps
 						case "S":
@@ -121,13 +124,59 @@ struct ContentView: View
 			E = Enter
 			C = Caps Lock
 			S = Shift
+			K = Control
+
+			A = Char Ins
+			B = Char Del
+			X = Calc Help
+			Y = Exit Back
+			Z = Repeat Next
+			G = Left
+			H = Up
+			I = Down
+			J = Right
+			R = Reset (not on keyboard)
+
+	poly_key_line_insert = 0x7B;
+	poly_key_char_insert = 0x5B;
+	poly_key_line_del = 0x5E;
+	poly_key_char_del = 0x7E;
+	poly_key_calc = 0x12;
+	poly_key_help = 0x1D;
+	poly_key_exit = 0x5C;
+	poly_key_back = 0x7C;
+	poly_key_repeat = 0x7D;
+	poly_key_next = 0x5D;
+	poly_key_pause = 0x0F;
+	poly_key_left = 0x1F;
+	poly_key_right = 0x11;
+	poly_key_up = 0x08;
+	poly_key_down = 0x0B;
+	poly_key_u0 = 0x16;
+	poly_key_u1 = 0x15;
+	poly_key_u2 = 0x18;
+	poly_key_u3 = 0x01;
+	poly_key_u4 = 0x7F;
+	poly_key_u5 = 0x19;
+	poly_key_u6 = 0x06;
+	poly_key_u7 = 0x1A;
+	poly_key_u8 = 0x0A;
+	poly_key_u9 = 0x17;
+	poly_key_at = 0x09;
+	poly_key_bar = 0x40;
+	poly_key_exp = 0x60;
+	poly_key_pound = 0x13;
+
+	// Poly 2 keyboard only
+	poly_key_shift_pause = 0x0E;
+	poly_key_keypad_dot = 0x1E;
 	*/
 	func compute_key_press(size: CGSize, location: CGPoint) -> Character
 		{
-		let zero_row =   "                "
+		let zero_row =   "AB XYZ GHIJ R   "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
-		let third_row =  "Casdfghjkl;@@   "
+		let third_row =  "Casdfghjkl;@K   "
 		let fourth_row = "Szxcvbnm,./SS   "
 		let key_width = size.width / 13.0
 		let key_height = size.height / 6.0
