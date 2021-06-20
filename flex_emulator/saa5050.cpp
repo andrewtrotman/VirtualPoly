@@ -4,6 +4,7 @@
 */
 #include "saa5050.h"
 #include "saa5050_font.h"
+#include "saa5055_font.h"
 
 #define FALSE 0
 #define TRUE (!FALSE)
@@ -14,7 +15,8 @@
 */
 saa5050::saa5050(unsigned char *memory)
 {
-font = saa5050_font;
+font = saa5055_font;
+//font = saa5050_font;
 this->screen_memory = memory;
 text_colour = background_text_colour = 0;
 glyph_base = text_graphics_mode = text_double_height = conceal = 0;

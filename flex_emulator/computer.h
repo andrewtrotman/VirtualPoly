@@ -6,6 +6,7 @@
 #include "mc6809.h"
 #include "mc6850.h"
 #include "saa5050_font.h"
+#include "saa5055_font.h"
 
 /*
 	CLASS COMPUTER

@@ -37,9 +37,6 @@ byte computer::read(word address)
 	{
 	byte answer;
 
-if (address == 0xF1DE)
-	int x = 0;
-
 	switch (address)
 		{
 		/*

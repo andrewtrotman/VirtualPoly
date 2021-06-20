@@ -46,7 +46,8 @@ extern "C"
 
 	unsigned char *get_saa5050_font(void)
 		{
-		return saa5050_font;
+//		return saa5050_font;
+		return saa5055_font;
 		}
 
 

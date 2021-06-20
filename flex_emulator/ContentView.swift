@@ -102,7 +102,7 @@ struct ContentView: View
 					}
 				)
 			}.frame(maxHeight: .infinity, alignment: .bottom)
-			
+
 			Spacer().frame(maxHeight: 2).onReceive(timer)
 				{ _ in
 				let end_cycle = machine_cycles_spent(machine) + CPU_speed / iOS_timer_speed
@@ -274,7 +274,14 @@ struct ContentView: View
 			/*
 				Only Control-A to Control-Z make sense
 			*/
-			return key >= Character("a").asciiValue! && key <= Character("z").asciiValue! ? key - 96 : key
+			return key >= Character("a").asciiValue! && key <= Character("z").asciiValue! ? key - 96 :
+				key == 64 ? 0  :			// NULL
+				key == 91 ? 27 :			// Escape
+				key == 92 ? 28 :			// File separator
+				key == 93 ? 29 :			// Group separator
+				key == 94 ? 30 :			// Record separator
+				key == 95 ? 31 :			// Unit separator
+					key
 			}
 		else if caps_lock
 			{
@@ -315,8 +322,8 @@ struct ContentView: View
 		/*
 			BS (0x08) is the backspace character
 		*/
-//		if raw_character == 0x08
-		if raw_character == 0x1F
+		if raw_character == 0x08
+//		if raw_character == 0x1F
 			{
 			terminal_column = terminal_column > 0 ? terminal_column - 1 : 0
 			terminal_screen[terminal_row * 40 + terminal_column] = character
@@ -390,9 +397,12 @@ struct ContentView: View
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
 
-		if (screen_x == terminal_column && screen_y == terminal_row && flash_state)
+		if flash_state && screen_y == terminal_row
 			{
-			swap(&on, &off);
+			if screen_x == terminal_column || (screen_x == 39 && terminal_column >= 39)
+				{
+				swap(&on, &off);
+				}
 			}
 
 		for y in 0 ..< 10
