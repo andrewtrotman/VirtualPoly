@@ -505,6 +505,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
+				DEVELOPMENT_TEAM = JL2ZYSYD53;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = flex_emulator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -512,7 +513,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Pinnated.C-and-Swift";
+				PRODUCT_BUNDLE_IDENTIFIER = "flex-emulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -529,6 +530,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
+				DEVELOPMENT_TEAM = JL2ZYSYD53;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = flex_emulator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -536,7 +538,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Pinnated.C-and-Swift";
+				PRODUCT_BUNDLE_IDENTIFIER = "flex-emulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
