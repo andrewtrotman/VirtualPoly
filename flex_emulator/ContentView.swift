@@ -25,17 +25,26 @@ class image_changer: ObservableObject
 */
 struct ContentView: View
 	{
-	@State var caps = false				// caps lock is down
-	@State var shift = false			// shift key is down
-	@State var control = false			// cotrol key is down
+	@State var caps = true				// caps lock is down?
+	@State var shift = false			// shift key is down?
+	@State var control = false			// cotrol key is down?
+
+	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
 	let CPU_speed:Int64 = 3000000			// 1000000 is 1 MHz
 	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
 	let machine = machine_construct()
-	let img = UIImage(named: "PolyKeyboard")!
-	let img_caps = UIImage(named: "PolyKeyboardShift")!
+
+	let img_keyboard = UIImage(named: "PolyKeyboard")!
+	let img_keyboard_shift = UIImage(named: "PolyKeyboardShift")!
+	let img_keyboard_control = UIImage(named: "PolyKeyboardControl")!
+	let img_keyboard_caps = UIImage(named: "PolyKeyboardCaps")!
+	let img_keyboard_caps_shift = UIImage(named: "PolyKeyboardCapsShift")!
+	let img_keyboard_caps_control = UIImage(named: "PolyKeyboardCapsControl")!
+
 	@StateObject var img_screen = image_changer()
 
 	@State var terminal_screen = [UInt8](repeating: 33, count: 40 * 24)
@@ -57,34 +66,39 @@ struct ContentView: View
 				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 				})
 			Group{
-			let keyboard_image_to_use = (caps || shift) ? img_caps : img
+			let keyboard_image_to_use =
+				caps ?
+					shift ? img_keyboard_caps_shift :
+					control ? img_keyboard_caps_control :
+					img_keyboard_caps :
+				shift ? img_keyboard_shift :
+				control ?  img_keyboard_control :
+				img_keyboard
+
 			Image(uiImage: keyboard_image_to_use).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
 				DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
 					{
 					let unshift = shift
-					let factor = img.size.width / UIScreen.main.bounds.width
-					let geometry: CGSize = CGSize(width: img.size.width / factor, height: img.size.height / factor)
+					let uncontrol = control
+					let factor = img_keyboard.size.width / UIScreen.main.bounds.width
+					let geometry: CGSize = CGSize(width: img_keyboard.size.width / factor, height: img_keyboard.size.height / factor)
 					let press = compute_key_press(size: geometry, location: $0.location)
 					switch (press)
 						{
-						case "K":
+						case Character("K").asciiValue:
 							control = !control
-						case "C":
+							shift = false
+						case Character("C").asciiValue:
 							caps = !caps
-						case "S":
+						case Character("S").asciiValue:
 							shift = true
-						case "P":
-							break
-						case "E":
-							machine_queue_key_press(machine, 0x0D)
+							control = false
 						default:
-							let ascii = key_upper(key: press, caps_lock: caps, shift: shift)
-							machine_queue_key_press(machine, Int8(ascii.asciiValue!))
+							let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
+							machine_queue_key_press(machine, CChar(ascii))
 						}
-					if unshift
-						{
-						shift = false
-						}
+					shift = unshift ? false : shift
+					control = uncontrol ? false : control
 					}
 				)
 			}.frame(maxHeight: .infinity, alignment: .bottom)
@@ -112,6 +126,12 @@ struct ContentView: View
 					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 					}
 				}
+			.onReceive(flash_timer)
+				{ _ in
+				flash_state = !flash_state
+				render_text_screen()
+				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+				}
 			}
 		}
 
@@ -120,11 +140,12 @@ struct ContentView: View
 		-------------------
 		Convert an (x,y) coordinate into key press. Returns the value of the key
 		without any shift modifiers, but with:
-			P = Pause
-			E = Enter
 			C = Caps Lock
 			S = Shift
 			K = Control
+
+			P = Pause
+			E = Enter
 
 			A = Char Ins
 			B = Char Del
@@ -136,42 +157,8 @@ struct ContentView: View
 			I = Down
 			J = Right
 			R = Reset (not on keyboard)
-
-	poly_key_line_insert = 0x7B;
-	poly_key_char_insert = 0x5B;
-	poly_key_line_del = 0x5E;
-	poly_key_char_del = 0x7E;
-	poly_key_calc = 0x12;
-	poly_key_help = 0x1D;
-	poly_key_exit = 0x5C;
-	poly_key_back = 0x7C;
-	poly_key_repeat = 0x7D;
-	poly_key_next = 0x5D;
-	poly_key_pause = 0x0F;
-	poly_key_left = 0x1F;
-	poly_key_right = 0x11;
-	poly_key_up = 0x08;
-	poly_key_down = 0x0B;
-	poly_key_u0 = 0x16;
-	poly_key_u1 = 0x15;
-	poly_key_u2 = 0x18;
-	poly_key_u3 = 0x01;
-	poly_key_u4 = 0x7F;
-	poly_key_u5 = 0x19;
-	poly_key_u6 = 0x06;
-	poly_key_u7 = 0x1A;
-	poly_key_u8 = 0x0A;
-	poly_key_u9 = 0x17;
-	poly_key_at = 0x09;
-	poly_key_bar = 0x40;
-	poly_key_exp = 0x60;
-	poly_key_pound = 0x13;
-
-	// Poly 2 keyboard only
-	poly_key_shift_pause = 0x0E;
-	poly_key_keypad_dot = 0x1E;
 	*/
-	func compute_key_press(size: CGSize, location: CGPoint) -> Character
+	func compute_key_press(size: CGSize, location: CGPoint) -> UInt8
 		{
 		let zero_row =   "AB XYZ GHIJ R   "
 		let first_row =  "1234567890:-P   "
@@ -186,50 +173,115 @@ struct ContentView: View
 			{
 			case 0:
 				let key = Int(location.x / key_width)
-				return zero_row[first_row.index(first_row.startIndex, offsetBy: key)]
+				return zero_row[first_row.index(first_row.startIndex, offsetBy: key)].asciiValue!
 			case 1:
 				let key = Int(location.x / key_width)
-				return first_row[first_row.index(first_row.startIndex, offsetBy: key)]
+				return first_row[first_row.index(first_row.startIndex, offsetBy: key)].asciiValue!
 			case 2:
 				var key = Int((location.x - key_width / 2) / key_width)
 				key = key < 0 ? 0 : key
-				return second_row[second_row.index(second_row.startIndex, offsetBy: key)]
+				return second_row[second_row.index(second_row.startIndex, offsetBy: key)].asciiValue!
 			case 3:
 				let key = Int(location.x / key_width)
-				return third_row[third_row.index(third_row.startIndex, offsetBy: key)]
+				return third_row[third_row.index(third_row.startIndex, offsetBy: key)].asciiValue!
 			case 4:
 				var key = Int((location.x - key_width / 2) / key_width)
 				key = key < 0 ? 0 : key
-				return fourth_row[fourth_row.index(fourth_row.startIndex, offsetBy: key)]
+				return fourth_row[fourth_row.index(fourth_row.startIndex, offsetBy: key)].asciiValue!
 			default:
-				return " "
+				return 32		// Space
 			}
 		}
 
 	/*
-		KEY_UPPER()
-		-----------
+		KEY_TRANSLATE()
+		---------------
 		Turn a key press into the correct ASCII value, managing the <shift> and <caps lock>
 		keys appropriately.
+
+		currently unimplemented:
+			poly_key_u0 = 0x16;
+			poly_key_u1 = 0x15;
+			poly_key_u2 = 0x18;
+			poly_key_u3 = 0x01;
+			poly_key_u4 = 0x7F;
+			poly_key_u5 = 0x19;
+			poly_key_u6 = 0x06;
+			poly_key_u7 = 0x1A;
+			poly_key_u8 = 0x0A;
+			poly_key_u9 = 0x17;
+			poly_key_at = 0x09;
+			poly_key_bar = 0x40;
+			poly_key_exp = 0x60;
+			poly_key_pound = 0x13;
+			poly_key_keypad_dot = 0x1E;
 	*/
-	func key_upper(key: Character, caps_lock: Bool, shift: Bool) -> Character
+	func key_translate(key: UInt8, caps_lock: Bool, shift: Bool, control: Bool) -> UInt8
 		{
+		/*
+			The "Special" keys
+		*/
+		switch (key)
+			{
+			case Character("E").asciiValue:			// Enter
+				return 0x0D
+			case Character("P").asciiValue:			// Pause
+				return shift ? 0x0E  : 0x0F
+			case Character("A").asciiValue:			// Insert
+				return shift ? 0x7B : 0x5B
+			case Character("B").asciiValue:			// Delete
+				return shift ? 0x5E : 0x7E
+			case Character("X").asciiValue:			// Calc Help
+				return shift ? 0x12 : 0x1D
+			case Character("Y").asciiValue:			// Exit Back
+				return shift ? 0x5C : 0x7C
+			case Character("Z").asciiValue:			// Repeat Next
+				return shift ? 0x7D : 0x5D
+			case Character("G").asciiValue:			// Left
+				return 0x1F
+			case Character("H").asciiValue:			// Up
+				return 0x08
+			case Character("I").asciiValue:			// Down
+				return 0x0B
+			case Character("J").asciiValue:			// Right
+				return 0x11
+			default:
+				break;
+			}
+
+		/*
+			Shift, Control, and Caps Lock
+		*/
 		if shift
 			{
+			/*
+				Shift (numbers become symbols)
+			*/
 			let lower = "1234567890:-^;@,./"
 			let upper = "!\"`$%&'()0*=|+#<>?"
 
-			if key >= "a" && key <= "z"
+			if key >= Character("a").asciiValue! && key <= Character("z").asciiValue!
 				{
-				return Character(key.uppercased())
+				return key - 32		// convert to uppercase
 				}
 
-			let index = lower.distance(from: lower.startIndex, to: lower.firstIndex(of: key)!)
-			return upper[upper.index(upper.startIndex, offsetBy: index)]
+			let index = lower.distance(from: lower.startIndex, to: lower.firstIndex(of: Character(UnicodeScalar(key)))!)
+
+			return (upper[upper.index(upper.startIndex, offsetBy: index)]).asciiValue!
+			}
+		else if control
+			{
+			/*
+				Only Control-A to Control-Z make sense
+			*/
+			return key >= Character("a").asciiValue! && key <= Character("z").asciiValue! ? key - 96 : key
 			}
 		else if caps_lock
 			{
-			return key >= "a" && key <= "z" ? Character(key.uppercased()) : key
+			/*
+				Caps Lock only applies to A through Z
+			*/
+			return key >= Character("a").asciiValue! && key <= Character("z").asciiValue! ? key - 32 : key
 			}
 
 		return key
@@ -243,7 +295,7 @@ struct ContentView: View
 		{
 		var character = raw_character
 
-		if (raw_character == 0)
+		if raw_character == 0
 			{
 			return
 			}
@@ -259,6 +311,16 @@ struct ContentView: View
 			{
 			terminal_row = terminal_row + 1
 			terminal_column = 0;
+			}
+		/*
+			BS (0x08) is the backspace character
+		*/
+//		if raw_character == 0x08
+		if raw_character == 0x1F
+			{
+			terminal_column = terminal_column > 0 ? terminal_column - 1 : 0
+			terminal_screen[terminal_row * 40 + terminal_column] = character
+			return;
 			}
 		/*
 			Check for scrolling
@@ -323,10 +385,15 @@ struct ContentView: View
 	func drawContentIntoBitmap(screen_x: Int, screen_y: Int, character: UInt8)
 		{
 		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
-		let on: UInt32 = 0x00FFFFFF
-		let off: UInt32 = 0x00000000
+		var on: UInt32 = 0x00FFFFFF
+		var off: UInt32 = 0x00000000
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
+
+		if (screen_x == terminal_column && screen_y == terminal_row && flash_state)
+			{
+			swap(&on, &off);
+			}
 
 		for y in 0 ..< 10
 			{
