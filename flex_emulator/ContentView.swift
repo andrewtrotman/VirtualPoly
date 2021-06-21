@@ -9,7 +9,7 @@ class image_changer: ObservableObject
 	{
 	var counter = 0
 
-	let offscreen_bitmap = CGContext(data: malloc(480*240*4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+	let offscreen_bitmap = CGContext(data: malloc(480 * 240 * 4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
 	@Published public var image = UIImage(named: "480x240")!
 	public var frame_buffer: UnsafeMutablePointer<UInt8>?
 
@@ -47,61 +47,98 @@ struct ContentView: View
 
 	@StateObject var img_screen = image_changer()
 
-	@State var terminal_screen = [UInt8](repeating: 33, count: 40 * 24)
+	@State var terminal_screen = [UInt8](repeating: 32, count: 40 * 24)
 	@State var terminal_row = 0
 	@State var terminal_column = 0
+	@State var terminal_escape_mode = false
+	@State var terminal_escape_sequence = [UInt8](repeating: 32, count: 0)
 
+	/*
+		INIT()
+		------
+	*/
+	init()
+		{
+		reset()
+		}
+
+	/*
+		RESET()
+		-------
+	*/
+	func reset()
+		{
+		caps = true
+		shift = false
+		control = false
+		flash_state = false
+		terminal_escape_mode = false;
+		terminal_row = 0
+		terminal_column = 0
+		for x in 0 ..< (40 * 24)
+			{
+			terminal_screen[x] = 32		// fill with spaces at the start
+			}
+		machine_reset(machine)
+		}
+
+	/*
+		BODY VIEW
+		---------
+	*/
 	var body: some View
 		{
 		VStack
 			{
 			Image(uiImage: img_screen.image).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
 				{
-				for x in 0 ..< (40 * 24)
-					{
-					terminal_screen[x] = 32		// fill with spaces at the start
-					}
 				img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 				render_text_screen()
 				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 				})
-			Group{
-			let keyboard_image_to_use =
-				caps ?
-					shift ? img_keyboard_caps_shift :
-					control ? img_keyboard_caps_control :
-					img_keyboard_caps :
-				shift ? img_keyboard_shift :
-				control ?  img_keyboard_control :
-				img_keyboard
+			Group
+				{
+				let keyboard_image_to_use =
+					caps ?
+						shift ? img_keyboard_caps_shift :
+						control ? img_keyboard_caps_control :
+						img_keyboard_caps :
+					shift ? img_keyboard_shift :
+					control ?  img_keyboard_control :
+					img_keyboard
 
-			Image(uiImage: keyboard_image_to_use).resizable().aspectRatio(contentMode: .fit).simultaneousGesture(
-				DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
-					{
-					let unshift = shift
-					let uncontrol = control
-					let factor = img_keyboard.size.width / UIScreen.main.bounds.width
-					let geometry: CGSize = CGSize(width: img_keyboard.size.width / factor, height: img_keyboard.size.height / factor)
-					let press = compute_key_press(size: geometry, location: $0.location)
-					switch (press)
-						{
-						case Character("K").asciiValue:
-							control = !control
-							shift = false
-						case Character("C").asciiValue:
-							caps = !caps
-						case Character("S").asciiValue:
-							shift = true
-							control = false
-						default:
-							let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
-							machine_queue_key_press(machine, CChar(ascii))
-						}
-					shift = unshift ? false : shift
-					control = uncontrol ? false : control
+				GeometryReader
+					{ (geometry) in
+					Image(uiImage: keyboard_image_to_use).resizable().simultaneousGesture(
+						DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
+							{
+							let unshift = shift
+							let uncontrol = control
+							let press = compute_key_press(size: geometry, location: $0.location)
+							switch (press)
+								{
+								case Character("K").asciiValue:		// Control key
+									control = !control
+									shift = false
+								case Character("C").asciiValue:		// Caps lock key
+									caps = !caps
+								case Character("S").asciiValue:		// Shift key
+									shift = true
+									control = false
+								case Character("R").asciiValue:		// Reset button
+									reset();
+									machine_reset(machine);
+									break
+								default:
+									let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
+									machine_queue_key_press(machine, CChar(ascii))
+								}
+							shift = unshift ? false : shift
+							control = uncontrol ? false : control
+							}
+						)
 					}
-				)
-			}.frame(maxHeight: .infinity, alignment: .bottom)
+				}.frame(maxHeight: .infinity, alignment: .bottom)
 
 			Spacer().frame(maxHeight: 2).onReceive(timer)
 				{ _ in
@@ -158,15 +195,15 @@ struct ContentView: View
 			J = Right
 			R = Reset (not on keyboard)
 	*/
-	func compute_key_press(size: CGSize, location: CGPoint) -> UInt8
+	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
 		{
 		let zero_row =   "AB XYZ GHIJ R   "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
 		let third_row =  "Casdfghjkl;@K   "
 		let fourth_row = "Szxcvbnm,./SS   "
-		let key_width = size.width / 13.0
-		let key_height = size.height / 6.0
+		let key_width = size.size.width / 13.0
+		let key_height = size.size.height / 6.0
 
 		let row_number = Int(location.y / key_height)
 		switch row_number
@@ -295,12 +332,83 @@ struct ContentView: View
 		}
 
 	/*
+		EXTRACT_INTEGER()
+		-----------------
+	*/
+	func extract_integer(sequence: ArraySlice<UInt8>) -> Int
+		{
+		var result: Int = 0
+
+		for digit in sequence
+			{
+			result = result * 10 + Int(digit) - 48
+			}
+		return result
+		}
+
+	/*
 		PRINT_CHARACTER()
 		-----------------
 	*/
 	func print_character(raw_character: UInt8)
 		{
 		var character = raw_character
+
+		if terminal_escape_mode
+			{
+			switch raw_character
+				{
+				case Character("J").asciiValue:			// Clear screen
+					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 K Erase all of the display
+						{
+						for x in 0 ..< 40 * 24
+							{
+							terminal_screen[x] = 32
+							}
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false;
+					break;
+				case Character("H").asciiValue:			// set cursor position	ESC [ <row> ; <column> H
+					if terminal_escape_sequence[0] == 91
+						{
+						var position_of_semicolon = 1
+						while terminal_escape_sequence[position_of_semicolon] != 59
+							{
+							position_of_semicolon = position_of_semicolon + 1
+							}
+						let new_terminal_row = extract_integer(sequence: terminal_escape_sequence[1 ..< position_of_semicolon])
+						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
+						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
+						terminal_column = new_terminal_column <= 4 && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false;
+					break;
+				case Character("K").asciiValue:
+					if terminal_escape_sequence == [91]			// ESC [ K erase to end of line (inclusive)
+						{
+						for pos in terminal_column ..< 40
+							{
+							terminal_screen[terminal_row * 40 + pos] = 32
+							}
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false;
+					break;
+				default:
+					terminal_escape_sequence.append(raw_character)
+					terminal_escape_mode = terminal_escape_sequence.count >= 16 ? false : terminal_escape_mode
+					break;
+				}
+			return
+			}
+
+		if (raw_character == 27)			// ESC (so enter VT100 Escape sequence processing mode)
+			{
+			terminal_escape_mode = true;
+			return
+			}
 
 		if raw_character == 0
 			{

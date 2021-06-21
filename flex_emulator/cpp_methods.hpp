@@ -29,6 +29,11 @@ extern "C"
 		((computer *)object)->step();
 		}
 
+	void machine_reset(const void *object)
+		{
+		((computer *)object)->reset();
+		}
+
 	void machine_queue_key_press(const void *object, char key)
 		{
 		((computer *)object)->queue_key_press(key);

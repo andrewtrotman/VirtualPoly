@@ -346,12 +346,3 @@ const unsigned char eprom_FLEX[] =
 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00,
 0xF0, 0x00, 0xF0, 0x00,
 };
-const unsigned long eprom_termination = 0x00000000;
-const unsigned long eprom_start       = 0x0000F000;
-const unsigned long eprom_finish      = 0x00010000;
-const unsigned long eprom_length      = 0x00001000;
-
-#define EPROM_TERMINATION 0x00000000
-#define EPROM_START       0x0000F000
-#define EPROM_FINISH      0x00010000
-#define EPROM_LENGTH      0x00001000
