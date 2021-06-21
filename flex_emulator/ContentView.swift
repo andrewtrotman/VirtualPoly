@@ -31,7 +31,7 @@ struct ContentView: View
 
 	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
-	let CPU_speed:Int64 = 3000000			// 1000000 is 1 MHz
+	let CPU_speed:Int64 = 10000000			// 1000000 is 1 MHz
 	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -129,6 +129,8 @@ struct ContentView: View
 									reset();
 									machine_reset(machine);
 									break
+								case Character("D").asciiValue:		// ESC key
+									machine_queue_key_press(machine, CChar(27))
 								default:
 									let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
 									machine_queue_key_press(machine, CChar(ascii))
@@ -183,6 +185,7 @@ struct ContentView: View
 
 			P = Pause
 			E = Enter
+			D = ESC
 
 			A = Char Ins
 			B = Char Del
@@ -197,7 +200,7 @@ struct ContentView: View
 	*/
 	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
 		{
-		let zero_row =   "AB XYZ GHIJ R   "
+		let zero_row =   "ABDXYZ GHIJ R   "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
 		let third_row =  "Casdfghjkl;@K   "
@@ -343,12 +346,20 @@ struct ContentView: View
 			{
 			result = result * 10 + Int(digit) - 48
 			}
+//print("->" + String(result))
 		return result
 		}
 
 	/*
 		PRINT_CHARACTER()
 		-----------------
+		VED uses:
+			char bep[1]  = 0x07				/* beep */
+			char eol[3]  = ESC [ K			/* Erase to EOL */
+			char clr[4]  = ESC [ 2 J		/* Clear screen & pos curser at 1,1 */
+			char hom[3]  = ESC [ H			/* Cursor Home */
+			char ins[3]  = ESC [ L			/* Insert Line */
+			char dell[3] = ESC [ M			/* Delete Line */
 	*/
 	func print_character(raw_character: UInt8)
 		{
@@ -358,19 +369,13 @@ struct ContentView: View
 			{
 			switch raw_character
 				{
-				case Character("J").asciiValue:			// Clear screen
-					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 K Erase all of the display
-						{
-						for x in 0 ..< 40 * 24
-							{
-							terminal_screen[x] = 32
-							}
-						}
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false;
-					break;
 				case Character("H").asciiValue:			// set cursor position	ESC [ <row> ; <column> H
-					if terminal_escape_sequence[0] == 91
+					if terminal_escape_sequence == []
+						{
+						terminal_row = 0
+						terminal_column = 0
+						}
+					else if terminal_escape_sequence[0] == 91
 						{
 						var position_of_semicolon = 1
 						while terminal_escape_sequence[position_of_semicolon] != 59
@@ -380,12 +385,27 @@ struct ContentView: View
 						let new_terminal_row = extract_integer(sequence: terminal_escape_sequence[1 ..< position_of_semicolon])
 						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
 						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
-						terminal_column = new_terminal_column <= 4 && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
+						terminal_column = new_terminal_column <= 40 && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
 						}
+//print("GotoYX(" + String(terminal_row) + "," + String(terminal_column) + ")")
 					terminal_escape_sequence.removeAll()
 					terminal_escape_mode = false;
 					break;
+				case Character("J").asciiValue:			// Clear screen
+					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 J Erase all of the display
+						{
+						for x in 0 ..< 40 * 24
+							{
+							terminal_screen[x] = 32
+							}
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false;
+					terminal_row = 0
+					terminal_column = 0
+					break;
 				case Character("K").asciiValue:
+//print("DeleteEOLN")
 					if terminal_escape_sequence == [91]			// ESC [ K erase to end of line (inclusive)
 						{
 						for pos in terminal_column ..< 40
@@ -396,6 +416,51 @@ struct ContentView: View
 					terminal_escape_sequence.removeAll()
 					terminal_escape_mode = false;
 					break;
+				case Character("L").asciiValue:					// ESC [ L insert line below
+//print("InsertLineBelow")
+					if terminal_escape_sequence == []
+						{
+						if terminal_row != 23
+							{
+							for y in ((terminal_row + 1) ..< 24).reversed()
+								{
+								for x in 0 ..< 40
+									{
+									terminal_screen[y * 40 + x] = terminal_screen[(y - 1) * 40 + x]
+									}
+								}
+							/*
+								Blank the bottom row
+							*/
+							for byte in (23 * 40) ..< (24 * 40)
+								{
+								terminal_screen[byte] = 32
+								}
+							}
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false;
+					break;
+				case Character("M").asciiValue:					// ESC [ M delete current line
+//print("DeleteLineAt")
+					if terminal_escape_sequence == [91]
+						{
+//						terminal_row = terminal_row == 0 ? 0 : terminal_row - 1
+						for x in (terminal_row * 40) ..< (23 * 40)
+							{
+							terminal_screen[x] = terminal_screen[x + 40]
+							}
+						/*
+							Blank the bottom row
+						*/
+						for byte in (23 * 40) ..< (24 * 40)
+							{
+							terminal_screen[byte] = 32
+							}
+						}
+					terminal_escape_sequence.removeAll()
+					terminal_escape_mode = false
+					break
 				default:
 					terminal_escape_sequence.append(raw_character)
 					terminal_escape_mode = terminal_escape_sequence.count >= 16 ? false : terminal_escape_mode
@@ -404,13 +469,15 @@ struct ContentView: View
 			return
 			}
 
+//print(String(raw_character))
+
 		if (raw_character == 27)			// ESC (so enter VT100 Escape sequence processing mode)
 			{
 			terminal_escape_mode = true;
 			return
 			}
 
-		if raw_character == 0
+		if raw_character == 0 || raw_character == 7		// 7 is the bell 0 is a null
 			{
 			return
 			}
@@ -480,9 +547,9 @@ struct ContentView: View
 	*/
 	func render_text_screen()
 		{
-		for x in 0 ..< 40
+		for y in 0 ..< 24
 			{
-			for y in 0 ..< 24
+			for x in 0 ..< 40
 				{
 				drawContentIntoBitmap(screen_x: x, screen_y: y, character: terminal_screen[y * 40 + x])
 				}
