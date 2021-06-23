@@ -88,6 +88,9 @@ ide::ide()
 	current = identify_buffer;
 	end = identify_buffer + sizeof(identify_buffer);
 
+
+
+
 	CFBundleRef mb = CFBundleGetMainBundle();
 	#if (SECTOR_SIZE == 512)
 		CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.img"), NULL, NULL);

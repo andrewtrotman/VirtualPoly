@@ -19,6 +19,7 @@ class image_changer: ObservableObject
 		}
 	}
 
+
 /*
 	STRUCT CONTENTVIEW
 	------------------
@@ -81,6 +82,7 @@ struct ContentView: View
 			}
 		machine_reset(machine)
 		}
+
 
 	/*
 		BODY VIEW
