@@ -32,7 +32,7 @@ class ide
 		byte identify_buffer[512];	// the value of the device identify block
 		byte *current;					// current point on the disk
 		byte *end;						// end of the current sector
-		std::string disk;	// the buffer containing the disk
+		std::string disk;				// the buffer containing the disk
 
 		byte data_register;
 		byte feature_register;

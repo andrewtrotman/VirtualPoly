@@ -19,6 +19,15 @@ class image_changer: ObservableObject
 		}
 	}
 
+class machine_changer: ObservableObject
+	{
+	@Published public var pointer: UnsafeRawPointer? = nil
+
+	init()
+		{
+		/* Nothing */
+		}
+	}
 
 /*
 	STRUCT CONTENTVIEW
@@ -26,6 +35,7 @@ class image_changer: ObservableObject
 */
 struct ContentView: View
 	{
+	@Environment(\.scenePhase) var scene_phase
 	@State var caps = true				// caps lock is down?
 	@State var shift = false			// shift key is down?
 	@State var control = false			// cotrol key is down?
@@ -37,7 +47,7 @@ struct ContentView: View
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
-	let machine = machine_construct()
+	@StateObject var machine = machine_changer()
 
 	let img_keyboard = UIImage(named: "PolyKeyboard")!
 	let img_keyboard_shift = UIImage(named: "PolyKeyboardShift")!
@@ -76,11 +86,12 @@ struct ContentView: View
 		terminal_escape_mode = false;
 		terminal_row = 0
 		terminal_column = 0
+		terminal_escape_sequence = []
+
 		for x in 0 ..< (40 * 24)
 			{
 			terminal_screen[x] = 32		// fill with spaces at the start
 			}
-		machine_reset(machine)
 		}
 
 
@@ -129,13 +140,22 @@ struct ContentView: View
 									control = false
 								case Character("R").asciiValue:		// Reset button
 									reset();
-									machine_reset(machine);
+									if (machine.pointer != nil)
+										{
+										machine_reset(machine.pointer);
+										}
 									break
 								case Character("D").asciiValue:		// ESC key
-									machine_queue_key_press(machine, CChar(27))
+									if (machine.pointer != nil)
+										{
+										machine_queue_key_press(machine.pointer, CChar(27))
+										}
 								default:
-									let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
-									machine_queue_key_press(machine, CChar(ascii))
+									if (machine.pointer != nil)
+										{
+										let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
+										machine_queue_key_press(machine.pointer, CChar(ascii))
+										}
 								}
 							shift = unshift ? false : shift
 							control = uncontrol ? false : control
@@ -146,25 +166,28 @@ struct ContentView: View
 
 			Spacer().frame(maxHeight: 2).onReceive(timer)
 				{ _ in
-				let end_cycle = machine_cycles_spent(machine) + CPU_speed / iOS_timer_speed
-				while (machine_cycles_spent(machine) < end_cycle)
+				if (machine.pointer != nil)
 					{
-					machine_step(machine);
-					}
+					let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
+					while (machine_cycles_spent(machine.pointer) < end_cycle)
+						{
+						machine_step(machine.pointer);
+						}
 
-				var screen_did_change = false
-				var response = machine_dequeue_serial_output(machine)
-				while (response <= 0xFF)
-					{
-					print_character(raw_character: UInt8(response & 0xFF))
-					screen_did_change = true
-					response = machine_dequeue_serial_output(machine)
-					}
+					var screen_did_change = false
+					var response = machine_dequeue_serial_output(machine.pointer)
+					while (response <= 0xFF)
+						{
+						print_character(raw_character: UInt8(response & 0xFF))
+						screen_did_change = true
+						response = machine_dequeue_serial_output(machine.pointer)
+						}
 
-				if screen_did_change
-					{
-					render_text_screen()
-					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+					if screen_did_change
+						{
+						render_text_screen()
+						img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+						}
 					}
 				}
 			.onReceive(flash_timer)
@@ -173,8 +196,31 @@ struct ContentView: View
 				render_text_screen()
 				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 				}
-			}
+			.onAppear
+				{
+				if (machine.pointer == nil)
+					{
+					machine.pointer = machine_construct()
+					}
+				}
+			.onChange(of: scene_phase)
+				{ newScenePhase in
+				switch newScenePhase
+					{
+					case .active:
+						print("View is active")
+					case .inactive:
+						print("View is inactive")
+					case .background:
+						print("View is in background")
+					@unknown default:
+						print("Oh - interesting: I received an unexpected new value.")
+					}
+				}
+
+
 		}
+	}
 
 	/*
 		COMPUTE_KEY_PRESS()

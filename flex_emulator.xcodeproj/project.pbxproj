@@ -67,7 +67,6 @@
 		49B31D77266F50EF00706439 /* usim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usim.h; sourceTree = "<group>"; };
 		49B31D79266F512300706439 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
 		49B31D7A266F518D00706439 /* typedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typedefs.h; sourceTree = "<group>"; };
-		49B31D7B266F54B400706439 /* mc6850_with_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6850_with_mac.h; sourceTree = "<group>"; };
 		49B31D7C266F550C00706439 /* mc6850.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6850.cpp; sourceTree = "<group>"; };
 		49B31D7D266F550C00706439 /* mc6850.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6850.h; sourceTree = "<group>"; };
 		49E35E2D267F1D670078058B /* saa5055_font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saa5055_font.cpp; sourceTree = "<group>"; };
@@ -151,7 +150,6 @@
 				49480DF42675DD4C00860A83 /* ide.cpp */,
 				49B31D7D266F550C00706439 /* mc6850.h */,
 				49B31D7C266F550C00706439 /* mc6850.cpp */,
-				49B31D7B266F54B400706439 /* mc6850_with_mac.h */,
 				49480DEF2674993E00860A83 /* saa5050_font.cpp */,
 				49480DF12674993E00860A83 /* saa5050_font.h */,
 				49E35E2D267F1D670078058B /* saa5055_font.cpp */,

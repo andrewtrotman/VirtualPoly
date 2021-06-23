@@ -9,7 +9,7 @@ import SwiftUI
 @main
 struct flex_emulator: App
 	{
-//	@Environment(\.scenePhase) private var scenePhase
+	@Environment(\.scenePhase) var scene_phase
 
 	var body: some Scene
 		{
@@ -17,14 +17,19 @@ struct flex_emulator: App
 			{
 			ContentView()
 			}
-/*
-		.onChange(of: scenePhase)
-			{ phase in
-				print(phase)
-           if phase == .active {
-           }
-
+		.onChange(of: scene_phase)
+			{ newScenePhase in
+			switch newScenePhase
+				{
+				case .active:
+					print("App is active")
+				case .inactive:
+					print("App is inactive")
+				case .background:
+					print("App is in background")
+				@unknown default:
+					print("Oh - interesting: I received an unexpected new value.")
+				}
 			}
-*/
 		}
 	}
