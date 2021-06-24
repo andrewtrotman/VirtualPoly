@@ -15,6 +15,7 @@
 */
 #include <stdio.h>
 #include <unistd.h>
+#include <filesystem>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <CoreFoundation/CoreFoundation.h>
@@ -72,6 +73,9 @@ bool write_entire_file(const std::string &filename, const std::string &buffer)
 */
 ide::ide()
 	{
+	/*
+		Set up the controller
+	*/
 	data_register = 0;
 	feature_register = 0;
 	error_register = 0;
@@ -83,28 +87,43 @@ ide::ide()
 	status_register = 0x40;			// not BUSY, but DRDY
 	command_register = 0;
 
+	/*
+		Create a 512-byte buffer as that is the result of a disk identify command
+	*/
 	for (byte *into = identify_buffer; into < identify_buffer + sizeof(identify_buffer); into++)
 		*into = 'Z';
 	current = identify_buffer;
 	end = identify_buffer + sizeof(identify_buffer);
 
+	/*
+		By default we use the disk in the app's Documents directors, but if that doesn't exist then copy it from the
+		disk in the app's bundle.  This way the shipped disk is never modified, but the user's copy of that disk is.
+	*/
+	auto system_disk = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents/flex.dsk");
+	std::error_code status;
+	if (!exists(system_disk, status))
+		{
+		CFBundleRef bundle = CFBundleGetMainBundle();
+		#if (SECTOR_SIZE == 512)
+			#define FILENAME "aspt.img"
+		#else
+			#define FILENAME "aspt.dsk"
+		#endif
+		CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR(FILENAME), NULL, NULL);
+		CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+		CFStringEncoding encoding_method = CFStringGetSystemEncoding();
+		auto bundle_disk = std::filesystem::path(CFStringGetCStringPtr(path, encoding_method));
 
+		std::filesystem::copy_file(bundle_disk, system_disk, std::filesystem::copy_options::skip_existing, status);
 
+		CFRelease(url);
+		CFRelease(path);
+		}
 
-	CFBundleRef mb = CFBundleGetMainBundle();
-	#if (SECTOR_SIZE == 512)
-		CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.img"), NULL, NULL);
-	#else
-		CFURLRef url = CFBundleCopyResourceURL(mb, CFSTR("aspt.dsk"), NULL, NULL);
-	#endif
-	CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-	CFStringEncoding encoding_method = CFStringGetSystemEncoding();
-	const char *filename = CFStringGetCStringPtr(path, encoding_method);
-	
-	read_entire_file(filename, disk);
-
-	CFRelease(url);
-	CFRelease(path);
+	/*
+		Now open the FLEX disk
+	*/
+	read_entire_file(system_disk.c_str(), disk);
 	}
 
 /*

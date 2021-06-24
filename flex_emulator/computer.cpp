@@ -118,21 +118,21 @@ void computer::write(word address, byte value)
 	---------------------------
 */
 void computer::queue_key_press(byte key)
-{
-keyboard_input.push_back(key);
-}
+	{
+	keyboard_input.push_back(key);
+	}
 
 /*
 	COMPUTER::DEQUEUE_SERIAL_OUTPUT()
 	---------------------------------
 */
 word computer::dequeue_serial_output(void)
-{
-if (serial_output.empty())
-	return 0xFFFF;
+	{
+	if (serial_output.empty())
+		return 0xFFFF;
 
-word answer = serial_output.front();
-serial_output.pop_front();
+	word answer = serial_output.front();
+	serial_output.pop_front();
 
-return answer;
-}
+	return answer;
+	}

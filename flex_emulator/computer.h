@@ -2,6 +2,8 @@
 	COMPUTER.H
 	----------
 */
+#pragma once
+
 #include "ide.h"
 #include "mc6809.h"
 #include "mc6850.h"
@@ -14,6 +16,9 @@
 */
 class computer : public mc6809
 	{
+	friend std::ostream &operator<<(std::ostream &into, const computer &simulator);
+	friend std::istream &operator>>(std::istream &from, computer &simulator);
+
 	private:
 		std::deque<byte> keyboard_input;
 		std::deque<byte> serial_output;
@@ -30,3 +35,60 @@ class computer : public mc6809
 		virtual void queue_key_press(byte key);
 		virtual word dequeue_serial_output(void);
 	};
+
+/*
+	OPERATOR<<()
+	------------
+*/
+inline std::ostream &operator<<(std::ostream &into, const computer &simulator)
+	{
+	qword queue_size = 0;
+
+	operator<<(into, (mc6809 &)simulator);
+
+	queue_size = simulator.keyboard_input.size();
+	into.write((char *)&queue_size, sizeof(queue_size));
+	for (const auto value : simulator.keyboard_input)
+		into.write((char *)&value, sizeof(value));
+
+	queue_size = simulator.serial_output.size();
+	into.write((char *)&queue_size, sizeof(queue_size));
+	for (const auto value : simulator.serial_output)
+		into.write((char *)&value, sizeof(value));
+
+	operator<<(into, simulator.terminal);
+	operator<<(into, simulator.hard_drive);
+
+	return into;
+	}
+
+/*
+	OPERATOR>>()
+	------------
+*/
+inline std::istream &operator>>(std::istream &from, computer &simulator)
+	{
+	qword queue_size = 0;
+
+	operator>>(from, (mc6809 &)simulator);
+
+	from.read((char *)&queue_size, sizeof(queue_size));
+	for (qword count = 0; count < queue_size; count++)
+		{
+		decltype(simulator.keyboard_input)::value_type value;
+		from.read((char *)&value, sizeof(value));
+		}
+
+	from.read((char *)&queue_size, sizeof(queue_size));
+	for (qword count = 0; count < queue_size; count++)
+		{
+		decltype(simulator.serial_output)::value_type value;
+		from.read((char *)&value, sizeof(value));
+		}
+
+	operator>>(from, simulator.terminal);
+	operator>>(from, simulator.hard_drive);
+
+	return from;
+	}
+

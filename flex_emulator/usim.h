@@ -5,15 +5,15 @@
 	Substantial re-factoring (c) 2010 Andrew Trotman
 	Ported to Mac 2021 Andrew Trotman
 */
-#ifndef __usim_h__
-#define __usim_h__
+#pragma once
 
 #include <deque>
+#include <iostream>
 
 #include "misc.h"
 
 /*
-	class USim
+	CLASS USIM
 	----------
 */
 class USim
@@ -43,4 +43,30 @@ public:
 	virtual word dequeue_serial_output(void) = 0;
 } ;
 
-#endif // __usim_h__
+/*
+	OPERATOR<<()
+	------------
+*/
+inline std::ostream &operator<<(std::ostream &into, const USim &simulator)
+	{
+	into.write((char *)&simulator.memory[0], sizeof(simulator.memory));
+	into.write((char *)&simulator.halted, sizeof(simulator.halted));
+	into.write((char *)&simulator.ir, sizeof(simulator.ir));
+	into.write((char *)&simulator.pc, sizeof(simulator.pc));
+
+	return into;
+	}
+
+/*
+	OPERATOR>>()
+	------------
+*/
+inline std::istream &operator>>(std::istream &from, USim &simulator)
+	{
+	from.read((char *)&simulator.memory[0], sizeof(simulator.memory));
+	from.read((char *)&simulator.halted, sizeof(simulator.halted));
+	from.read((char *)&simulator.ir, sizeof(simulator.ir));
+	from.read((char *)&simulator.pc, sizeof(simulator.pc));
+
+	return from;
+	}

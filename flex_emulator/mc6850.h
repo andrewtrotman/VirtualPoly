@@ -2,20 +2,23 @@
 	MC6850.H
 	--------
 */
-#ifndef MC6850_H_
-#define MC6850_H_
+#pragma once
 
 #include <deque>
+#include <iostream>
 
 #include "typedefs.h"
 
 /*
-	class MC6850
+	CLASS MC6850
 	------------
 	Motorola 6850 ACIA (Serial Port)
 */
 class mc6850
 	{
+	friend inline std::ostream &operator<<(std::ostream &into, const mc6850 &simulator);
+	friend inline std::istream &operator>>(std::istream &from, mc6850 &simulator);
+
 	private:
 		byte baud_rate_register;
 		std::deque<byte> &input;
@@ -45,4 +48,25 @@ class mc6850
 		void write(word address, byte value);
 	};
 
-#endif /* MC6850_H_ */
+
+/*
+	OPERATOR<<()
+	------------
+*/
+inline std::ostream &operator<<(std::ostream &into, const mc6850 &simulator)
+	{
+	into.write((char *)&simulator.baud_rate_register, sizeof(simulator.baud_rate_register));
+
+	return into;
+	}
+
+/*
+	OPERATOR>>()
+	------------
+*/
+inline std::istream &operator>>(std::istream &from, mc6850 &simulator)
+	{
+	from.read((char *)&simulator.baud_rate_register, sizeof(simulator.baud_rate_register));
+
+	return from;
+	}
