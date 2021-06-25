@@ -3,8 +3,7 @@
 //  that you would like to expose to Swift.
 //
 
-#ifndef bridge_h
-#define bridge_h
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,9 +17,12 @@ void machine_queue_key_press(const void *object, char key);
 int machine_dequeue_serial_output(const void *object);
 long long machine_cycles_spent(const void *object);
 
+void machine_deserialise(const void *object);
+void machine_serialise(const void *object);
+
 unsigned char *get_saa5050_font(void);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* bridge_h */
+

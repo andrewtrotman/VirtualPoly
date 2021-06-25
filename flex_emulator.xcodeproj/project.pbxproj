@@ -85,7 +85,7 @@
 		49F70B2B266C523100408DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "flex_emulator-Bridging-Header.h"; sourceTree = "<group>"; };
 		49F70B38266C527100408DAE /* cpp_methods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpp_methods.cpp; sourceTree = "<group>"; };
-		49F70B39266C527100408DAE /* cpp_methods.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpp_methods.hpp; sourceTree = "<group>"; };
+		49F70B39266C527100408DAE /* cpp_methods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cpp_methods.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				49F70B0C266C523000408DAE /* flex_emulator.swift */,
+				49F70B39266C527100408DAE /* cpp_methods.h */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
 				4944EF402670801900445780 /* computer.h */,
 				4944EF412670801A00445780 /* computer.cpp */,
@@ -162,7 +163,6 @@
 				499A044D267747BE0036F04D /* ROM_FLEX.cpp */,
 				499A04502677483B0036F04D /* ROM_TinyBasic.h */,
 				499A044C267747BE0036F04D /* ROM_TinyBasic.cpp */,
-				49F70B39266C527100408DAE /* cpp_methods.hpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,

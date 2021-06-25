@@ -25,9 +25,15 @@ class computer : public mc6809
 		mc6850 terminal;
 		ide hard_drive;
 
+	private:
+		std::string get_serialised_filename();
+
 	public:
 		computer();
 		virtual ~computer();
+
+		virtual void serialise(void);
+		virtual void deserialise(void);
 
 		virtual byte read(word offset);
 		virtual void write(word offset, byte val);

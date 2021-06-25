@@ -4,6 +4,7 @@
 	Copyright (c) 2021 Andrew Trotman
 */
 import SwiftUI
+import Foundation
 
 class image_changer: ObservableObject
 	{
@@ -204,23 +205,106 @@ struct ContentView: View
 					}
 				}
 			.onChange(of: scene_phase)
-				{ newScenePhase in
-				switch newScenePhase
+				{ new_phase in
+				switch new_phase
 					{
 					case .active:
-						print("View is active")
-					case .inactive:
-						print("View is inactive")
-					case .background:
-						print("View is in background")
+						machine_deserialise(machine.pointer)
+						deserialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
+					case .inactive, .background:
+						machine_serialise(machine.pointer)
+						serialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
 					@unknown default:
-						print("Oh - interesting: I received an unexpected new value.")
+						(
+						/* Nothing */
+						)
 					}
 				}
-
-
 		}
 	}
+
+	/*
+		SERIALISE()
+		-----------
+	*/
+	func serialise(path: URL)
+		{
+		do
+			{
+			FileManager.default.createFile(atPath: path.path, contents: nil, attributes: nil)
+
+			let file = try FileHandle(forWritingTo: path)
+			try file.seekToEnd()
+
+			file.write(Data(terminal_screen))
+
+			file.write(Data(bytes: &caps, count:MemoryLayout.size(ofValue:caps)))
+			file.write(Data(bytes: &shift, count:MemoryLayout.size(ofValue:shift)))
+			file.write(Data(bytes: &control, count:MemoryLayout.size(ofValue:control)))
+
+			file.write(Data(bytes: &terminal_row, count:MemoryLayout.size(ofValue:terminal_row)))
+			file.write(Data(bytes: &terminal_column, count:MemoryLayout.size(ofValue:terminal_column)))
+			file.write(Data(bytes: &terminal_escape_mode, count:MemoryLayout.size(ofValue:terminal_escape_mode)))
+
+			var escape_length = terminal_escape_sequence.count
+			file.write(Data(bytes: &escape_length, count:MemoryLayout.size(ofValue:escape_length)))
+			file.write(Data(terminal_escape_sequence))
+
+			file.closeFile()
+			}
+		catch let error as NSError
+			{
+			print("Failure to serialise terminal: \(error)")
+			}
+		}
+
+	/*
+		DESERIALISE()
+		-----------
+	*/
+	func deserialise(path: URL)
+		{
+		do
+			{
+			let file = try FileHandle(forReadingFrom: path)
+
+			var data = try file.read(upToCount: terminal_screen.count)
+			data?.copyBytes(to: &terminal_screen, count: terminal_screen.count)
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:caps))
+			caps = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: caps).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:shift))
+			shift = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: shift).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:control))
+			control = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: control).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_row))
+			terminal_row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_row).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_column))
+			terminal_column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_column).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_escape_mode))
+			terminal_escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_escape_mode).self)})
+
+
+			var escape_length = terminal_escape_sequence.count
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_length))
+			escape_length = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_length).self)})
+			terminal_escape_sequence = [UInt8](repeating: 32, count: escape_length)
+
+			data = try file.read(upToCount: terminal_escape_sequence.count)
+			data?.copyBytes(to: &terminal_escape_sequence, count: terminal_escape_sequence.count)
+
+			file.closeFile()
+			}
+		catch let error as NSError
+			{
+			print("Failure to deserialise terminal: \(error)")
+			}
+		}
 
 	/*
 		COMPUTE_KEY_PRESS()

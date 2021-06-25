@@ -2,6 +2,9 @@
 	COMPUTER.CPP
 	------------
 */
+#include <fstream>
+#include <filesystem>
+
 #include "ROM_Pinnated.h"
 #include "ROM_TinyBasic.h"
 #include "ROM_FLEX.h"
@@ -24,6 +27,37 @@ computer::computer() :
 computer::~computer()
 	{
 	/*	Nothing */
+	}
+
+/*
+	COMPUTER::ET_SERIALISED_FILENAME()
+	----------------------------------
+*/
+std::string computer::get_serialised_filename(void)
+	{
+	return (std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents/emulator.state")).string();
+	}
+
+/*
+	COMPUTER::SERIALISE()
+	---------------------
+*/
+void computer::serialise(void)
+	{
+	auto file = std::ofstream(get_serialised_filename());
+	file << *this;
+	file.close();
+	}
+
+/*
+	COMPUTER::DESERIALISE()
+	-----------------------
+*/
+void computer::deserialise(void)
+	{
+	auto file = std::ifstream(get_serialised_filename());
+	file >> *this;
+	file.close();
 	}
 
 /*
