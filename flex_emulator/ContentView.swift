@@ -95,7 +95,6 @@ struct ContentView: View
 			}
 		}
 
-
 	/*
 		BODY VIEW
 		---------
@@ -202,6 +201,8 @@ struct ContentView: View
 				if (machine.pointer == nil)
 					{
 					machine.pointer = machine_construct()
+					machine_deserialise(machine.pointer)
+					deserialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
 					}
 				}
 			.onChange(of: scene_phase)
