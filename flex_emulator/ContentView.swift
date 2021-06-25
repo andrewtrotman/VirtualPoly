@@ -49,6 +49,7 @@ struct ContentView: View
 	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
 	@StateObject var machine = machine_changer()
+	@State var paused = false
 
 	let img_keyboard = UIImage(named: "PolyKeyboard")!
 	let img_keyboard_shift = UIImage(named: "PolyKeyboardShift")!
@@ -80,6 +81,7 @@ struct ContentView: View
 	*/
 	func reset()
 		{
+		paused = false;
 		caps = true
 		shift = false
 		control = false
@@ -130,6 +132,8 @@ struct ContentView: View
 							let press = compute_key_press(size: geometry, location: $0.location)
 							switch (press)
 								{
+								case Character("P").asciiValue:		// Pause key
+									paused = !paused
 								case Character("K").asciiValue:		// Control key
 									control = !control
 									shift = false
@@ -168,10 +172,13 @@ struct ContentView: View
 				{ _ in
 				if (machine.pointer != nil)
 					{
-					let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
-					while (machine_cycles_spent(machine.pointer) < end_cycle)
+					if (!paused)
 						{
-						machine_step(machine.pointer);
+						let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
+						while (machine_cycles_spent(machine.pointer) < end_cycle)
+							{
+							machine_step(machine.pointer);
+							}
 						}
 
 					var screen_did_change = false
@@ -239,6 +246,8 @@ struct ContentView: View
 
 			file.write(Data(terminal_screen))
 
+			file.write(Data(bytes: &paused, count:MemoryLayout.size(ofValue:paused)))
+
 			file.write(Data(bytes: &caps, count:MemoryLayout.size(ofValue:caps)))
 			file.write(Data(bytes: &shift, count:MemoryLayout.size(ofValue:shift)))
 			file.write(Data(bytes: &control, count:MemoryLayout.size(ofValue:control)))
@@ -271,6 +280,9 @@ struct ContentView: View
 
 			var data = try file.read(upToCount: terminal_screen.count)
 			data?.copyBytes(to: &terminal_screen, count: terminal_screen.count)
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:paused))
+			paused = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: paused).self)})
 
 			data = try file.read(upToCount: MemoryLayout.size(ofValue:caps))
 			caps = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: caps).self)})

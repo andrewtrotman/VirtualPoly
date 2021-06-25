@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024.0px"
+   height="1024.0px"
+   viewBox="0 0 1024.0 1024.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="drawing.svg"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   inkscape:export-filename="/Users/andrew/programming/flex_emulator/extras/icon2.png"
+   inkscape:export-xdpi="3.268085"
+   inkscape:export-ydpi="3.268085"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="0.59782783"
+     inkscape:cx="287.70825"
+     inkscape:cy="446.61688"
+     inkscape:window-width="1312"
+     inkscape:window-height="946"
+     inkscape:window-x="95"
+     inkscape:window-y="31"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid20" />
+  </sodipodi:namedview>
+  <defs
+     id="defs9" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ac9393;fill-rule:evenodd;stroke-width:2.80878"
+       id="rect457"
+       width="940"
+       height="940"
+       x="40"
+       y="40"
+       ry="201.42859" />
+    <rect
+       style="fill:#000000;fill-rule:evenodd;stroke-width:2.68925"
+       id="rect457-9"
+       width="900"
+       height="900"
+       x="60"
+       y="60"
+       ry="192.85715" />
+    <rect
+       style="fill:#333333;fill-rule:evenodd;stroke-width:2.45021"
+       id="rect457-9-9"
+       width="820"
+       height="820"
+       x="100"
+       y="100"
+       ry="175.71429" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#ffffff;fill-opacity:1;stroke:none"
+       x="125.16216"
+       y="295.41919"
+       id="text4009"><tspan
+         sodipodi:role="line"
+         id="tspan4007"
+         x="125.16216"
+         y="295.41919"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:200px;font-family:'Courier New';-inkscape-font-specification:'Courier New, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff">+++</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#ffffff;fill-opacity:1;stroke:none"
+       x="526.47021"
+       y="241.8194"
+       id="text4009-2"><tspan
+         sodipodi:role="line"
+         id="tspan4007-0"
+         x="526.47021"
+         y="241.8194"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:200px;font-family:'Courier New';-inkscape-font-specification:'Courier New, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff">_</tspan></text>
+  </g>
+</svg>
