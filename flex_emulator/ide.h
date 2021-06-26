@@ -55,6 +55,8 @@ class ide
 
 		byte read(word address);
 		void write(word address, byte value);
+
+		void save_disk();
 	};
 
 /*

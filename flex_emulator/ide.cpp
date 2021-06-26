@@ -4,7 +4,7 @@
 	Minimalistic IDE controller, just enough to work with FLEX
 
 	commands for flex_vfs:
-		new aspt.img t254,s254
+		new aspt.dsk t254,s254
 		mount 0 aspt.dsk
 		rdbootfile bootsector.bin
 		wrboot 0
@@ -133,6 +133,16 @@ ide::ide()
 ide::~ide()
 	{
 	/* Nothing */
+	}
+
+/*
+	IDE::SAVE_DISK()
+	----------------
+*/
+void ide::save_disk()
+	{
+	auto system_disk = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents/flex.dsk");
+	write_entire_file(system_disk.c_str(), disk);
 	}
 
 /*

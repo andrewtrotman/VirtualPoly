@@ -43,7 +43,7 @@ struct ContentView: View
 
 	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
-	let CPU_speed:Int64 = 10000000			// 1000000 is 1 MHz
+	let CPU_speed:Int64 = 20000000			// 1,000,000 is 1 MHz
 	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
 	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()

@@ -44,6 +44,7 @@ std::string computer::get_serialised_filename(void)
 */
 void computer::serialise(void)
 	{
+	hard_drive.save_disk();
 	auto file = std::ofstream(get_serialised_filename());
 	file << *this;
 	file.close();
