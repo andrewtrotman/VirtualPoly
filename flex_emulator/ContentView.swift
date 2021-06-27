@@ -43,9 +43,9 @@ struct ContentView: View
 
 	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
-	let CPU_speed:Int64 = 20000000			// 1,000,000 is 1 MHz
-	let iOS_timer_speed:Int64 = 100		// do CPU_speed/iOS_timer_speed cycles per timer interrupt
-	let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+	let CPU_speed:Int64 = 2000000			// 1,000,000 is 1 MHz
+	let iOS_timer_speed:Int64 = 25		// interrupts per second
+	let timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
 	let flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
 	@StateObject var machine = machine_changer()
@@ -60,7 +60,8 @@ struct ContentView: View
 
 	@StateObject var img_screen = image_changer()
 
-	@State var terminal_screen = [UInt8](repeating: 32, count: 40 * 24)
+	let terminal_width = 80
+	@State var terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 	@State var terminal_row = 0
 	@State var terminal_column = 0
 	@State var terminal_escape_mode = false
@@ -91,10 +92,7 @@ struct ContentView: View
 		terminal_column = 0
 		terminal_escape_sequence = []
 
-		for x in 0 ..< (40 * 24)
-			{
-			terminal_screen[x] = 32		// fill with spaces at the start
-			}
+		terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 		}
 
 	/*
@@ -134,6 +132,12 @@ struct ContentView: View
 								{
 								case Character("P").asciiValue:		// Pause key
 									paused = !paused
+									/*
+										Turn the cursor on and render the screen state as it is.
+									*/
+									flash_state = true
+									render_text_screen()
+									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 								case Character("K").asciiValue:		// Control key
 									control = !control
 									shift = false
@@ -199,9 +203,12 @@ struct ContentView: View
 				}
 			.onReceive(flash_timer)
 				{ _ in
-				flash_state = !flash_state
-				render_text_screen()
-				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+				if !paused
+					{
+					flash_state = !flash_state
+					render_text_screen()
+					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+					}
 				}
 			.onAppear
 				{
@@ -530,7 +537,7 @@ struct ContentView: View
 						let new_terminal_row = extract_integer(sequence: terminal_escape_sequence[1 ..< position_of_semicolon])
 						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
 						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
-						terminal_column = new_terminal_column <= 40 && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
+						terminal_column = new_terminal_column <= terminal_width && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
 						}
 //print("GotoYX(" + String(terminal_row) + "," + String(terminal_column) + ")")
 					terminal_escape_sequence.removeAll()
@@ -539,7 +546,7 @@ struct ContentView: View
 				case Character("J").asciiValue:			// Clear screen
 					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 J Erase all of the display
 						{
-						for x in 0 ..< 40 * 24
+						for x in 0 ..< terminal_width * 24
 							{
 							terminal_screen[x] = 32
 							}
@@ -553,9 +560,9 @@ struct ContentView: View
 //print("DeleteEOLN")
 					if terminal_escape_sequence == [91]			// ESC [ K erase to end of line (inclusive)
 						{
-						for pos in terminal_column ..< 40
+						for pos in terminal_column ..< terminal_width
 							{
-							terminal_screen[terminal_row * 40 + pos] = 32
+							terminal_screen[terminal_row * terminal_width + pos] = 32
 							}
 						}
 					terminal_escape_sequence.removeAll()
@@ -569,15 +576,15 @@ struct ContentView: View
 							{
 							for y in ((terminal_row + 1) ..< 24).reversed()
 								{
-								for x in 0 ..< 40
+								for x in 0 ..< terminal_width
 									{
-									terminal_screen[y * 40 + x] = terminal_screen[(y - 1) * 40 + x]
+									terminal_screen[y * terminal_width + x] = terminal_screen[(y - 1) * terminal_width + x]
 									}
 								}
 							/*
 								Blank the bottom row
 							*/
-							for byte in (23 * 40) ..< (24 * 40)
+							for byte in (23 * terminal_width) ..< (24 * terminal_width)
 								{
 								terminal_screen[byte] = 32
 								}
@@ -591,14 +598,14 @@ struct ContentView: View
 					if terminal_escape_sequence == [91]
 						{
 //						terminal_row = terminal_row == 0 ? 0 : terminal_row - 1
-						for x in (terminal_row * 40) ..< (23 * 40)
+						for x in (terminal_row * terminal_width) ..< (23 * terminal_width)
 							{
-							terminal_screen[x] = terminal_screen[x + 40]
+							terminal_screen[x] = terminal_screen[x + terminal_width]
 							}
 						/*
 							Blank the bottom row
 						*/
-						for byte in (23 * 40) ..< (24 * 40)
+						for byte in (23 * terminal_width) ..< (24 * terminal_width)
 							{
 							terminal_screen[byte] = 32
 							}
@@ -646,13 +653,13 @@ struct ContentView: View
 //		if raw_character == 0x1F
 			{
 			terminal_column = terminal_column > 0 ? terminal_column - 1 : 0
-			terminal_screen[terminal_row * 40 + terminal_column] = character
+			terminal_screen[terminal_row * terminal_width + terminal_column] = character
 			return;
 			}
 		/*
 			Check for scrolling
 		*/
-		if (terminal_column >= 40)
+		if (terminal_column >= terminal_width)
 			{
 			terminal_column = 0
 			terminal_row = terminal_row + 1
@@ -662,14 +669,14 @@ struct ContentView: View
 			/*
 				Scroll
 			*/
-			for byte in 40 ..< (40 * 24)
+			for byte in terminal_width ..< (terminal_width * 24)
 				{
-				terminal_screen[byte - 40] = terminal_screen[byte]
+				terminal_screen[byte - terminal_width] = terminal_screen[byte]
 				}
 			/*
 				Blank the bottom row
 			*/
-			for byte in (23 * 40) ..< (24 * 40)
+			for byte in (23 * terminal_width) ..< (24 * terminal_width)
 				{
 				terminal_screen[byte] = 32
 				}
@@ -681,7 +688,7 @@ struct ContentView: View
 
 		if raw_character != 0x0D && raw_character != 0x0A && raw_character != 0x7F
 			{
-			terminal_screen[terminal_row * 40 + terminal_column] = character
+			terminal_screen[terminal_row * terminal_width + terminal_column] = character
 			terminal_column = terminal_column + 1
 			}
 		}
@@ -692,24 +699,39 @@ struct ContentView: View
 	*/
 	func render_text_screen()
 		{
-		for y in 0 ..< 24
+		if (terminal_width == 40)
 			{
-			for x in 0 ..< 40
+			for y in 0 ..< 24
 				{
-				drawContentIntoBitmap(screen_x: x, screen_y: y, character: terminal_screen[y * 40 + x])
+				for x in 0 ..< terminal_width
+					{
+					draw_screen_40(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
+					}
+				}
+			}
+		else
+			{
+			for y in 0 ..< 24
+				{
+				for x in 0 ..< terminal_width
+					{
+					draw_screen_80(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
+					}
 				}
 			}
 		}
 
 	/*
-		DRAWCONTENTINTOBITMAP()
-		-----------------------
+		DRAW_SCREEN_40()
+		----------------
+		40-column text screen renderer
+
 		red = dataType[offset]
 		green   = dataType[offset + 1]
 		blue = dataType[offset + 2]
 		alpha  = dataType[offset + 3]
 	*/
-	func drawContentIntoBitmap(screen_x: Int, screen_y: Int, character: UInt8)
+	func draw_screen_40(screen_x: Int, screen_y: Int, character: UInt8)
 		{
 		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
 		var on: UInt32 = 0x00FFFFFF
@@ -747,8 +769,53 @@ struct ContentView: View
 				}
 			}
 		}
-	}
 
+	/*
+		DRAW_SCREEN_80()
+		----------------
+		80-column text screen renderer
+		red = dataType[offset]
+		green   = dataType[offset + 1]
+		blue = dataType[offset + 2]
+		alpha  = dataType[offset + 3]
+	*/
+	func draw_screen_80(screen_x: Int, screen_y: Int, character: UInt8)
+		{
+		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
+		var on: UInt32 = 0x00FFFFFF
+		var off: UInt32 = 0x00000000
+		let glyph_base = 0
+		let from = (Int(character) - 32 + glyph_base) * 10
+
+		if flash_state && screen_y == terminal_row
+			{
+			if screen_x == terminal_column || (screen_x == terminal_width - 1 && terminal_column >= terminal_width - 1)
+				{
+				swap(&on, &off);
+				}
+			}
+
+		for y in 0 ..< 10
+			{
+			let pos = get_saa5050_font()[from + y]
+			var into = (screen_x * 6 + screen_y * 10 * 480) + (y * 480)
+
+			for x in 2 ..< 8
+				{
+				if (pos & (0x80 >> x)) != 0
+					{
+					pixel_map[into] = on
+					into = into + 1
+					}
+				else
+					{
+					pixel_map[into] = off
+					into = into + 1
+					}
+				}
+			}
+		}
+	}
 /*
 	STRUCT CONTENTVIEW_PREVIEWS
 	---------------------------
