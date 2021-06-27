@@ -60,7 +60,7 @@ struct ContentView: View
 
 	@StateObject var img_screen = image_changer()
 
-	let terminal_width = 80
+	@State var terminal_width = 40
 	@State var terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 	@State var terminal_row = 0
 	@State var terminal_column = 0
@@ -91,6 +91,8 @@ struct ContentView: View
 		terminal_row = 0
 		terminal_column = 0
 		terminal_escape_sequence = []
+
+		terminal_width = 40
 
 		terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 		}
@@ -146,6 +148,10 @@ struct ContentView: View
 								case Character("S").asciiValue:		// Shift key
 									shift = true
 									control = false
+								case Character("F").asciiValue:		// 40 / 80 Column switch
+									terminal_width = terminal_width == 40 ? 80 : 40
+									render_text_screen()
+									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 								case Character("R").asciiValue:		// Reset button
 									reset();
 									if (machine.pointer != nil)
@@ -216,7 +222,7 @@ struct ContentView: View
 					{
 					machine.pointer = machine_construct()
 					machine_deserialise(machine.pointer)
-					deserialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
+					deserialise(path: get_serialised_filename())
 					}
 				}
 			.onChange(of: scene_phase)
@@ -225,10 +231,10 @@ struct ContentView: View
 					{
 					case .active:
 						machine_deserialise(machine.pointer)
-						deserialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
+						deserialise(path: get_serialised_filename())
 					case .inactive, .background:
 						machine_serialise(machine.pointer)
-						serialise(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state"))
+						serialise(path: get_serialised_filename())
 					@unknown default:
 						(
 						/* Nothing */
@@ -237,6 +243,15 @@ struct ContentView: View
 				}
 		}
 	}
+
+	/*
+		GET_SERIALISED_FILENAME()
+		-------------------------
+	*/
+	func get_serialised_filename() -> URL
+		{
+		return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state")
+		}
 
 	/*
 		SERIALISE()
@@ -338,6 +353,7 @@ struct ContentView: View
 			P = Pause
 			E = Enter
 			D = ESC
+			F = 40/80 column mode
 
 			A = Char Ins
 			B = Char Del
@@ -352,7 +368,7 @@ struct ContentView: View
 	*/
 	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
 		{
-		let zero_row =   "ABDXYZ GHIJ R   "
+		let zero_row =   "ABDXYZ GHIJFR   "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
 		let third_row =  "Casdfghjkl;@K   "
