@@ -30,8 +30,7 @@ BUFFER	EQU	$C100
 	;
 	PRAGMA cescapes
 bios_startup_message
-	FCN "Pinnated 6809\r\n"
-
+	FCN "Pinnated 6809 for iOS\r\nBy Andrew Trotman\r\nIncludes Usim by R.P.Bellis\r\n"
 ;
 ;	MAIN
 ;	----

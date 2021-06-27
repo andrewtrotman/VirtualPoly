@@ -60,7 +60,8 @@ struct ContentView: View
 
 	@StateObject var img_screen = image_changer()
 
-	@State var terminal_width = 40
+	@State var terminal_rendering_width = 40
+	@State var terminal_width = 80
 	@State var terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 	@State var terminal_row = 0
 	@State var terminal_column = 0
@@ -92,7 +93,7 @@ struct ContentView: View
 		terminal_column = 0
 		terminal_escape_sequence = []
 
-		terminal_width = 40
+		terminal_rendering_width = 40
 
 		terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 		}
@@ -149,7 +150,7 @@ struct ContentView: View
 									shift = true
 									control = false
 								case Character("F").asciiValue:		// 40 / 80 Column switch
-									terminal_width = terminal_width == 40 ? 80 : 40
+									terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
 									render_text_screen()
 									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 								case Character("R").asciiValue:		// Reset button
@@ -553,7 +554,7 @@ struct ContentView: View
 						let new_terminal_row = extract_integer(sequence: terminal_escape_sequence[1 ..< position_of_semicolon])
 						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
 						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
-						terminal_column = new_terminal_column <= terminal_width && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
+						terminal_column = new_terminal_column <= terminal_rendering_width && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
 						}
 //print("GotoYX(" + String(terminal_row) + "," + String(terminal_column) + ")")
 					terminal_escape_sequence.removeAll()
@@ -675,7 +676,7 @@ struct ContentView: View
 		/*
 			Check for scrolling
 		*/
-		if (terminal_column >= terminal_width)
+		if (terminal_column >= terminal_rendering_width)
 			{
 			terminal_column = 0
 			terminal_row = terminal_row + 1
@@ -715,11 +716,11 @@ struct ContentView: View
 	*/
 	func render_text_screen()
 		{
-		if (terminal_width == 40)
+		if (terminal_rendering_width == 40)
 			{
 			for y in 0 ..< 24
 				{
-				for x in 0 ..< terminal_width
+				for x in 0 ..< terminal_rendering_width
 					{
 					draw_screen_40(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
 					}
@@ -729,7 +730,7 @@ struct ContentView: View
 			{
 			for y in 0 ..< 24
 				{
-				for x in 0 ..< terminal_width
+				for x in 0 ..< terminal_rendering_width
 					{
 					draw_screen_80(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
 					}
@@ -805,7 +806,7 @@ struct ContentView: View
 
 		if flash_state && screen_y == terminal_row
 			{
-			if screen_x == terminal_column || (screen_x == terminal_width - 1 && terminal_column >= terminal_width - 1)
+			if screen_x == terminal_column || (screen_x == terminal_rendering_width - 1 && terminal_column >= terminal_rendering_width - 1)
 				{
 				swap(&on, &off);
 				}

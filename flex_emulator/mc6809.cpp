@@ -3,7 +3,7 @@
 	----------
 	Based on original (c) 1994 R.P.Bellis
 	various bug fixes by (Dec 2003) BDA
-	Substantial re-factoring (c) 2010 Andrew Trotman
+	Re-factoring (c) 2010 Andrew Trotman
 	Ported to Mac 2021 Andrew Trotman
 */
 #include <stdlib.h>
@@ -994,7 +994,7 @@ void mc6809::do_predecrement(byte post)
 	------------------------------------------------------------------------------------------------------------------------
 	OPCODES, originally in mc6809in.c
 	Updated and corrected by BDA and Soren Roug - December 2003
-	Substantial re-factoring (c) 2010 Andrew Trotman
+	Re-factoring (c) 2010 Andrew Trotman
 	------------------------------------------------------------------------------------------------------------------------
 */
 

@@ -2,7 +2,7 @@
 	MC6809.H
 	--------
 	Based on original (c) 1993 R.P.Bellis
-	Substantial re-factoring (c) 2010 Andrew Trotman
+	Re-factoring (c) 2010 Andrew Trotman
 	Ported to Mac 2021 Andrew Trotman
 */
 #pragma once
