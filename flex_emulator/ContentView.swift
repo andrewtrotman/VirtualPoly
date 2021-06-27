@@ -165,6 +165,11 @@ struct ContentView: View
 										{
 										machine_queue_key_press(machine.pointer, CChar(27))
 										}
+								case Character("L").asciiValue:		// TAB key
+									if (machine.pointer != nil)
+										{
+										machine_queue_key_press(machine.pointer, CChar(9))
+										}
 								default:
 									if (machine.pointer != nil)
 										{
@@ -355,6 +360,7 @@ struct ContentView: View
 			E = Enter
 			D = ESC
 			F = 40/80 column mode
+			L = TAB
 
 			A = Char Ins
 			B = Char Del
@@ -369,7 +375,7 @@ struct ContentView: View
 	*/
 	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
 		{
-		let zero_row =   "ABDXYZ GHIJFR   "
+		let zero_row =   "ABDXYZLGHIJFR   "
 		let first_row =  "1234567890:-P   "
 		let second_row = "qwertyuiop^EE   "
 		let third_row =  "Casdfghjkl;@K   "
