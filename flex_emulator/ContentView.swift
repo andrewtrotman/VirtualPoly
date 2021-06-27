@@ -99,6 +99,53 @@ struct ContentView: View
 		}
 
 	/*
+		FRAME_SIZE()
+		------------
+	*/
+	func frame_size() -> CGFloat
+		{
+		return 3
+		}
+
+	/*
+		KEYBOARD_WIDTH()
+		----------------
+	*/
+	func keyboard_width(size: GeometryProxy) -> CGFloat
+		{
+		/*
+		let image_size = img_keyboard.size
+
+		let h_ratio = size.size.width / image_size.width
+		let v_ratio = size.size.height / image_size.height
+
+		let ratio = h_ratio > v_ratio ? v_ratio : h_ratio
+
+		return image_size.width * ratio
+		*/
+		return size.size.width
+		}
+
+	/*
+		KEYBOARD_HEIGHT()
+		-----------------
+	*/
+	func keyboard_height(size: GeometryProxy) -> CGFloat
+		{
+		/*
+		let image_size = img_keyboard.size
+
+		let h_ratio = size.size.width / image_size.width
+		let v_ratio = size.size.height / image_size.height
+
+		let ratio = h_ratio > v_ratio ? v_ratio : h_ratio
+
+		return image_size.height * ratio
+		*/
+		return size.size.height
+		}
+
+	/*
 		BODY VIEW
 		---------
 	*/
@@ -106,12 +153,20 @@ struct ContentView: View
 		{
 		VStack
 			{
-			Image(uiImage: img_screen.image).resizable().frame(width:UIScreen.main.bounds.size.width - 5, height:UIScreen.main.bounds.size.width - 5).onAppear(perform:
-				{
-				img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
-				render_text_screen()
-				img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-				})
+			Spacer().frame(maxHeight: frame_size()).layoutPriority(1)
+
+			Image(uiImage: img_screen.image)
+				.resizable()
+				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
+				.onAppear(perform:
+					{
+					img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
+					render_text_screen()
+					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+					})
+
+			Spacer().frame(idealHeight: frame_size()).layoutPriority(-1)
+
 			Group
 				{
 				let keyboard_image_to_use =
@@ -125,129 +180,137 @@ struct ContentView: View
 
 				GeometryReader
 					{ (geometry) in
-					Image(uiImage: keyboard_image_to_use).resizable().simultaneousGesture(
-						DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
-							{
-							let unshift = shift
-							let uncontrol = control
-							let press = compute_key_press(size: geometry, location: $0.location)
-							switch (press)
+//					HStack{
+					Image(uiImage: keyboard_image_to_use)
+						.resizable()
+						.frame(width: keyboard_width(size: geometry), height: keyboard_height(size: geometry), alignment: .bottom)
+						.simultaneousGesture(
+							DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
 								{
-								case Character("P").asciiValue:		// Pause key
-									paused = !paused
-									/*
-										Turn the cursor on and render the screen state as it is.
-									*/
-									flash_state = true
-									render_text_screen()
-									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-								case Character("K").asciiValue:		// Control key
-									control = !control
-									shift = false
-								case Character("C").asciiValue:		// Caps lock key
-									caps = !caps
-								case Character("S").asciiValue:		// Shift key
-									shift = true
-									control = false
-								case Character("F").asciiValue:		// 40 / 80 Column switch
-									terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
-									render_text_screen()
-									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-								case Character("R").asciiValue:		// Reset button
-									reset();
-									if (machine.pointer != nil)
-										{
-										machine_reset(machine.pointer);
-										}
-									break
-								case Character("D").asciiValue:		// ESC key
-									if (machine.pointer != nil)
-										{
-										machine_queue_key_press(machine.pointer, CChar(27))
-										}
-								case Character("L").asciiValue:		// TAB key
-									if (machine.pointer != nil)
-										{
-										machine_queue_key_press(machine.pointer, CChar(9))
-										}
-								default:
-									if (machine.pointer != nil)
-										{
-										let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
-										machine_queue_key_press(machine.pointer, CChar(ascii))
-										}
+								let unshift = shift
+								let uncontrol = control
+								let press = compute_key_press(size: geometry, location: $0.location)
+								switch (press)
+									{
+									case Character("P").asciiValue:		// Pause key
+										paused = !paused
+										/*
+											Turn the cursor on and render the screen state as it is.
+										*/
+										flash_state = true
+										render_text_screen()
+										img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+									case Character("K").asciiValue:		// Control key
+										control = !control
+										shift = false
+									case Character("C").asciiValue:		// Caps lock key
+										caps = !caps
+									case Character("S").asciiValue:		// Shift key
+										shift = true
+										control = false
+									case Character("F").asciiValue:		// 40 / 80 Column switch
+										terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
+										render_text_screen()
+										img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+									case Character("R").asciiValue:		// Reset button
+										reset();
+										if (machine.pointer != nil)
+											{
+											machine_reset(machine.pointer);
+											}
+										break
+									case Character("D").asciiValue:		// ESC key
+										if (machine.pointer != nil)
+											{
+											machine_queue_key_press(machine.pointer, CChar(27))
+											}
+									case Character("L").asciiValue:		// TAB key
+										if (machine.pointer != nil)
+											{
+											machine_queue_key_press(machine.pointer, CChar(9))
+											}
+									default:
+										if (machine.pointer != nil)
+											{
+											let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
+											machine_queue_key_press(machine.pointer, CChar(ascii))
+											}
+									}
+								shift = unshift ? false : shift
+								control = uncontrol ? false : control
 								}
-							shift = unshift ? false : shift
-							control = uncontrol ? false : control
-							}
 						)
+//					}.frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
 					}
-				}.frame(maxHeight: .infinity, alignment: .bottom)
+				}
 
-			Spacer().frame(maxHeight: 2).onReceive(timer)
-				{ _ in
-				if (machine.pointer != nil)
-					{
-					if (!paused)
+			Spacer()
+				.frame(maxHeight: frame_size())
+				.onReceive(timer)
+					{ _ in
+					if (machine.pointer != nil)
 						{
-						let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
-						while (machine_cycles_spent(machine.pointer) < end_cycle)
+						if (!paused)
 							{
-							machine_step(machine.pointer);
+							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
+							while (machine_cycles_spent(machine.pointer) < end_cycle)
+								{
+								machine_step(machine.pointer);
+								}
+							}
+
+						var screen_did_change = false
+						var response = machine_dequeue_serial_output(machine.pointer)
+						while (response <= 0xFF)
+							{
+							print_character(raw_character: UInt8(response & 0xFF))
+							screen_did_change = true
+							response = machine_dequeue_serial_output(machine.pointer)
+							}
+
+						if screen_did_change
+							{
+							render_text_screen()
+							img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 							}
 						}
-
-					var screen_did_change = false
-					var response = machine_dequeue_serial_output(machine.pointer)
-					while (response <= 0xFF)
+					}
+				.onReceive(flash_timer)
+					{ _ in
+					if !paused
 						{
-						print_character(raw_character: UInt8(response & 0xFF))
-						screen_did_change = true
-						response = machine_dequeue_serial_output(machine.pointer)
-						}
-
-					if screen_did_change
-						{
+						flash_state = !flash_state
 						render_text_screen()
 						img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 						}
 					}
-				}
-			.onReceive(flash_timer)
-				{ _ in
-				if !paused
+				.onAppear
 					{
-					flash_state = !flash_state
-					render_text_screen()
-					img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-					}
-				}
-			.onAppear
-				{
-				if (machine.pointer == nil)
-					{
-					machine.pointer = machine_construct()
-					machine_deserialise(machine.pointer)
-					deserialise(path: get_serialised_filename())
-					}
-				}
-			.onChange(of: scene_phase)
-				{ new_phase in
-				switch new_phase
-					{
-					case .active:
+					if (machine.pointer == nil)
+						{
+						machine.pointer = machine_construct()
 						machine_deserialise(machine.pointer)
 						deserialise(path: get_serialised_filename())
-					case .inactive, .background:
-						machine_serialise(machine.pointer)
-						serialise(path: get_serialised_filename())
-					@unknown default:
-						(
-						/* Nothing */
-						)
+						}
 					}
-				}
+				.onChange(of: scene_phase)
+					{ new_phase in
+					switch new_phase
+						{
+						case .active:
+							machine_deserialise(machine.pointer)
+							deserialise(path: get_serialised_filename())
+						case .inactive, .background:
+							machine_serialise(machine.pointer)
+							serialise(path: get_serialised_filename())
+						@unknown default:
+							(
+							/* Nothing */
+							)
+						}
+					}
 		}
+	.background(Color.white)
 	}
 
 	/*
