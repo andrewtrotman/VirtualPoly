@@ -180,7 +180,6 @@ struct ContentView: View
 
 				GeometryReader
 					{ (geometry) in
-//					HStack{
 					Image(uiImage: keyboard_image_to_use)
 						.resizable()
 						.frame(width: keyboard_width(size: geometry), height: keyboard_height(size: geometry), alignment: .bottom)
@@ -240,7 +239,6 @@ struct ContentView: View
 								control = uncontrol ? false : control
 								}
 						)
-//					}.frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
 					}
 				}
 
