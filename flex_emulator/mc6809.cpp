@@ -705,8 +705,8 @@ void mc6809::execute(void)
 			long_branch_happened = lbvs();
 			break;
 		default:	 		// BDA addded (make everything else a NOP to distinquish between 6309)
+			invalid("instruction");
 			nop();
-	//		invalid("instruction");
 			break;
 
 		}

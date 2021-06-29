@@ -68,8 +68,8 @@ word USim::fetch_word(void)
 */
 void USim::invalid(const char *msg)
 	{
-	fprintf(stderr, "INVALID %s : pc = [%04x], ir = [%04x]\n", msg ? msg : "", pc, ir);
-	halt();
+	fprintf(stderr, "Invalid %s : pc = [%04x], ir = [%04x]\n", msg ? msg : "", pc, ir);
+//	halt();
 	}
 
 /*
