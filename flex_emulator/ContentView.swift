@@ -6,6 +6,9 @@
 import SwiftUI
 import Foundation
 
+let KEYBOARD_POLY = "Poly"
+let KEYBOARD_ASCII = "ASCII"
+
 class image_changer: ObservableObject
 	{
 	var counter = 0
@@ -51,12 +54,23 @@ struct ContentView: View
 	@StateObject var machine = machine_changer()
 	@State var paused = false
 
-	let img_keyboard = UIImage(named: "PolyKeyboard")!
-	let img_keyboard_shift = UIImage(named: "PolyKeyboardShift")!
-	let img_keyboard_control = UIImage(named: "PolyKeyboardControl")!
-	let img_keyboard_caps = UIImage(named: "PolyKeyboardCaps")!
-	let img_keyboard_caps_shift = UIImage(named: "PolyKeyboardCapsShift")!
-	let img_keyboard_caps_control = UIImage(named: "PolyKeyboardCapsControl")!
+	let poly_img_keyboard = UIImage(named: "PolyKeyboard")!
+	let poly_img_keyboard_shift = UIImage(named: "PolyKeyboardShift")!
+	let poly_img_keyboard_control = UIImage(named: "PolyKeyboardControl")!
+	let poly_img_keyboard_caps = UIImage(named: "PolyKeyboardCaps")!
+	let poly_img_keyboard_caps_shift = UIImage(named: "PolyKeyboardCapsShift")!
+	let poly_img_keyboard_caps_control = UIImage(named: "PolyKeyboardCapsControl")!
+
+	let ascii_img_keyboard = UIImage(named: "ASCIIKeyboard")!
+	let ascii_img_keyboard_shift = UIImage(named: "ASCIIKeyboardShift")!
+	let ascii_img_keyboard_control = UIImage(named: "ASCIIKeyboardControl")!
+	let ascii_img_keyboard_caps = UIImage(named: "ASCIIKeyboardCaps")!
+	let ascii_img_keyboard_caps_shift = UIImage(named: "ASCIIKeyboardCapsShift")!
+	let ascii_img_keyboard_caps_control = UIImage(named: "ASCIIKeyboardCapsControl")!
+
+	let keyboard_mode = KEYBOARD_ASCII
+
+
 
 	@StateObject var img_screen = image_changer()
 
@@ -170,13 +184,22 @@ struct ContentView: View
 			Group
 				{
 				let keyboard_image_to_use =
-					caps ?
-						shift ? img_keyboard_caps_shift :
-						control ? img_keyboard_caps_control :
-						img_keyboard_caps :
-					shift ? img_keyboard_shift :
-					control ?  img_keyboard_control :
-					img_keyboard
+					keyboard_mode == KEYBOARD_POLY ?
+						caps ?
+							shift ? poly_img_keyboard_caps_shift :
+							control ? poly_img_keyboard_caps_control :
+							poly_img_keyboard_caps :
+						shift ? poly_img_keyboard_shift :
+						control ?  poly_img_keyboard_control :
+						poly_img_keyboard
+					:
+						caps ?
+							shift ? ascii_img_keyboard_caps_shift :
+							control ? ascii_img_keyboard_caps_control :
+							ascii_img_keyboard_caps :
+						shift ? ascii_img_keyboard_shift :
+						control ?  ascii_img_keyboard_control :
+						ascii_img_keyboard
 
 				GeometryReader
 					{ (geometry) in
@@ -423,24 +446,37 @@ struct ContentView: View
 			F = 40/80 column mode
 			L = TAB
 
-			A = Char Ins
-			B = Char Del
-			X = Calc Help
-			Y = Exit Back
-			Z = Repeat Next
-			G = Left
-			H = Up
-			I = Down
-			J = Right
+			A = Char Ins		([ {)
+			B = Char Del		(^ ~)
+			X = Calc Help		(DC2 GS)
+			Y = Exit Back		(\ |)
+			Z = Repeat Next	(] })
+			G = Left				(US)
+			H = Up				(BS)
+			I = Down				(VT)
+			J = Right			(DC1)
 			R = Reset (not on keyboard)
 	*/
 	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
 		{
-		let zero_row =   "ABDXYZLGHIJFR   "
-		let first_row =  "1234567890:-P   "
-		let second_row = "qwertyuiop^EE   "
-		let third_row =  "Casdfghjkl;@K   "
-		let fourth_row = "Szxcvbnm,./SS   "
+		let poly_zero_row =   "ABDXYZLGHIJFR   "
+		let poly_first_row =  "1234567890:-P   "
+		let poly_second_row = "qwertyuiop^EE   "
+		let poly_third_row =  "Casdfghjkl;@K   "
+		let poly_fourth_row = "Szxcvbnm,./SS   "
+
+		let ascii_zero_row =   "DLLLAZ\\_ H FR  "
+		let ascii_first_row =  "1234567890:-P   "
+		let ascii_second_row = "qwertyuiop^EE   "
+		let ascii_third_row =  "Casdfghjkl;@K   "
+		let ascii_fourth_row = "Szxcvbnm,./SS   "
+
+		let zero_row = keyboard_mode == KEYBOARD_POLY ? poly_zero_row : ascii_zero_row
+		let first_row = keyboard_mode == KEYBOARD_POLY ? poly_first_row : ascii_first_row
+		let second_row = keyboard_mode == KEYBOARD_POLY ? poly_second_row : ascii_second_row
+		let third_row = keyboard_mode == KEYBOARD_POLY ? poly_third_row : ascii_third_row
+		let fourth_row = keyboard_mode == KEYBOARD_POLY ? poly_fourth_row : ascii_fourth_row
+
 		let key_width = size.size.width / 13.0
 		let key_height = size.size.height / 6.0
 
@@ -533,8 +569,15 @@ struct ContentView: View
 			/*
 				Shift (numbers become symbols)
 			*/
-			let lower = "1234567890:-^;@,./"
-			let upper = "!\"`$%&'()0*=|+#<>?"
+			let poly_lower = "1234567890:-^;@,./"
+			let poly_upper = "!\"`$%&'()0*=|+#<>?"
+
+			let ascii_lower = "1234567890:-^;@,./\\_"
+			let ascii_upper = "!\"#$%&'()0*=|+~<>?\\`"
+
+
+			let lower = keyboard_mode == KEYBOARD_POLY ? poly_lower : ascii_lower
+			let upper = keyboard_mode == KEYBOARD_POLY ? poly_upper : ascii_upper
 
 			if key >= Character("a").asciiValue! && key <= Character("z").asciiValue!
 				{
@@ -548,7 +591,7 @@ struct ContentView: View
 		else if control
 			{
 			/*
-				Only Control-A to Control-Z make sense
+				Only Control-A to Control-Z (plus a few others) make sense
 			*/
 			return key >= Character("a").asciiValue! && key <= Character("z").asciiValue! ? key - 96 :
 				key == 64 ? 0  :			// NULL
@@ -610,6 +653,8 @@ struct ContentView: View
 						{
 						terminal_row = 0
 						terminal_column = 0
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false;
 						}
 					else if terminal_escape_sequence[0] == 91
 						{
@@ -622,10 +667,10 @@ struct ContentView: View
 						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
 						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
 						terminal_column = new_terminal_column <= terminal_rendering_width && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false;
 						}
 //print("GotoYX(" + String(terminal_row) + "," + String(terminal_column) + ")")
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false;
 					break;
 				case Character("J").asciiValue:			// Clear screen
 					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 J Erase all of the display
@@ -634,11 +679,11 @@ struct ContentView: View
 							{
 							terminal_screen[x] = 32
 							}
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false;
+						terminal_row = 0
+						terminal_column = 0
 						}
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false;
-					terminal_row = 0
-					terminal_column = 0
 					break;
 				case Character("K").asciiValue:
 //print("DeleteEOLN")
@@ -648,9 +693,9 @@ struct ContentView: View
 							{
 							terminal_screen[terminal_row * terminal_width + pos] = 32
 							}
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false;
 						}
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false;
 					break;
 				case Character("L").asciiValue:					// ESC [ L insert line below
 //print("InsertLineBelow")
@@ -673,9 +718,9 @@ struct ContentView: View
 								terminal_screen[byte] = 32
 								}
 							}
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false;
 						}
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false;
 					break;
 				case Character("M").asciiValue:					// ESC [ M delete current line
 //print("DeleteLineAt")
@@ -693,9 +738,9 @@ struct ContentView: View
 							{
 							terminal_screen[byte] = 32
 							}
+						terminal_escape_sequence.removeAll()
+						terminal_escape_mode = false
 						}
-					terminal_escape_sequence.removeAll()
-					terminal_escape_mode = false
 					break
 				default:
 					terminal_escape_sequence.append(raw_character)
@@ -717,13 +762,14 @@ struct ContentView: View
 			{
 			return
 			}
+
 		if raw_character < 32 || raw_character >= 0x7F
 			{
 			character = 32;
 			}
 
 		/*
-			CR (0x0D) is the new line character
+			LF (0x0A) is the new line character
 		*/
 		if raw_character == 0x0A
 			{
@@ -731,10 +777,17 @@ struct ContentView: View
 			terminal_column = 0;
 			}
 		/*
+			CR (0x0D) is the new line character
+		*/
+		if raw_character == 0x0D
+			{
+			terminal_column = 0;
+			return;
+			}
+		/*
 			BS (0x08) is the backspace character
 		*/
 		if raw_character == 0x08
-//		if raw_character == 0x1F
 			{
 			terminal_column = terminal_column > 0 ? terminal_column - 1 : 0
 			terminal_screen[terminal_row * terminal_width + terminal_column] = character
