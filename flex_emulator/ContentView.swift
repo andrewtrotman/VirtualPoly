@@ -70,8 +70,6 @@ struct ContentView: View
 
 	let keyboard_mode = KEYBOARD_ASCII
 
-
-
 	@StateObject var img_screen = image_changer()
 
 	@State var terminal_rendering_width = 40
@@ -125,10 +123,9 @@ struct ContentView: View
 		KEYBOARD_WIDTH()
 		----------------
 	*/
-	func keyboard_width(size: GeometryProxy) -> CGFloat
+	func compute_keyboard_width(size: GeometryProxy) -> CGFloat
 		{
-		/*
-		let image_size = img_keyboard.size
+		let image_size = poly_img_keyboard.size
 
 		let h_ratio = size.size.width / image_size.width
 		let v_ratio = size.size.height / image_size.height
@@ -136,18 +133,15 @@ struct ContentView: View
 		let ratio = h_ratio > v_ratio ? v_ratio : h_ratio
 
 		return image_size.width * ratio
-		*/
-		return size.size.width
 		}
 
 	/*
 		KEYBOARD_HEIGHT()
 		-----------------
 	*/
-	func keyboard_height(size: GeometryProxy) -> CGFloat
+	func compute_keyboard_height(size: GeometryProxy)  ->	CGFloat
 		{
-		/*
-		let image_size = img_keyboard.size
+		let image_size = poly_img_keyboard.size
 
 		let h_ratio = size.size.width / image_size.width
 		let v_ratio = size.size.height / image_size.height
@@ -155,8 +149,6 @@ struct ContentView: View
 		let ratio = h_ratio > v_ratio ? v_ratio : h_ratio
 
 		return image_size.height * ratio
-		*/
-		return size.size.height
 		}
 
 	/*
@@ -203,65 +195,69 @@ struct ContentView: View
 
 				GeometryReader
 					{ (geometry) in
-					Image(uiImage: keyboard_image_to_use)
-						.resizable()
-						.frame(width: keyboard_width(size: geometry), height: keyboard_height(size: geometry), alignment: .bottom)
-						.simultaneousGesture(
-							DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
-								{
-								let unshift = shift
-								let uncontrol = control
-								let press = compute_key_press(size: geometry, location: $0.location)
-								switch (press)
+					ZStack
+						{
+						Image(uiImage: keyboard_image_to_use)
+							.resizable()
+							.frame(width: compute_keyboard_width(size: geometry), height: compute_keyboard_height(size: geometry), alignment: .bottom)
+							.simultaneousGesture(
+								DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
 									{
-									case Character("P").asciiValue:		// Pause key
-										paused = !paused
-										/*
-											Turn the cursor on and render the screen state as it is.
-										*/
-										flash_state = true
-										render_text_screen()
-										img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-									case Character("K").asciiValue:		// Control key
-										control = !control
-										shift = false
-									case Character("C").asciiValue:		// Caps lock key
-										caps = !caps
-									case Character("S").asciiValue:		// Shift key
-										shift = true
-										control = false
-									case Character("F").asciiValue:		// 40 / 80 Column switch
-										terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
-										render_text_screen()
-										img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
-									case Character("R").asciiValue:		// Reset button
-										reset();
-										if (machine.pointer != nil)
-											{
-											machine_reset(machine.pointer);
-											}
-										break
-									case Character("D").asciiValue:		// ESC key
-										if (machine.pointer != nil)
-											{
-											machine_queue_key_press(machine.pointer, CChar(27))
-											}
-									case Character("L").asciiValue:		// TAB key
-										if (machine.pointer != nil)
-											{
-											machine_queue_key_press(machine.pointer, CChar(9))
-											}
-									default:
-										if (machine.pointer != nil)
-											{
-											let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
-											machine_queue_key_press(machine.pointer, CChar(ascii))
-											}
+									let unshift = shift
+									let uncontrol = control
+									let press = compute_key_press(width: compute_keyboard_width(size: geometry), height: compute_keyboard_height(size: geometry), location: $0.location)
+									switch (press)
+										{
+										case Character("P").asciiValue:		// Pause key
+											paused = !paused
+											/*
+												Turn the cursor on and render the screen state as it is.
+											*/
+											flash_state = true
+											render_text_screen()
+											img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+										case Character("K").asciiValue:		// Control key
+											control = !control
+											shift = false
+										case Character("C").asciiValue:		// Caps lock key
+											caps = !caps
+										case Character("S").asciiValue:		// Shift key
+											shift = true
+											control = false
+										case Character("F").asciiValue:		// 40 / 80 Column switch
+											terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
+											render_text_screen()
+											img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+										case Character("R").asciiValue:		// Reset button
+											reset();
+											if (machine.pointer != nil)
+												{
+												machine_reset(machine.pointer);
+												}
+											break
+										case Character("D").asciiValue:		// ESC key
+											if (machine.pointer != nil)
+												{
+												machine_queue_key_press(machine.pointer, CChar(27))
+												}
+										case Character("L").asciiValue:		// TAB key
+											if (machine.pointer != nil)
+												{
+												machine_queue_key_press(machine.pointer, CChar(9))
+												}
+										default:
+											if (machine.pointer != nil)
+												{
+												let ascii = key_translate(key: press, caps_lock: caps, shift: shift, control: control)
+												machine_queue_key_press(machine.pointer, CChar(ascii))
+												}
+										}
+									shift = unshift ? false : shift
+									control = uncontrol ? false : control
 									}
-								shift = unshift ? false : shift
-								control = uncontrol ? false : control
-								}
-						)
+							)
+						}
+    					.frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
 					}
 				}
 
@@ -457,7 +453,7 @@ struct ContentView: View
 			J = Right			(DC1)
 			R = Reset (not on keyboard)
 	*/
-	func compute_key_press(size: GeometryProxy, location: CGPoint) -> UInt8
+	func compute_key_press(width: CGFloat, height:CGFloat, location: CGPoint) -> UInt8
 		{
 		let poly_zero_row =   "ABDXYZLGHIJFR   "
 		let poly_first_row =  "1234567890:-P   "
@@ -477,8 +473,8 @@ struct ContentView: View
 		let third_row = keyboard_mode == KEYBOARD_POLY ? poly_third_row : ascii_third_row
 		let fourth_row = keyboard_mode == KEYBOARD_POLY ? poly_fourth_row : ascii_fourth_row
 
-		let key_width = size.size.width / 13.0
-		let key_height = size.size.height / 6.0
+		let key_width = width / 13.0
+		let key_height = height / 6.0
 
 		let row_number = Int(location.y / key_height)
 		switch row_number
