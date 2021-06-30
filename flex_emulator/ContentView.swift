@@ -195,8 +195,9 @@ struct ContentView: View
 
 				GeometryReader
 					{ (geometry) in
-					ZStack
+					VStack
 						{
+						Divider().frame(minHeight: frame_size(), alignment:.bottom).background(Color.black)
 						Image(uiImage: keyboard_image_to_use)
 							.resizable()
 							.frame(width: compute_keyboard_width(size: geometry), height: compute_keyboard_height(size: geometry), alignment: .bottom)
