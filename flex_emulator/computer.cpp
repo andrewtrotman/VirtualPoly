@@ -44,7 +44,8 @@ std::string computer::get_serialised_filename(void)
 */
 void computer::serialise(void)
 	{
-	hard_drive.save_disk();
+	hard_drive.save_disk("flex.dsk", hard_drive.disk_0);
+	hard_drive.save_disk("user.dsk", hard_drive.disk_1);
 	auto file = std::ofstream(get_serialised_filename());
 	file << *this;
 	file.close();

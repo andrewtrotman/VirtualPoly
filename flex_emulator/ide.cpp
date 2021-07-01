@@ -22,8 +22,6 @@
 
 #include "ide.h"
 
-#define SECTOR_SIZE 256
-
 /*
 	READ_ENTIRE_FILE()
 	------------------
@@ -96,34 +94,39 @@ ide::ide()
 	end = identify_buffer + sizeof(identify_buffer);
 
 	/*
-		By default we use the disk in the app's Documents directors, but if that doesn't exist then copy it from the
+		By default we use the disk in the app's Documents folder, but if that doesn't exist then copy it from the
 		disk in the app's bundle.  This way the shipped disk is never modified, but the user's copy of that disk is.
 	*/
-	auto system_disk = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents/flex.dsk");
+	std::string filename = move_disks_to_user_space("flex.dsk");
+	read_entire_file(filename.c_str(), disk_0);
+
+	filename = move_disks_to_user_space("user.dsk");
+	read_entire_file(filename.c_str(), disk_1);
+	}
+
+/*
+	IDE::MOVE_DISKS_TO_USER_SPACE()
+	-------------------------------
+*/
+std::string ide::move_disks_to_user_space(const std::string &filename)
+	{
+	auto full_filename = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
 	std::error_code status;
-	if (!exists(system_disk, status))
+	if (!exists(full_filename, status))
 		{
 		CFBundleRef bundle = CFBundleGetMainBundle();
-		#if (SECTOR_SIZE == 512)
-			#define FILENAME "aspt.img"
-		#else
-			#define FILENAME "aspt.dsk"
-		#endif
-		CFURLRef url = CFBundleCopyResourceURL(bundle, CFSTR(FILENAME), NULL, NULL);
+		CFStringRef munged_name = CFStringCreateWithCString(NULL, filename.c_str(), kCFStringEncodingUTF8);
+		CFURLRef url = CFBundleCopyResourceURL(bundle, munged_name, NULL, NULL);
 		CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-		CFStringEncoding encoding_method = CFStringGetSystemEncoding();
-		auto bundle_disk = std::filesystem::path(CFStringGetCStringPtr(path, encoding_method));
+		auto bundle_disk = std::filesystem::path(CFStringGetCStringPtr(path, CFStringGetSystemEncoding()));
 
-		std::filesystem::copy_file(bundle_disk, system_disk, std::filesystem::copy_options::skip_existing, status);
+		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::skip_existing, status);
 
 		CFRelease(url);
 		CFRelease(path);
+		CFRelease(munged_name);
 		}
-
-	/*
-		Now open the FLEX disk
-	*/
-	read_entire_file(system_disk.c_str(), disk);
+	return full_filename.string();
 	}
 
 /*
@@ -139,10 +142,10 @@ ide::~ide()
 	IDE::SAVE_DISK()
 	----------------
 */
-void ide::save_disk()
+void ide::save_disk(const std::string &filename, const std::string &disk)
 	{
-	auto system_disk = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents/flex.dsk");
-	write_entire_file(system_disk.c_str(), disk);
+	auto full_filename = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
+	write_entire_file(full_filename.c_str(), disk);
 	}
 
 /*
@@ -228,7 +231,7 @@ void ide::write(word address, byte value)
 			{
 			disk_head_register = value;
 			uint32_t disk_number = (disk_head_register >> 4) & 0x01;
-			status_register = disk_number == 0 ? 0x50 : 0x40;
+			status_register = (disk_number == 0 || disk_number == 1) ? 0x50 : 0x40;
 			break;
 			}
 		case 7:
@@ -241,14 +244,12 @@ void ide::write(word address, byte value)
 			else if (command_register == command_read_sector || command_register == command_write_sector)
 				{
 				uint32_t disk_number = (disk_head_register >> 4) & 0x01;
+				uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
 				if (disk_number == 0)
-					{
-					uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
-					current = ((uint8_t *)&disk[0]) + sector * SECTOR_SIZE;
-					end = current + SECTOR_SIZE * sector_count_register;
-					}
-				else
-					current = end = NULL;
+					current = ((uint8_t *)&disk_0[0]) + sector * 256;
+				else // 	disk_number == 1
+					current = ((uint8_t *)&disk_1[0]) + sector * 256;
+				end = current + 256 * sector_count_register;
 				}
 			break;
 		}

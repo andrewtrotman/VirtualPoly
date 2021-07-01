@@ -36,7 +36,6 @@ class ide
 		byte identify_buffer[512];	// the value of the device identify block
 		byte *current;					// current point on the disk
 		byte *end;						// end of the current sector
-		std::string disk;				// the buffer containing the disk
 
 		byte data_register;
 		byte feature_register;
@@ -48,15 +47,19 @@ class ide
 		byte disk_head_register;
 		byte status_register;
 		byte command_register;
+	public:
+		std::string disk_0;			// the buffer containing the disk in drive 0
+		std::string disk_1;			// the buffer containing the disk in drive 1
 
 	public:
 		ide();
 		virtual ~ide();
 
+		void save_disk(const std::string &filename, const std::string &disk);
+		std::string move_disks_to_user_space(const std::string &filename);
+
 		byte read(word address);
 		void write(word address, byte value);
-
-		void save_disk();
 	};
 
 /*
@@ -65,6 +68,9 @@ class ide
 */
 inline std::ostream &operator<<(std::ostream &into, const ide &simulator)
 	{
+	/*
+		Write out the registers
+	*/
 	into.write((char *)&simulator.data_register, sizeof(simulator.data_register));
 	into.write((char *)&simulator.feature_register, sizeof(simulator.feature_register));
 	into.write((char *)&simulator.error_register, sizeof(simulator.error_register));
@@ -76,12 +82,32 @@ inline std::ostream &operator<<(std::ostream &into, const ide &simulator)
 	into.write((char *)&simulator.status_register, sizeof(simulator.status_register));
 	into.write((char *)&simulator.command_register, sizeof(simulator.command_register));
 
-	qword reading_from = (simulator.current == NULL ? std::numeric_limits<decltype(reading_from)>::max() : simulator.current - (byte *)&simulator.disk[0]);
-	into.write((char *)&reading_from, sizeof(reading_from));
+	/*
+		Write out details of how far through a disk operation we might be in.
+	*/
+	char which_disk = 0x80;
+	qword reading_from = 0;
+	qword reading_to = 0;
+	if (simulator.current >= (byte *)&simulator.disk_0[0] && simulator.current < (byte *)&simulator.disk_0[simulator.disk_0.size()])
+		{
+		which_disk = 0;
+		reading_from = simulator.current - (byte *)&simulator.disk_0[0];
+		reading_to = simulator.end - (byte *)&simulator.disk_0[0];
+		}
+	else if (simulator.current >= (byte *)&simulator.disk_1[0] && simulator.current < (byte *)&simulator.disk_1[simulator.disk_1.size()])
+		{
+		which_disk = 1;
+		reading_from = simulator.current - (byte *)&simulator.disk_1[0];
+		reading_to = simulator.end - (byte *)&simulator.disk_1[0];
+		}
 
-	qword reading_to = (simulator.end == NULL ? std::numeric_limits<decltype(reading_to)>::max() : simulator.end - (byte *)&simulator.disk[0]);
+	into.write(&which_disk, sizeof(which_disk));
+	into.write((char *)&reading_from, sizeof(reading_from));
 	into.write((char *)&reading_to, sizeof(reading_to));
 
+	/*
+		Return the stream
+	*/
 	return into;
 	}
 
@@ -91,6 +117,9 @@ inline std::ostream &operator<<(std::ostream &into, const ide &simulator)
 */
 inline std::istream &operator>>(std::istream &from, ide &simulator)
 	{
+	/*
+		Read the registers
+	*/
 	from.read((char *)&simulator.data_register, sizeof(simulator.data_register));
 	from.read((char *)&simulator.feature_register, sizeof(simulator.feature_register));
 	from.read((char *)&simulator.error_register, sizeof(simulator.error_register));
@@ -102,13 +131,27 @@ inline std::istream &operator>>(std::istream &from, ide &simulator)
 	from.read((char *)&simulator.status_register, sizeof(simulator.status_register));
 	from.read((char *)&simulator.command_register, sizeof(simulator.command_register));
 
-	qword reading_from;
-	from.read((char *)&reading_from, sizeof(reading_from));
-	simulator.current = ((byte *)&simulator.disk[0]) + reading_from;
+	/*
+		Read partial disk read information
+	*/
+	char which_disk = 0x80;
+	qword reading_from = 0;
+	qword reading_to = 0;
 
-	qword reading_to;
+	from.read(&which_disk, sizeof(which_disk));
+	from.read((char *)&reading_from, sizeof(reading_from));
 	from.read((char *)&reading_to, sizeof(reading_to));
-	simulator.end = ((byte *)&simulator.disk[0]) + reading_to;
+
+	if (which_disk == 0)
+		{
+		simulator.current = ((byte *)&simulator.disk_0[0]) + reading_from;
+		simulator.end = ((byte *)&simulator.disk_0[0]) + reading_to;
+		}
+	else if (which_disk == 1)
+		{
+		simulator.current = ((byte *)&simulator.disk_1[0]) + reading_from;
+		simulator.end = ((byte *)&simulator.disk_1[0]) + reading_to;
+		}
 
 	return from;
 	}
