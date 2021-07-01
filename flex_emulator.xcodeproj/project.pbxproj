@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		491DD9D0268D4E9200039A24 /* blank.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 491DD9CF268D4E9200039A24 /* blank.dsk */; };
 		4944EF422670801A00445780 /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF412670801A00445780 /* computer.cpp */; };
 		4944EF442670965B00445780 /* ROM_Pinnated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF432670965B00445780 /* ROM_Pinnated.cpp */; };
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		491DD9CF268D4E9200039A24 /* blank.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; name = blank.dsk; path = extras/blank.dsk; sourceTree = SOURCE_ROOT; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
 		4944EF412670801A00445780 /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer.cpp; sourceTree = "<group>"; };
 		4944EF432670965B00445780 /* ROM_Pinnated.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_Pinnated.cpp; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
 				496F1DD8267C80CD0036C9F6 /* aspt.dsk */,
+				491DD9CF268D4E9200039A24 /* blank.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -304,6 +307,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				496F1DD9267C80CD0036C9F6 /* aspt.dsk in Resources */,
+				491DD9D0268D4E9200039A24 /* blank.dsk in Resources */,
 				49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */,
 				49F70B11266C523100408DAE /* Assets.xcassets in Resources */,
 			);
