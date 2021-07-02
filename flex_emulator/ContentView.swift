@@ -5,6 +5,7 @@
 */
 import SwiftUI
 import Foundation
+import SpriteKit
 
 let KEYBOARD_POLY = "Poly"
 let KEYBOARD_ASCII = "ASCII"
@@ -33,12 +34,75 @@ class machine_changer: ObservableObject
 		}
 	}
 
+class GameScene: SKScene
+	{
+	let width = 480
+	let height = 240
+	let background_name = "Background"
+	var offscreen_bitmap = [UInt32](repeating: 0, count: 480 * 240)
+	var background = SKSpriteNode(imageNamed: "480x240")
+
+	override func didMove(to view: SKView)
+		{
+		background.name = name
+		background.position = CGPoint(x: size.width/2, y: size.height/2)
+		background.zPosition = 0
+
+		run(SKAction.repeatForever(SKAction.sequence(
+			[
+			SKAction.run(
+				{
+				self.enumerateChildNodes(withName: self.background_name)
+					{ (node, _) in
+					node.removeFromParent()
+					self.addChild(self.background)
+					}
+				}),
+				SKAction.wait(forDuration: 0.5)
+			])))
+		}
+
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+		{
+		guard let touch = touches.first else { return }
+//		let texture = SKTexture(imageNamed: "background.jpg")
+
+
+		for x in 0 ..< width
+			{
+			for y in 0 ..< height
+				{
+				offscreen_bitmap[y * height + x] = 0xFFFF00FF
+				}
+			}
+
+		let data = Data(bytes: &offscreen_bitmap, count:width * height * 4)
+
+		let texture = SKTexture(data: data, size: CGSize(width: width, height: height))
+
+		let location = touch.location(in: self)
+		let box = SKSpriteNode(texture: texture, size: CGSize(width: 50, height: 50))
+		box.position = location
+		box.zPosition = 1
+		box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+		addChild(box)
+		}
+	}
+
 /*
 	STRUCT CONTENTVIEW
 	------------------
 */
 struct ContentView: View
 	{
+	var scene: SKScene
+		{
+		let scene = GameScene()
+		scene.size = CGSize(width: 480, height: 240)
+		scene.scaleMode = .fill
+		return scene
+		}
+
 	@Environment(\.scenePhase) var scene_phase
 	@State var caps = true				// caps lock is down?
 	@State var shift = false			// shift key is down?
@@ -162,6 +226,11 @@ struct ContentView: View
 			{
 			Spacer().frame(maxHeight: frame_size()).layoutPriority(1)
 
+/*
+			SpriteView(scene: scene)
+				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
+            .ignoresSafeArea()
+*/
 			Image(uiImage: img_screen.image)
 				.resizable()
 				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
