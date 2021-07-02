@@ -71,15 +71,9 @@ struct ContentView: View
 
 	let keyboard_mode = KEYBOARD_ASCII
 
-	@StateObject var img_screen = image_changer()
+	@State var screen = terminal()
 
-	@State var terminal_rendering_width = 40
-	@State var terminal_width = 80
-	@State var terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
-	@State var terminal_row = 0
-	@State var terminal_column = 0
-	@State var terminal_escape_mode = false
-	@State var terminal_escape_sequence = [UInt8](repeating: 32, count: 0)
+	@StateObject var img_screen = image_changer()
 
 	/*
 		INIT()
@@ -101,14 +95,6 @@ struct ContentView: View
 		shift = false
 		control = false
 		flash_state = false
-		terminal_escape_mode = false;
-		terminal_row = 0
-		terminal_column = 0
-		terminal_escape_sequence = []
-
-		terminal_rendering_width = 40
-
-		terminal_screen = [UInt8](repeating: 32, count: 80 * 24)
 		}
 
 	/*
@@ -237,7 +223,7 @@ struct ContentView: View
 											shift = true
 											control = false
 										case Character("F").asciiValue:		// 40 / 80 Column switch
-											terminal_rendering_width = terminal_rendering_width == 40 ? 80 : 40
+											screen.set_width(new_width: screen.get_width() == .eighty ? .fourty : .eighty)
 											render_text_screen()
 											img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 										case Character("R").asciiValue:		// Reset button
@@ -295,7 +281,7 @@ struct ContentView: View
 								var response = machine_dequeue_serial_output(machine.pointer)
 								while (response <= 0xFF)
 									{
-									print_character(raw_character: UInt8(response & 0xFF))
+									screen.print_character(raw_character: UInt8(response & 0xFF))
 									screen_did_change = true
 									response = machine_dequeue_serial_output(machine.pointer)
 									}
@@ -370,7 +356,7 @@ struct ContentView: View
 			let file = try FileHandle(forWritingTo: path)
 			try file.seekToEnd()
 
-			file.write(Data(terminal_screen))
+			file.write(Data(screen.screen))
 
 			file.write(Data(bytes: &paused, count:MemoryLayout.size(ofValue:paused)))
 
@@ -378,13 +364,13 @@ struct ContentView: View
 			file.write(Data(bytes: &shift, count:MemoryLayout.size(ofValue:shift)))
 			file.write(Data(bytes: &control, count:MemoryLayout.size(ofValue:control)))
 
-			file.write(Data(bytes: &terminal_row, count:MemoryLayout.size(ofValue:terminal_row)))
-			file.write(Data(bytes: &terminal_column, count:MemoryLayout.size(ofValue:terminal_column)))
-			file.write(Data(bytes: &terminal_escape_mode, count:MemoryLayout.size(ofValue:terminal_escape_mode)))
+			file.write(Data(bytes: &screen.row, count:MemoryLayout.size(ofValue:screen.row)))
+			file.write(Data(bytes: &screen.column, count:MemoryLayout.size(ofValue:screen.column)))
+			file.write(Data(bytes: &screen.escape_mode, count:MemoryLayout.size(ofValue:screen.escape_mode)))
 
-			var escape_length = terminal_escape_sequence.count
+			var escape_length = screen.escape_sequence.count
 			file.write(Data(bytes: &escape_length, count:MemoryLayout.size(ofValue:escape_length)))
-			file.write(Data(terminal_escape_sequence))
+			file.write(Data(screen.escape_sequence))
 
 			file.closeFile()
 			}
@@ -395,8 +381,18 @@ struct ContentView: View
 		}
 
 	/*
+		RENDER_TEXT_SCREEN()
+		--------------------
+	*/
+	func render_text_screen()
+		{
+		screen.render_entire_screen()
+		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
+		}
+
+	/*
 		DESERIALISE()
-		-----------
+		-------------
 	*/
 	func deserialise(path: URL)
 		{
@@ -404,8 +400,8 @@ struct ContentView: View
 			{
 			let file = try FileHandle(forReadingFrom: path)
 
-			var data = try file.read(upToCount: terminal_screen.count)
-			data?.copyBytes(to: &terminal_screen, count: terminal_screen.count)
+			var data = try file.read(upToCount: screen.screen.count)
+			data?.copyBytes(to: &screen.screen, count: screen.screen.count)
 
 			data = try file.read(upToCount: MemoryLayout.size(ofValue:paused))
 			paused = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: paused).self)})
@@ -419,23 +415,23 @@ struct ContentView: View
 			data = try file.read(upToCount: MemoryLayout.size(ofValue:control))
 			control = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: control).self)})
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_row))
-			terminal_row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_row).self)})
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:screen.row))
+			screen.row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: screen.row).self)})
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_column))
-			terminal_column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_column).self)})
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:screen.column))
+			screen.column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: screen.column).self)})
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:terminal_escape_mode))
-			terminal_escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: terminal_escape_mode).self)})
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:screen.escape_mode))
+			screen.escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: screen.escape_mode).self)})
 
 
-			var escape_length = terminal_escape_sequence.count
+			var escape_length = screen.escape_sequence.count
 			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_length))
 			escape_length = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_length).self)})
-			terminal_escape_sequence = [UInt8](repeating: 32, count: escape_length)
+			screen.escape_sequence = [UInt8](repeating: 32, count: escape_length)
 
-			data = try file.read(upToCount: terminal_escape_sequence.count)
-			data?.copyBytes(to: &terminal_escape_sequence, count: terminal_escape_sequence.count)
+			data = try file.read(upToCount: screen.escape_sequence.count)
+			data?.copyBytes(to: &screen.escape_sequence, count: screen.escape_sequence.count)
 
 			file.closeFile()
 			}
@@ -627,345 +623,6 @@ struct ContentView: View
 		return key
 		}
 
-	/*
-		EXTRACT_INTEGER()
-		-----------------
-	*/
-	func extract_integer(sequence: ArraySlice<UInt8>) -> Int
-		{
-		var result: Int = 0
-
-		for digit in sequence
-			{
-			result = result * 10 + Int(digit) - 48
-			}
-//print("->" + String(result))
-		return result
-		}
-
-	/*
-		PRINT_CHARACTER()
-		-----------------
-		VED uses:
-			char bep[1]  = 0x07				/* beep */
-			char eol[3]  = ESC [ K			/* Erase to EOL */
-			char clr[4]  = ESC [ 2 J		/* Clear screen & pos curser at 1,1 */
-			char hom[3]  = ESC [ H			/* Cursor Home */
-			char ins[3]  = ESC [ L			/* Insert Line */
-			char dell[3] = ESC [ M			/* Delete Line */
-	*/
-	func print_character(raw_character: UInt8)
-		{
-		var character = raw_character
-
-		if terminal_escape_mode
-			{
-			switch raw_character
-				{
-				case Character("H").asciiValue:			// set cursor position	ESC [ <row> ; <column> H
-					if terminal_escape_sequence == []
-						{
-						terminal_row = 0
-						terminal_column = 0
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false;
-						}
-					else if terminal_escape_sequence[0] == 91
-						{
-						var position_of_semicolon = 1
-						while terminal_escape_sequence[position_of_semicolon] != 59
-							{
-							position_of_semicolon = position_of_semicolon + 1
-							}
-						let new_terminal_row = extract_integer(sequence: terminal_escape_sequence[1 ..< position_of_semicolon])
-						let new_terminal_column = extract_integer(sequence: terminal_escape_sequence[(position_of_semicolon + 1)...])
-						terminal_row = new_terminal_row <= 24 && new_terminal_row > 0 ? new_terminal_row - 1 : terminal_row
-						terminal_column = new_terminal_column <= terminal_rendering_width && new_terminal_column > 0 ? new_terminal_column - 1 : terminal_column
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false;
-						}
-//print("GotoYX(" + String(terminal_row) + "," + String(terminal_column) + ")")
-					break;
-				case Character("J").asciiValue:			// Clear screen
-					if (terminal_escape_sequence == [91, 50])		// ESC [ 2 J Erase all of the display
-						{
-						for x in 0 ..< terminal_width * 24
-							{
-							terminal_screen[x] = 32
-							}
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false;
-						terminal_row = 0
-						terminal_column = 0
-						}
-					break;
-				case Character("K").asciiValue:
-//print("DeleteEOLN")
-					if terminal_escape_sequence == [91]			// ESC [ K erase to end of line (inclusive)
-						{
-						for pos in terminal_column ..< terminal_width
-							{
-							terminal_screen[terminal_row * terminal_width + pos] = 32
-							}
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false;
-						}
-					break;
-				case Character("L").asciiValue:					// ESC [ L insert line below
-//print("InsertLineBelow")
-					if terminal_escape_sequence == []
-						{
-						if terminal_row != 23
-							{
-							for y in ((terminal_row + 1) ..< 24).reversed()
-								{
-								for x in 0 ..< terminal_width
-									{
-									terminal_screen[y * terminal_width + x] = terminal_screen[(y - 1) * terminal_width + x]
-									}
-								}
-							/*
-								Blank the bottom row
-							*/
-							for byte in (23 * terminal_width) ..< (24 * terminal_width)
-								{
-								terminal_screen[byte] = 32
-								}
-							}
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false;
-						}
-					break;
-				case Character("M").asciiValue:					// ESC [ M delete current line
-//print("DeleteLineAt")
-					if terminal_escape_sequence == [91]
-						{
-//						terminal_row = terminal_row == 0 ? 0 : terminal_row - 1
-						for x in (terminal_row * terminal_width) ..< (23 * terminal_width)
-							{
-							terminal_screen[x] = terminal_screen[x + terminal_width]
-							}
-						/*
-							Blank the bottom row
-						*/
-						for byte in (23 * terminal_width) ..< (24 * terminal_width)
-							{
-							terminal_screen[byte] = 32
-							}
-						terminal_escape_sequence.removeAll()
-						terminal_escape_mode = false
-						}
-					break
-				default:
-					terminal_escape_sequence.append(raw_character)
-					terminal_escape_mode = terminal_escape_sequence.count >= 16 ? false : terminal_escape_mode
-					break;
-				}
-			return
-			}
-
-//print(String(raw_character))
-
-		if (raw_character == 27)			// ESC (so enter VT100 Escape sequence processing mode)
-			{
-			terminal_escape_mode = true;
-			return
-			}
-
-		if raw_character == 0 || raw_character == 7		// 7 is the bell 0 is a null
-			{
-			return
-			}
-
-		if raw_character < 32 || raw_character >= 0x7F
-			{
-			character = 32;
-			}
-
-		/*
-			LF (0x0A) is the new line character
-		*/
-		if raw_character == 0x0A
-			{
-			terminal_row = terminal_row + 1
-			terminal_column = 0;
-			}
-		/*
-			CR (0x0D) is the new line character
-		*/
-		if raw_character == 0x0D
-			{
-			terminal_column = 0;
-			return;
-			}
-		/*
-			BS (0x08) is the backspace character
-		*/
-		if raw_character == 0x08
-			{
-			terminal_column = terminal_column > 0 ? terminal_column - 1 : 0
-			terminal_screen[terminal_row * terminal_width + terminal_column] = character
-			return;
-			}
-		/*
-			Check for scrolling
-		*/
-		if (terminal_column >= terminal_rendering_width)
-			{
-			terminal_column = 0
-			terminal_row = terminal_row + 1
-			}
-		if (terminal_row >= 24)
-			{
-			/*
-				Scroll
-			*/
-			for byte in terminal_width ..< (terminal_width * 24)
-				{
-				terminal_screen[byte - terminal_width] = terminal_screen[byte]
-				}
-			/*
-				Blank the bottom row
-			*/
-			for byte in (23 * terminal_width) ..< (24 * terminal_width)
-				{
-				terminal_screen[byte] = 32
-				}
-			/*
-				Go to the bottom row
-			*/
-			terminal_row = 23
-			}
-
-		if raw_character != 0x0D && raw_character != 0x0A && raw_character != 0x7F
-			{
-			terminal_screen[terminal_row * terminal_width + terminal_column] = character
-			terminal_column = terminal_column + 1
-			}
-		}
-
-	/*
-		RENDER_TEXT_SCREEN()
-		--------------------
-	*/
-	func render_text_screen()
-		{
-		if (terminal_rendering_width == 40)
-			{
-			for y in 0 ..< 24
-				{
-				for x in 0 ..< terminal_rendering_width
-					{
-					draw_screen_40(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
-					}
-				}
-			}
-		else
-			{
-			for y in 0 ..< 24
-				{
-				for x in 0 ..< terminal_rendering_width
-					{
-					draw_screen_80(screen_x: x, screen_y: y, character: terminal_screen[y * terminal_width + x])
-					}
-				}
-			}
-		}
-
-	/*
-		DRAW_SCREEN_40()
-		----------------
-		40-column text screen renderer
-
-		red = dataType[offset]
-		green   = dataType[offset + 1]
-		blue = dataType[offset + 2]
-		alpha  = dataType[offset + 3]
-	*/
-	func draw_screen_40(screen_x: Int, screen_y: Int, character: UInt8)
-		{
-		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
-		var on: UInt32 = 0x00FFFFFF
-		var off: UInt32 = 0x00000000
-		let glyph_base = 0
-		let from = (Int(character) - 32 + glyph_base) * 10
-
-		if flash_state && screen_y == terminal_row
-			{
-			if screen_x == terminal_column || (screen_x == 39 && terminal_column >= 39)
-				{
-				swap(&on, &off);
-				}
-			}
-
-		for y in 0 ..< 10
-			{
-			let pos = get_saa5050_font()[from + y]
-			var into = (screen_x * 12 + screen_y * 10 * 480) + (y * 480)
-
-			for x in 2 ..< 8
-				{
-				if (pos & (0x80 >> x)) != 0
-					{
-					pixel_map[into] = on
-					pixel_map[into + 1] = on
-					into = into + 2
-					}
-				else
-					{
-					pixel_map[into] = off
-					pixel_map[into + 1] = off
-					into = into + 2
-					}
-				}
-			}
-		}
-
-	/*
-		DRAW_SCREEN_80()
-		----------------
-		80-column text screen renderer
-		red = dataType[offset]
-		green   = dataType[offset + 1]
-		blue = dataType[offset + 2]
-		alpha  = dataType[offset + 3]
-	*/
-	func draw_screen_80(screen_x: Int, screen_y: Int, character: UInt8)
-		{
-		let pixel_map = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt32.self)
-		var on: UInt32 = 0x00FFFFFF
-		var off: UInt32 = 0x00000000
-		let glyph_base = 0
-		let from = (Int(character) - 32 + glyph_base) * 10
-
-		if flash_state && screen_y == terminal_row
-			{
-			if screen_x == terminal_column || (screen_x == terminal_rendering_width - 1 && terminal_column >= terminal_rendering_width - 1)
-				{
-				swap(&on, &off);
-				}
-			}
-
-		for y in 0 ..< 10
-			{
-			let pos = get_saa5050_font()[from + y]
-			var into = (screen_x * 6 + screen_y * 10 * 480) + (y * 480)
-
-			for x in 2 ..< 8
-				{
-				if (pos & (0x80 >> x)) != 0
-					{
-					pixel_map[into] = on
-					into = into + 1
-					}
-				else
-					{
-					pixel_map[into] = off
-					into = into + 1
-					}
-				}
-			}
-		}
 	}
 /*
 	STRUCT CONTENTVIEW_PREVIEWS

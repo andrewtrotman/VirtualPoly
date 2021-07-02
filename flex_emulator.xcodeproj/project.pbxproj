@@ -27,6 +27,7 @@
 		49F70B1F266C523100408DAE /* flex_emulatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B1E266C523100408DAE /* flex_emulatorTests.swift */; };
 		49F70B2A266C523100408DAE /* flex_emulatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B29266C523100408DAE /* flex_emulatorUITests.swift */; };
 		49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B38266C527100408DAE /* cpp_methods.cpp */; };
+		49FD34C6268F043000F56EF3 /* terminal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD34C5268F043000F56EF3 /* terminal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +89,7 @@
 		49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "flex_emulator-Bridging-Header.h"; sourceTree = "<group>"; };
 		49F70B38266C527100408DAE /* cpp_methods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpp_methods.cpp; sourceTree = "<group>"; };
 		49F70B39266C527100408DAE /* cpp_methods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cpp_methods.h; sourceTree = "<group>"; };
+		49FD34C5268F043000F56EF3 /* terminal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = terminal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 				499A04502677483B0036F04D /* ROM_TinyBasic.h */,
 				499A044C267747BE0036F04D /* ROM_TinyBasic.cpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
+				49FD34C5268F043000F56EF3 /* terminal.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
 				496F1DD8267C80CD0036C9F6 /* flex.dsk */,
@@ -345,6 +348,7 @@
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
 				499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */,
 				4944EF422670801A00445780 /* computer.cpp in Sources */,
+				49FD34C6268F043000F56EF3 /* terminal.swift in Sources */,
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,
 				4944EF442670965B00445780 /* ROM_Pinnated.cpp in Sources */,
 				49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */,
