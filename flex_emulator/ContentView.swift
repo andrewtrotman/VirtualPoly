@@ -47,9 +47,10 @@ struct ContentView: View
 	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
 	let CPU_speed:Int64 = 2000000			// 1,000,000 is 1 MHz
-	let iOS_timer_speed:Int64 = 25		// interrupts per second
-	@State var cpu_timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
+	let iOS_timer_hz:Int64 = 25		// interrupts per second
+
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+	@State var cpu_timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
 
 	@StateObject var machine = machine_changer()
 	@State var paused = false
@@ -280,26 +281,32 @@ struct ContentView: View
 						{
 						if (!paused)
 							{
-							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_speed
+							var screen_did_change = false
+
+							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
+
 							while (machine_cycles_spent(machine.pointer) < end_cycle)
 								{
-								machine_step(machine.pointer);
+								for _ in 0 ... Int(CPU_speed / iOS_timer_hz / 10)
+									{
+									machine_step(machine.pointer);
+									}
+
+								var response = machine_dequeue_serial_output(machine.pointer)
+								while (response <= 0xFF)
+									{
+									print_character(raw_character: UInt8(response & 0xFF))
+									screen_did_change = true
+									response = machine_dequeue_serial_output(machine.pointer)
+									}
+
+								if screen_did_change
+									{
+									render_text_screen()
+									img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+									break;
+									}
 								}
-							}
-
-						var screen_did_change = false
-						var response = machine_dequeue_serial_output(machine.pointer)
-						while (response <= 0xFF)
-							{
-							print_character(raw_character: UInt8(response & 0xFF))
-							screen_did_change = true
-							response = machine_dequeue_serial_output(machine.pointer)
-							}
-
-						if screen_did_change
-							{
-							render_text_screen()
-							img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 							}
 						}
 					}
