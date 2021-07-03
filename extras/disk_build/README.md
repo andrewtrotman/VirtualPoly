@@ -4,10 +4,10 @@ Copyright for RBASIC was transferred to Frank Wilson for use by the FLEX User Gr
 
 Tool | Disk | Documentation
 -----|------|--------------
-TSC FLEX 9.1 | [DSK](original_flex09_AB178.dsk) | [Manual](FLEX users manual 1979.pdf)
+TSC FLEX 9.1 | [DSK](original_flex09_AB178.dsk) | [Manual]("FLEX users manual 1979.pdf")
 TSC FLEX Sources | [DSK](flex_srces.dsk) | No Manual
-TSC Diagnostics | [DSK](DIAG6809.DSK) | [Manual](6809 FLEX diagnostics.pdf)
-TSC Fortran-77 | [DSK](F77.DSK) | [Manual](Fortran 77 1981.pdf)
+TSC Diagnostics | [DSK](DIAG6809.DSK) | [Manual]("6809 FLEX diagnostics.pdf")
+TSC Fortran-77 | [DSK](F77.DSK) | [Manual]("Fortran 77 1981.pdf")
 TSC XBASIC | [DSK](XBASIC_2.DSK) | Manual
 RBASIC | [DSK](RBASIC.DSK) | [Manual](RBASIC.PDF)
 Scott Adams Adventures | [DSK](advgames.dsk) | No Manual
