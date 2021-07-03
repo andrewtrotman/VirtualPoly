@@ -3,6 +3,8 @@
 	--------------
 */
 
+import Foundation
+
 /*
 	CLASS TERMINAL
 	--------------
@@ -15,14 +17,14 @@ class terminal
 		case eighty = 80
 		}
 
-	var rendering_width = screen_width.fourty		// how wide the screen appeara
-	var row = 0												// current cursor row
-	var column = 0											// current cursor column
-	var escape_mode = false								// are we buffering escape characters?
-	var escape_sequence = [UInt8]()					// escapr characgters being buffered
-	let width = 80											// width of the screen buffer
-	let height = 24										// height of the screen buffer
-	var screen = [UInt8]()								// the screen buffer
+	private var rendering_width = screen_width.fourty		// how wide the screen appeara
+	private var row = 0												// current cursor row
+	private var column = 0											// current cursor column
+	private var escape_mode = false								// are we buffering escape characters?
+	private var escape_sequence = [UInt8]()					// escapr characgters being buffered
+	private let width = 80											// width of the screen buffer
+	private let height = 24										// height of the screen buffer
+	private var screen = [UInt8]()								// the screen buffer
 
 	var bitmap = [UInt32]()								// the bitmap of the screen buffer
 
@@ -74,7 +76,7 @@ class terminal
 		-----------------
 		Turn ascii chacters into an integer (atoi())
 	*/
-	func extract_integer(sequence: ArraySlice<UInt8>) -> Int
+	private func extract_integer(sequence: ArraySlice<UInt8>) -> Int
 		{
 		var result: Int = 0
 
@@ -90,7 +92,7 @@ class terminal
 		GOTO_XY()
 		---------
 	*/
-	func goto_xy(new_row: Int, new_column: Int) -> Bool
+	private func goto_xy(new_row: Int, new_column: Int) -> Bool
 		{
 		row = new_row <= height && new_row > 0 ? new_row - 1 : row
 		column = new_column <= rendering_width.rawValue && new_column > 0 ? new_column - 1 : column
@@ -102,7 +104,7 @@ class terminal
 		CLEAR_SCREEN()
 		--------------
 	*/
-	func clear_screen() -> Bool
+	private func clear_screen() -> Bool
 		{
 		for x in 0 ..< width * height
 			{
@@ -118,7 +120,7 @@ class terminal
 		DELETE_TO_EOLN()
 		----------------
 	*/
-	func delete_to_eoln() -> Bool
+	private func delete_to_eoln() -> Bool
 		{
 		for pos in column ..< width
 			{
@@ -133,7 +135,7 @@ class terminal
 		-------------
 		Insert a line below the line the cursor is currently on
 	*/
-	func insert_line() -> Bool
+	private func insert_line() -> Bool
 		{
 		if row != height - 1
 			{
@@ -162,7 +164,7 @@ class terminal
 		DELETE_LINE()
 		-------------
 	*/
-	func delete_line() -> Bool
+	private func delete_line() -> Bool
 		{
 		for x in row * width ..< (height - 1) * width
 			{
@@ -183,7 +185,7 @@ class terminal
 		MANAGE_ESCAPE_COMMANDS()
 		------------------------
 	*/
-	func manage_escape_commands(character: UInt8)
+	private func manage_escape_commands(character: UInt8)
 		{
 		var done = false
 
@@ -379,7 +381,7 @@ class terminal
 		blue = dataType[offset + 2]
 		alpha  = dataType[offset + 3]
 	*/
-	func draw_screen_40(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
+	private func draw_screen_40(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
 		{
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
@@ -416,7 +418,7 @@ class terminal
 		blue = dataType[offset + 2]
 		alpha  = dataType[offset + 3]
 	*/
-	func draw_screen_80(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
+	private func draw_screen_80(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
 		{
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
@@ -432,5 +434,50 @@ class terminal
 				into = into + 1
 				}
 			}
+		}
+
+	/*
+		SERIALISE()
+		-----------
+	*/
+	func serialise(file: FileHandle)
+		{
+		file.write(Data(screen))
+
+		file.write(Data(bytes: &row, count:MemoryLayout.size(ofValue:row)))
+		file.write(Data(bytes: &column, count:MemoryLayout.size(ofValue:column)))
+		file.write(Data(bytes: &escape_mode, count:MemoryLayout.size(ofValue:escape_mode)))
+
+		var escape_length = escape_sequence.count
+		file.write(Data(bytes: &escape_length, count:MemoryLayout.size(ofValue:escape_length)))
+		file.write(Data(escape_sequence))
+		}
+
+	/*
+		DESERIALISE()
+		-----------
+	*/
+	func deserialise(file: FileHandle) throws
+		{
+			var data = try file.read(upToCount: screen.count)
+			data?.copyBytes(to: &screen, count: screen.count)
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:row))
+			row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: row).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:column))
+			column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: column).self)})
+
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_mode))
+			escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_mode).self)})
+
+			var escape_length = escape_sequence.count
+			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_length))
+			escape_length = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_length).self)})
+
+			escape_sequence = [UInt8](repeating: 32, count: escape_length)
+
+			data = try file.read(upToCount: escape_sequence.count)
+			data?.copyBytes(to: &escape_sequence, count: escape_sequence.count)
 		}
 	}

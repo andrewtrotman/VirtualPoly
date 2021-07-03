@@ -14,6 +14,7 @@
 		49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEF2674993E00860A83 /* saa5050_font.cpp */; };
 		49480DF62675DD4C00860A83 /* ide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DF42675DD4C00860A83 /* ide.cpp */; };
 		496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 496F1DD8267C80CD0036C9F6 /* flex.dsk */; };
+		496F4D2726901F3900D18C22 /* keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496F4D2626901F3900D18C22 /* keyboard.swift */; };
 		499A044E267747BF0036F04D /* ROM_TinyBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 499A044C267747BE0036F04D /* ROM_TinyBasic.cpp */; };
 		499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 499A044D267747BE0036F04D /* ROM_FLEX.cpp */; };
 		49B31D75266F508400706439 /* mc6809.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D74266F508400706439 /* mc6809.cpp */; };
@@ -60,6 +61,7 @@
 		49480DF42675DD4C00860A83 /* ide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ide.cpp; sourceTree = "<group>"; };
 		49480DF52675DD4C00860A83 /* ide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ide.h; sourceTree = "<group>"; };
 		496F1DD8267C80CD0036C9F6 /* flex.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = flex.dsk; sourceTree = "<group>"; };
+		496F4D2626901F3900D18C22 /* keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = keyboard.swift; sourceTree = "<group>"; };
 		499A044C267747BE0036F04D /* ROM_TinyBasic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_TinyBasic.cpp; sourceTree = "<group>"; };
 		499A044D267747BE0036F04D /* ROM_FLEX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_FLEX.cpp; sourceTree = "<group>"; };
 		499A04502677483B0036F04D /* ROM_TinyBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_TinyBasic.h; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				499A04502677483B0036F04D /* ROM_TinyBasic.h */,
 				499A044C267747BE0036F04D /* ROM_TinyBasic.cpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
+				496F4D2626901F3900D18C22 /* keyboard.swift */,
 				49FD34C5268F043000F56EF3 /* terminal.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
@@ -347,6 +350,7 @@
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
 				499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */,
+				496F4D2726901F3900D18C22 /* keyboard.swift in Sources */,
 				4944EF422670801A00445780 /* computer.cpp in Sources */,
 				49FD34C6268F043000F56EF3 /* terminal.swift in Sources */,
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,
