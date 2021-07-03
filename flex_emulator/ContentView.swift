@@ -232,6 +232,17 @@ struct ContentView: View
 	}
 
 	/*
+		RENDER_TEXT_SCREEN()
+		--------------------
+	*/
+	func render_text_screen()
+		{
+		screen.render_entire_screen()
+		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
+		img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+		}
+
+	/*
 		GET_SERIALISED_FILENAME()
 		-------------------------
 	*/
@@ -264,17 +275,6 @@ struct ContentView: View
 			{
 			print("Failure to serialise terminal: \(error)")
 			}
-		}
-
-	/*
-		RENDER_TEXT_SCREEN()
-		--------------------
-	*/
-	func render_text_screen()
-		{
-		screen.render_entire_screen()
-		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
-		img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
 		}
 
 	/*
