@@ -21,7 +21,8 @@ const void *machine_construct()
 */
 void machine_destruct(const void *object)
 	{
-	delete (computer *)object;
+	if (object != nullptr)
+		delete (computer *)object;
 	}
 
 /*
@@ -59,7 +60,8 @@ void machine_step(const void *object)
 */
 void machine_reset(const void *object)
 	{
-	((computer *)object)->reset();
+	if (object != nullptr)
+		((computer *)object)->reset();
 	}
 
 /*
@@ -68,7 +70,10 @@ void machine_reset(const void *object)
 */
 long long machine_cycles_spent(const void *object)
 	{
-	return ((computer *)object)->cycles;
+	if (object != nullptr)
+		return ((computer *)object)->cycles;
+	else
+		return 0;
 	}
 
 /*
@@ -77,7 +82,8 @@ long long machine_cycles_spent(const void *object)
 */
 void machine_queue_key_press(const void *object, char key)
 	{
-	((computer *)object)->queue_key_press(key);
+	if (object != nullptr)
+		((computer *)object)->queue_key_press(key);
 	}
 
 /*
@@ -86,7 +92,10 @@ void machine_queue_key_press(const void *object, char key)
 */
 int machine_dequeue_serial_output(const void *object)
 	{
-	return ((computer *)object)->dequeue_serial_output();
+	if (object != nullptr)
+		return ((computer *)object)->dequeue_serial_output();
+	else
+		return 0;
 	}
 
 /*
