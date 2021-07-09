@@ -34,7 +34,7 @@ protected:
 
 public:
 	virtual void run(void);
-	virtual void step(void);
+	virtual void step(uint64_t times);
 	virtual void halt(void);
 	virtual void reset(void) = 0;
 	virtual void invalid(const char * = 0);

@@ -20,16 +20,17 @@ void USim::run(void)
 	{
 	halted = 0;
 	while (!halted)
-		step();
+		step(1);
 	}
 
 /*
 	USIM::STEP()
 	------------
 */
-void USim::step(void)
+void USim::step(uint64_t times)
 	{
-	execute();
+	for (uint64_t count = 0; count < times; count++)
+		execute();
 	}
 
 /*

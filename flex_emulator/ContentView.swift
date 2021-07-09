@@ -104,11 +104,12 @@ struct ContentView: View
 
 	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
 
-	let CPU_speed:Int64 = 2000000			// 1,000,000 is 1 MHz
-	let iOS_timer_hz:Int64 = 25		// interrupts per second
+	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
+	let iOS_timer_hz: UInt64 = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 	@State var cpu_timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
+	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
 	@State var paused = false
@@ -117,6 +118,10 @@ struct ContentView: View
 	@State var keypad = keyboard()
 
 	@StateObject var img_screen = image_changer()
+
+	@State var initial_time = NSDate()
+	@State var previous_time = NSDate()
+	@State var previous_cycle_count: UInt64 = 0
 
 	/*
 		INIT()
@@ -133,6 +138,9 @@ struct ContentView: View
 	*/
 	func reset()
 		{
+		previous_cycle_count = 0
+		initial_time = NSDate()
+		previous_time = NSDate()
 		paused = false;
 		flash_state = false
 		machine_reset(machine.pointer);
@@ -237,14 +245,13 @@ struct ContentView: View
 							{
 							var screen_did_change = false
 
-							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
+							let total_seconds_count = -initial_time.timeIntervalSinceNow
+							let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+//							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
 
 							while (machine_cycles_spent(machine.pointer) < end_cycle)
 								{
-								for _ in 0 ... Int(CPU_speed / iOS_timer_hz / 10)
-									{
-									machine_step(machine.pointer);
-									}
+								machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 10);
 
 								var response = machine_dequeue_serial_output(machine.pointer)
 								while (response <= 0xFF)
@@ -270,6 +277,19 @@ struct ContentView: View
 						flash_state = !flash_state
 						render_text_screen()
 						}
+					}
+				.onReceive(one_second_timer)
+					{ _ in
+					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
+					let slice_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer)) - previous_cycle_count
+
+					let total_seconds_count = -initial_time.timeIntervalSinceNow
+					let current_seconds_count = -previous_time.timeIntervalSinceNow
+
+					print("total=\(Double(total_cycles_spent) / total_seconds_count / 1000.0) KHz now=\(Double(slice_cycles_spent) / current_seconds_count / 1000.0) KHz \n");
+
+					previous_time = NSDate()
+					previous_cycle_count = machine_cycles_spent(machine.pointer)
 					}
 				.onAppear
 					{

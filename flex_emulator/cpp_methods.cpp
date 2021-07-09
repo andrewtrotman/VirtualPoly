@@ -49,9 +49,9 @@ void machine_serialise(const void *object)
 	MACHINE_STEP()
 	--------------
 */
-void machine_step(const void *object)
+void machine_step(const void *object, uint64_t times)
 	{
-	((computer *)object)->step();
+	((computer *)object)->step(times);
 	}
 
 /*
@@ -68,7 +68,7 @@ void machine_reset(const void *object)
 	MACHINE_CYCLES_SPENT()
 	----------------------
 */
-long long machine_cycles_spent(const void *object)
+uint64_t machine_cycles_spent(const void *object)
 	{
 	if (object != nullptr)
 		return ((computer *)object)->cycles;
