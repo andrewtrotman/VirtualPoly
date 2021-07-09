@@ -17,16 +17,17 @@ class terminal
 		case eighty = 80
 		}
 
+	var flash_state = false								// the status of the flashing cursor (0 = off, 1 = on)
 	private var rendering_width = screen_width.fourty		// how wide the screen appeara
 	private var row = 0												// current cursor row
 	private var column = 0											// current cursor column
 	private var escape_mode = false								// are we buffering escape characters?
 	private var escape_sequence = [UInt8]()					// escapr characgters being buffered
 	private let width = 80											// width of the screen buffer
-	private let height = 24										// height of the screen buffer
+	private let height = 24											// height of the screen buffer
 	private var screen = [UInt8]()								// the screen buffer
 
-	var bitmap = [UInt32]()								// the bitmap of the screen buffer
+	var bitmap = [UInt32]()											// the bitmap of the screen buffer
 
 	/*
 		INIT()
@@ -370,7 +371,6 @@ class terminal
 			}
 		}
 
-
 	/*
 		DRAW_SCREEN_40()
 		----------------
@@ -383,8 +383,15 @@ class terminal
 	*/
 	private func draw_screen_40(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
 		{
+		var foreground = on
+		var background = off
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
+
+		if (flash_state && screen_y == row) && (screen_x == column || (screen_x == 39 && column >= 39))
+			{
+			swap(&foreground, &background);
+			}
 
 		for y in 0 ..< 10
 			{
@@ -395,14 +402,14 @@ class terminal
 				{
 				if (pos & (0x80 >> x)) != 0
 					{
-					bitmap[into] = on
-					bitmap[into + 1] = on
+					bitmap[into] = foreground
+					bitmap[into + 1] = foreground
 					into = into + 2
 					}
 				else
 					{
-					bitmap[into] = off
-					bitmap[into + 1] = off
+					bitmap[into] = background
+					bitmap[into + 1] = background
 					into = into + 2
 					}
 				}
@@ -420,8 +427,15 @@ class terminal
 	*/
 	private func draw_screen_80(screen_x: Int, screen_y: Int, character: UInt8, on: UInt32, off: UInt32)
 		{
+		var foreground = on
+		var background = off
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
+
+		if (flash_state && screen_y == row) && (screen_x == column || (screen_x == 39 && column >= 39))
+			{
+			swap(&foreground, &background);
+			}
 
 		for y in 0 ..< 10
 			{
@@ -430,7 +444,7 @@ class terminal
 
 			for x in 2 ..< 8
 				{
-				bitmap[into] = ((pos & (0x80 >> x)) != 0) ? on : off
+				bitmap[into] = ((pos & (0x80 >> x)) != 0) ? foreground : background
 				into = into + 1
 				}
 			}

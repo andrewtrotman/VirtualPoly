@@ -55,7 +55,7 @@ class GameScene: SKScene
 					self.addChild(self.background)
 					}
 				}),
-				SKAction.wait(forDuration: 0.5)
+			SKAction.wait(forDuration: 0.5)
 			])))
 		}
 
@@ -102,9 +102,7 @@ struct ContentView: View
 
 	@Environment(\.scenePhase) var scene_phase
 
-	@State var flash_state = false	// Should the cursor be in the visible (or the hidden blink state)?
-
-	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
+	let CPU_speed: UInt64 = 1000000			// 1,000,000 is 1 MHz
 	let iOS_timer_hz: UInt64 = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -129,6 +127,8 @@ struct ContentView: View
 	*/
 	init()
 		{
+		initial_time = NSDate()
+		previous_time = NSDate()
 		reset()
 		}
 
@@ -139,10 +139,7 @@ struct ContentView: View
 	func reset()
 		{
 		previous_cycle_count = 0
-		initial_time = NSDate()
-		previous_time = NSDate()
 		paused = false;
-		flash_state = false
 		machine_reset(machine.pointer);
 		screen.reset()
 		keypad.reset()
@@ -172,6 +169,7 @@ struct ContentView: View
 				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
             .ignoresSafeArea()
 */
+
 			Image(uiImage: img_screen.image)
 				.resizable()
 				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
@@ -218,7 +216,7 @@ struct ContentView: View
 											/*
 												Turn the cursor on and render the screen state as it is.
 											*/
-											flash_state = true
+											screen.flash_state = true
 											render_text_screen()
 										case keyboard.key.KEY_40_80.rawValue:		// 40 / 80 Column switch
 											screen.set_width(new_width: screen.get_width() == .eighty ? .fourty : .eighty)
@@ -247,7 +245,6 @@ struct ContentView: View
 
 							let total_seconds_count = -initial_time.timeIntervalSinceNow
 							let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
-//							let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
 
 							while (machine_cycles_spent(machine.pointer) < end_cycle)
 								{
@@ -274,7 +271,7 @@ struct ContentView: View
 					{ _ in
 					if !paused
 						{
-						flash_state = !flash_state
+						screen.flash_state.toggle()
 						render_text_screen()
 						}
 					}
@@ -286,7 +283,7 @@ struct ContentView: View
 					let total_seconds_count = -initial_time.timeIntervalSinceNow
 					let current_seconds_count = -previous_time.timeIntervalSinceNow
 
-					print("total=\(Double(total_cycles_spent) / total_seconds_count / 1000.0) KHz now=\(Double(slice_cycles_spent) / current_seconds_count / 1000.0) KHz \n");
+					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
 
 					previous_time = NSDate()
 					previous_cycle_count = machine_cycles_spent(machine.pointer)
