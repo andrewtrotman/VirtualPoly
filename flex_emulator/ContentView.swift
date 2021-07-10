@@ -60,7 +60,8 @@ struct ContentView: View
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
-	@State var paused = false
+	@State var paused = false							// the 6809 is paused
+	@State var inactive = false						// iOS has made us inactive or background
 
 	@State var screen = terminal()
 	@State var keypad = keyboard()
@@ -81,6 +82,7 @@ struct ContentView: View
 		initial_time = NSDate()
 		previous_time = NSDate()
 		reset()
+		inactive = false
 		start_timers()
 		}
 
@@ -213,7 +215,7 @@ struct ContentView: View
 				.frame(maxHeight: frame_size())
 				.onReceive(cpu_timer)
 					{ _ in
-					if (!paused)
+					if (!paused && !inactive)
 						{
 						var screen_did_change = false
 
@@ -275,9 +277,11 @@ struct ContentView: View
 					switch new_phase
 						{
 						case .active:
+							inactive = false
 							machine_deserialise(machine.pointer)
 							deserialise(path: get_serialised_filename())
 						case .inactive, .background:
+							inactive = true
 							machine_serialise(machine.pointer)
 							serialise(path: get_serialised_filename())
 						@unknown default:
@@ -353,6 +357,10 @@ struct ContentView: View
 			paused = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: paused).self)})
 
 			file.closeFile()
+
+			initial_time = NSDate()
+			previous_time = NSDate()
+			previous_cycle_count = machine_cycles_spent(machine.pointer)
 			}
 		catch let error as NSError
 			{

@@ -211,7 +211,7 @@ inline std::ostream &operator<<(std::ostream &into, const mc6809 &simulator)
 	into.write((char *)&simulator.cc.all, sizeof(simulator.cc.all));
 	into.write((char *)&simulator.firqpend, sizeof(simulator.firqpend));
 	into.write((char *)&simulator.irqpend, sizeof(simulator.irqpend));
-	into.write((char *)&simulator.cycles, sizeof(simulator.cycles));
+//	into.write((char *)&simulator.cycles, sizeof(simulator.cycles));
 	into.write((char *)&simulator.post_byte, sizeof(simulator.post_byte));
 
 	return into;
@@ -234,8 +234,9 @@ inline std::istream &operator>>(std::istream &from, mc6809 &simulator)
 	from.read((char *)&simulator.cc.all, sizeof(simulator.cc.all));
 	from.read((char *)&simulator.firqpend, sizeof(simulator.firqpend));
 	from.read((char *)&simulator.irqpend, sizeof(simulator.irqpend));
-	from.read((char *)&simulator.cycles, sizeof(simulator.cycles));
+//	from.read((char *)&simulator.cycles, sizeof(simulator.cycles));
 	from.read((char *)&simulator.post_byte, sizeof(simulator.post_byte));
+	simulator.cycles = 0;
 
 	return from;
 	}

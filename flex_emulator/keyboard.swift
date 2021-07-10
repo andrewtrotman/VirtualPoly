@@ -229,11 +229,11 @@ class keyboard
 			/*
 				Shift (numbers become symbols)
 			*/
-			let poly_lower = "1234567890:-^;@,./"
-			let poly_upper = "!\"`$%&'()0*=|+#<>?"
+			let poly_lower = "1234567890:-^;@,./ "
+			let poly_upper = "!\"`$%&'()0*=|+#<>? "
 
-			let ascii_lower = "1234567890:-^;@,./\\_"
-			let ascii_upper = "!\"#$%&'()0*=|+~<>?\\`"
+			let ascii_lower = "1234567890:-^;@,./\\_ "
+			let ascii_upper = "!\"#$%&'()0*=|+~<>?\\` "
 
 
 			let lower = keyboard_mode == KEYBOARD_POLY ? poly_lower : ascii_lower
