@@ -5,84 +5,42 @@
 */
 import SwiftUI
 import Foundation
-import SpriteKit
 
+/*
+	CLASS IMAGE_CHANGER
+	-------------------
+*/
 class image_changer: ObservableObject
 	{
-	var counter = 0
-
 	let offscreen_bitmap = CGContext(data: malloc(480 * 240 * 4), width: 480, height: 240, bitsPerComponent: 8, bytesPerRow: 480 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
 	@Published public var image = UIImage(named: "480x240")!
 	public var frame_buffer: UnsafeMutablePointer<UInt8>?
 
+	/*
+		INIT()
+		------
+	*/
 	init()
 		{
-		/* Nothing */
+		frame_buffer = offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 		}
 	}
 
+/*
+	CLASS MACHINE_CHANGER
+	---------------------
+*/
 class machine_changer: ObservableObject
 	{
 	@Published public var pointer: UnsafeRawPointer? = nil
 
+	/*
+		INIT()
+		------
+	*/
 	init()
 		{
 		/* Nothing */
-		}
-	}
-
-class GameScene: SKScene
-	{
-	let width = 480
-	let height = 240
-	let background_name = "Background"
-	var offscreen_bitmap = [UInt32](repeating: 0, count: 480 * 240)
-	var background = SKSpriteNode(imageNamed: "480x240")
-
-	override func didMove(to view: SKView)
-		{
-		background.name = name
-		background.position = CGPoint(x: size.width/2, y: size.height/2)
-		background.zPosition = 0
-
-		run(SKAction.repeatForever(SKAction.sequence(
-			[
-			SKAction.run(
-				{
-				self.enumerateChildNodes(withName: self.background_name)
-					{ (node, _) in
-					node.removeFromParent()
-					self.addChild(self.background)
-					}
-				}),
-			SKAction.wait(forDuration: 0.5)
-			])))
-		}
-
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
-		{
-		guard let touch = touches.first else { return }
-//		let texture = SKTexture(imageNamed: "background.jpg")
-
-
-		for x in 0 ..< width
-			{
-			for y in 0 ..< height
-				{
-				offscreen_bitmap[y * height + x] = 0xFFFF00FF
-				}
-			}
-
-		let data = Data(bytes: &offscreen_bitmap, count:width * height * 4)
-
-		let texture = SKTexture(data: data, size: CGSize(width: width, height: height))
-
-		let location = touch.location(in: self)
-		let box = SKSpriteNode(texture: texture, size: CGSize(width: 50, height: 50))
-		box.position = location
-		box.zPosition = 1
-		box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
-		addChild(box)
 		}
 	}
 
@@ -92,21 +50,13 @@ class GameScene: SKScene
 */
 struct ContentView: View
 	{
-	var scene: SKScene
-		{
-		let scene = GameScene()
-		scene.size = CGSize(width: 480, height: 240)
-		scene.scaleMode = .fill
-		return scene
-		}
-
 	@Environment(\.scenePhase) var scene_phase
 
-	let CPU_speed: UInt64 = 1000000			// 1,000,000 is 1 MHz
+	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
 	let iOS_timer_hz: UInt64 = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-	@State var cpu_timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
+	@State var cpu_timer = Timer.publish(every: 1.0 / 25.0, on: .main, in: .common).autoconnect()
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
@@ -127,9 +77,11 @@ struct ContentView: View
 	*/
 	init()
 		{
+		stop_timers()
 		initial_time = NSDate()
 		previous_time = NSDate()
 		reset()
+		start_timers()
 		}
 
 	/*
@@ -149,6 +101,28 @@ struct ContentView: View
 		}
 
 	/*
+		START_TIMERS()
+		--------------
+	*/
+	func start_timers()
+		{
+		one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+		flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+		cpu_timer = Timer.publish(every: 1.0 / Double(iOS_timer_hz), on: .main, in: .common).autoconnect()
+		}
+
+	/*
+		STOP_TIMERS()
+		-------------
+	*/
+	func stop_timers()
+		{
+		cpu_timer.upstream.connect().cancel()
+		flash_timer.upstream.connect().cancel()
+		one_second_timer.upstream.connect().cancel()
+		}
+
+	/*
 		FRAME_SIZE()
 		------------
 	*/
@@ -165,24 +139,21 @@ struct ContentView: View
 		{
 		VStack
 			{
-			Spacer().frame(maxHeight: frame_size()).layoutPriority(1)
-
-/*
-			SpriteView(scene: scene)
-				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
-            .ignoresSafeArea()
-*/
+			Spacer()
+				.frame(maxHeight: frame_size())
+				.layoutPriority(1)
 
 			Image(uiImage: img_screen.image)
 				.resizable()
 				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
 				.onAppear(perform:
 					{
-					img_screen.frame_buffer = img_screen.offscreen_bitmap.data!.assumingMemoryBound(to: UInt8.self)
 					render_text_screen()
 					})
 
-			Spacer().frame(idealHeight: frame_size()).layoutPriority(-1)
+			Spacer()
+				.frame(idealHeight: frame_size())
+				.layoutPriority(-1)
 
 			Group
 				{
@@ -192,12 +163,16 @@ struct ContentView: View
 					{ (geometry) in
 					VStack
 						{
-						Divider().frame(minHeight: frame_size(), alignment:.bottom).background(Color.black)
+						Divider()
+							.frame(minHeight: frame_size(), alignment:.bottom)
+							.background(Color.black)
+
 						Image(uiImage: keyboard_image_to_use)
 							.resizable()
 							.frame(width: keypad.width(size: geometry.size), height: keypad.height(size: geometry.size), alignment: .bottom)
 							.simultaneousGesture(
-								DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded
+								DragGesture(minimumDistance: 0, coordinateSpace: .local)
+								.onEnded
 									{
 									let ascii = keypad.keyboard_press(width: keypad.width(size: geometry.size), height: keypad.height(size: geometry.size), location: $0.location)
 									switch (ascii)
@@ -207,13 +182,11 @@ struct ContentView: View
 										case keyboard.key.KEY_PAUSE.rawValue:
 											if (!paused)
 												{
-												flash_timer.upstream.connect().cancel()
-												cpu_timer.upstream.connect().cancel()
+												stop_timers()
 												}
 											else
 												{
-												cpu_timer = Timer.publish(every: 1.0/25.0, on: .main, in: .common).autoconnect()
-												flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+												start_timers()
 												}
 											paused = !paused
 											/*
@@ -249,7 +222,7 @@ struct ContentView: View
 
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
-							machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 10);
+							machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 8);
 
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
@@ -278,7 +251,7 @@ struct ContentView: View
 				.onReceive(one_second_timer)
 					{ _ in
 					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
-					let slice_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer)) - previous_cycle_count
+					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
 
 					let total_seconds_count = -initial_time.timeIntervalSinceNow
 					let current_seconds_count = -previous_time.timeIntervalSinceNow
@@ -314,7 +287,7 @@ struct ContentView: View
 						}
 					}
 		}
-	.background(Color.white)
+		.background(Color.white)
 	}
 
 	/*
