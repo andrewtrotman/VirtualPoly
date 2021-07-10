@@ -1,10 +1,10 @@
 /*
 	ROM_TINYBASIC.H
 	---------------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include "ROM_TinyBasic.h"
 
-/* [lwtools 4.17+] include:TinyBasic/basic.asm */
 const unsigned char eprom_TinyBasic[] =
 {
 0x7E, 0xF0, 0x0B, 0x10, 0xDE, 0x86, 0xBD, 0xF7, 0xDF, 0x20, 0x13, 0x10,
@@ -350,15 +350,3 @@ const unsigned char eprom_TinyBasic[] =
 0xF7, 0xE0, 0xF7, 0xE0, 0xF7, 0xE0, 0xF7, 0xE0, 0xF7, 0xE0, 0xF7, 0xE0,
 0xF7, 0xE0, 0xF7, 0xE0,
 };
-
-/*
-const unsigned long eprom_termination = 0x00000000;
-const unsigned long eprom_start       = 0x0000F000;
-const unsigned long eprom_finish      = 0x00010000;
-const unsigned long eprom_length      = 0x00001000;
-
-#define EPROM_TERMINATION 0x00000000
-#define EPROM_START       0x0000F000
-#define EPROM_FINISH      0x00010000
-#define EPROM_LENGTH      0x00001000
-*/

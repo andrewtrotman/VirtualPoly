@@ -1,6 +1,7 @@
 /*
 	MC6850.CPP
 	----------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include <stdio.h>
 #include "mc6850.h"

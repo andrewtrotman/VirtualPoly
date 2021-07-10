@@ -1,6 +1,7 @@
 /*
 	COMPUTER.CPP
 	------------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include <fstream>
 #include <filesystem>

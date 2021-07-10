@@ -1,6 +1,7 @@
 /*
 	KEYBOARD.SWIFT
 	--------------
+	Copyright (c) 2021 Andrew Trotman
 */
 import UIKit
 import Foundation

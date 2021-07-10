@@ -1,7 +1,10 @@
 /*
 	IDE.CPP
 	-------
-	Minimalistic IDE controller, just enough to work with FLEX
+	Copyright (c) 2021 Andrew Trotman
+
+	Minimalistic IDE-like controller, just enough to work with FLEX.
+	NOTE: 256 byte sectors not 512-byte sectors
 
 	commands for flex_vfs:
 		new aspt.dsk t254,s254

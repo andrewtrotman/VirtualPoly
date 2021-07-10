@@ -1,10 +1,10 @@
 /*
 	ROM_PINNATED.CPP
 	----------------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include "ROM_Pinnated.h"
 
-/* [lwtools 4.17+] just_serial.asm */
 const unsigned char eprom_pinnated[] =
 {
 0xCE, 0xB0, 0x00, 0x10, 0xCE, 0xC0, 0x00, 0x8E, 0x4F, 0xFF, 0x30, 0x1F,
@@ -350,15 +350,3 @@ const unsigned char eprom_pinnated[] =
 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00, 0xF0, 0x00,
 0xF0, 0x00, 0xF0, 0x00,
 };
-
-/*
-const unsigned long eprom_termination = 0x00000000;
-const unsigned long eprom_start       = 0x0000F000;
-const unsigned long eprom_finish      = 0x00010000;
-const unsigned long eprom_length      = 0x00001000;
-
-#define EPROM_TERMINATION 0x00000000
-#define EPROM_START       0x0000F000
-#define EPROM_FINISH      0x00010000
-#define EPROM_LENGTH      0x00001000
-*/

@@ -1,6 +1,7 @@
 /*
 	TERMINAL.SWIFT
 	--------------
+	Copyright (c) 2021 Andrew Trotman
 */
 
 import Foundation

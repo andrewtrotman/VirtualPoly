@@ -1,6 +1,10 @@
+/*
+	ROM_FLEX.CPP
+	------------
+	Copyright (c) 2021 Andrew Trotman
+*/
 #include "ROM_FLEX.h"
 
-/* [lwtools 4.18] bios.asm */
 const unsigned char eprom_FLEX[] =
 {
 0xCE, 0xA0, 0x00, 0x10, 0xCE, 0x80, 0x00, 0x16, 0x02, 0xA3, 0xF0, 0x49,

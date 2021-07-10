@@ -1,6 +1,7 @@
 /*
 	CPP_METHODS.CPP
 	---------------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include "cpp_methods.h"
 
@@ -91,7 +92,7 @@ int machine_dequeue_serial_output(const void *object)
 	GET_SAA5050_FONT()
 	------------------
 */
-unsigned char *get_saa5050_font(void)
+uint8_t *get_saa5050_font(void)
 	{
 //		return saa5050_font;
 	return saa5055_font;

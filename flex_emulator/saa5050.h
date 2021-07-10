@@ -1,9 +1,9 @@
 /*
 	SAA5050.H
 	---------
+	Copyright (c) 2021 Andrew Trotman
 */
-#ifndef SAA5050_H_
-#define SAA5050_H_
+#pragme once
 
 /*
 	class SAA5050
@@ -32,5 +32,3 @@ public:
 
 	void paint_text_page(unsigned char *canvas, long text_flash_state);
 } ;
-
-#endif /* SAA5050_H_ */

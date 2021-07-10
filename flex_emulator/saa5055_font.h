@@ -1,10 +1,8 @@
 /*
 	SAA5055_FONT.H
 	--------------
+	Copyright (c) 2021 Andrew Trotman
 */
-#ifndef SAA5055_FONT_H_
-#define SAA5055_FONT_H_
+#pragme once
 
 extern unsigned char saa5055_font[];
-
-#endif /* SAA5055_FONT_H_ */

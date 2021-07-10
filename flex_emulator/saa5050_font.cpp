@@ -1,6 +1,7 @@
 /*
 	SAA5050_FONT.CPP
 	----------------
+	Copyright (c) 2021 Andrew Trotman
 */
 #include "saa5050_font.h"
 

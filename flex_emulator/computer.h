@@ -1,6 +1,7 @@
 /*
 	COMPUTER.H
 	----------
+	Copyright (c) 2021 Andrew Trotman
 */
 #pragma once
 
