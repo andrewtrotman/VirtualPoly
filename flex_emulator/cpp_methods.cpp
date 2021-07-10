@@ -21,8 +21,7 @@ const void *machine_construct()
 */
 void machine_destruct(const void *object)
 	{
-	if (object != nullptr)
-		delete (computer *)object;
+	delete (computer *)object;
 	}
 
 /*
@@ -31,8 +30,7 @@ void machine_destruct(const void *object)
 */
 void machine_deserialise(const void  *object)
 	{
-	if (object != nullptr)
-		((computer *)object)->deserialise();
+	((computer *)object)->deserialise();
 	}
 
 /*
@@ -41,8 +39,7 @@ void machine_deserialise(const void  *object)
 */
 void machine_serialise(const void *object)
 	{
-	if (object != nullptr)
-		((computer *)object)->serialise();
+	((computer *)object)->serialise();
 	}
 
 /*
@@ -60,8 +57,7 @@ void machine_step(const void *object, uint64_t times)
 */
 void machine_reset(const void *object)
 	{
-	if (object != nullptr)
-		((computer *)object)->reset();
+	((computer *)object)->reset();
 	}
 
 /*
@@ -70,10 +66,7 @@ void machine_reset(const void *object)
 */
 uint64_t machine_cycles_spent(const void *object)
 	{
-	if (object != nullptr)
-		return ((computer *)object)->cycles;
-	else
-		return 0;
+	return ((computer *)object)->cycles;
 	}
 
 /*
@@ -82,8 +75,7 @@ uint64_t machine_cycles_spent(const void *object)
 */
 void machine_queue_key_press(const void *object, char key)
 	{
-	if (object != nullptr)
-		((computer *)object)->queue_key_press(key);
+	((computer *)object)->queue_key_press(key);
 	}
 
 /*
@@ -92,10 +84,7 @@ void machine_queue_key_press(const void *object, char key)
 */
 int machine_dequeue_serial_output(const void *object)
 	{
-	if (object != nullptr)
-		return ((computer *)object)->dequeue_serial_output();
-	else
-		return 0;
+	return ((computer *)object)->dequeue_serial_output();
 	}
 
 /*
@@ -107,4 +96,3 @@ unsigned char *get_saa5050_font(void)
 //		return saa5050_font;
 	return saa5055_font;
 	}
-

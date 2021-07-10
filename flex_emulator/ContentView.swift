@@ -140,7 +140,10 @@ struct ContentView: View
 		{
 		previous_cycle_count = 0
 		paused = false;
-		machine_reset(machine.pointer);
+		if machine.pointer != nil
+			{
+			machine_reset(machine.pointer);
+			}
 		screen.reset()
 		keypad.reset()
 		}
@@ -237,32 +240,29 @@ struct ContentView: View
 				.frame(maxHeight: frame_size())
 				.onReceive(cpu_timer)
 					{ _ in
-					if (machine.pointer != nil)
+					if (!paused)
 						{
-						if (!paused)
+						var screen_did_change = false
+
+						let total_seconds_count = -initial_time.timeIntervalSinceNow
+						let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+
+						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
-							var screen_did_change = false
+							machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 10);
 
-							let total_seconds_count = -initial_time.timeIntervalSinceNow
-							let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
-
-							while (machine_cycles_spent(machine.pointer) < end_cycle)
+							var response = machine_dequeue_serial_output(machine.pointer)
+							while (response <= 0xFF)
 								{
-								machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 10);
+								screen.print_character(raw_character: UInt8(response & 0xFF))
+								screen_did_change = true
+								response = machine_dequeue_serial_output(machine.pointer)
+								}
 
-								var response = machine_dequeue_serial_output(machine.pointer)
-								while (response <= 0xFF)
-									{
-									screen.print_character(raw_character: UInt8(response & 0xFF))
-									screen_did_change = true
-									response = machine_dequeue_serial_output(machine.pointer)
-									}
-
-								if screen_did_change
-									{
-									render_text_screen()
-									break;
-									}
+							if screen_did_change
+								{
+								render_text_screen()
+								break;
 								}
 							}
 						}
