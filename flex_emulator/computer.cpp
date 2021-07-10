@@ -6,8 +6,6 @@
 #include <fstream>
 #include <filesystem>
 
-#include "ROM_Pinnated.h"
-#include "ROM_TinyBasic.h"
 #include "ROM_FLEX.h"
 #include "computer.h"
 
@@ -18,7 +16,7 @@
 computer::computer() :
 	terminal(keyboard_input, serial_output)
 	{
-	memcpy(memory + 0xF000, eprom_FLEX, 0x1000);
+	memcpy(memory + 0xF000, ROM_FLEX, 0x1000);
 	}
 
 /*

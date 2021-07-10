@@ -3,7 +3,7 @@
 	---------
 	Copyright (c) 2021 Andrew Trotman
 */
-#pragme once
+#pragma once
 
 /*
 	class SAA5050

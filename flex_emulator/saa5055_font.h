@@ -3,6 +3,6 @@
 	--------------
 	Copyright (c) 2021 Andrew Trotman
 */
-#pragme once
+#pragma once
 
 extern unsigned char saa5055_font[];

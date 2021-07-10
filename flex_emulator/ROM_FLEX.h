@@ -5,4 +5,4 @@
 */
 #pragma once
 
-extern const unsigned char eprom_FLEX[];
+extern const unsigned char ROM_FLEX[];
