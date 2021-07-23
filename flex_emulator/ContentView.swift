@@ -189,6 +189,10 @@ struct ContentView: View
 											else
 												{
 												start_timers()
+												machine_rewind_cycles_spent(machine.pointer)
+												initial_time = NSDate()
+												previous_time = NSDate()
+												previous_cycle_count = machine_cycles_spent(machine.pointer)
 												}
 											paused = !paused
 											/*
