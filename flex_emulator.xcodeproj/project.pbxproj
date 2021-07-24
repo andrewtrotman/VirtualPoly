@@ -47,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
 		491DD9CF268D4E9200039A24 /* user.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; name = user.dsk; path = extras/user.dsk; sourceTree = SOURCE_ROOT; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
 		4944EF412670801A00445780 /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer.cpp; sourceTree = "<group>"; };
@@ -136,6 +137,7 @@
 		49F70B0B266C523000408DAE /* flex_emulator */ = {
 			isa = PBXGroup;
 			children = (
+				491C837A26ABC04A00044575 /* flex_emulator.entitlements */,
 				49F70B0C266C523000408DAE /* flex_emulator.swift */,
 				49F70B39266C527100408DAE /* cpp_methods.h */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
@@ -502,6 +504,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = flex_emulator/flex_emulator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
 				DEVELOPMENT_TEAM = JL2ZYSYD53;
@@ -514,6 +517,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "flex-emulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -528,6 +532,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = flex_emulator/flex_emulator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"flex_emulator/Preview Content\"";
 				DEVELOPMENT_TEAM = JL2ZYSYD53;
@@ -540,6 +545,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "flex-emulator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "flex_emulator/flex_emulator-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -145,6 +145,15 @@ struct ContentView: View
 				.frame(maxHeight: frame_size())
 				.layoutPriority(1)
 
+#if targetEnvironment(macCatalyst)
+			Image(uiImage: img_screen.image)
+				.resizable()
+				.frame(width:UIScreen.main.bounds.size.width / 2 - frame_size(), height:UIScreen.main.bounds.size.width / 2 - frame_size())
+				.onAppear(perform:
+					{
+					render_text_screen()
+					})
+#else
 			Image(uiImage: img_screen.image)
 				.resizable()
 				.frame(width:UIScreen.main.bounds.size.width - frame_size(), height:UIScreen.main.bounds.size.width - frame_size())
@@ -152,6 +161,7 @@ struct ContentView: View
 					{
 					render_text_screen()
 					})
+#endif
 
 			Spacer()
 				.frame(idealHeight: frame_size())
