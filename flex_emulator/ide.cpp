@@ -5,16 +5,6 @@
 
 	Minimalistic IDE-like controller, just enough to work with FLEX.
 	NOTE: 256 byte sectors not 512-byte sectors
-
-	commands for flex_vfs:
-		new aspt.dsk t254,s254
-		mount 0 aspt.dsk
-		rdbootfile bootsector.bin
-		wrboot 0
-		import 0 FLEX/FLEX.COR
-		import 0 FLEX/*
-		umount 0
-		quit
 */
 #include <stdio.h>
 #include <unistd.h>
