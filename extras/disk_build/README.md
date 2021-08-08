@@ -10,6 +10,9 @@ TSC Diagnostics | [DSK](DIAG6809.DSK) | [6809 FLEX Diagnistics Manual](<6809 FLE
 TSC Fortran-77 | [DSK](F77.DSK) | [Fortran 77 Manual](<Fortran 77 1981.pdf>)
 TSC XBASIC | [DSK](XBASIC_2.DSK) | [Extended Basic User's Manual](xbasic.pdf)
 RBASIC | [DSK](RBASIC.DSK) | [RBASIC User's Manual](RBASIC.PDF)
-Introl C | [DSK](introl_c.zip) | No Manual (yet)
+McCosh C | [DSK](mccosh_C.zip) | Manual included on one of the dsk images.
 Scott Adams Adventures | [DSK](advgames.dsk) | No Manual
 Colossal Cave Adventure | [DSK](ADVENT.dsk) | No Manual.  Local changes included.
+VED2 | [DSK](ved.dsk) | No Manual.  Editor much like vi.
+
+flex_srces.dsk

@@ -1,6 +1,6 @@
 new flex.dsk t254,s254
 mount 0 flex.dsk
-label 0 flex
+label 0 Flex
 rdbootfile ../bootsector.bin
 wrboot 0
 
@@ -56,7 +56,7 @@ mount 1 ved.dsk
 copy 1 0
 umount 1
 
-import 0 PATCH.TXT
+import 0 PATCH.TXT xxx=compress
 link 0.FLEX.COR
 umount 0
 quit
