@@ -51,6 +51,7 @@ umount 1
 mount 1 ADVENT.dsk
 copy 1 0
 umount 1
+import 0 MMAKEADV.TXT xxx=compress
 
 mount 1 ved.dsk
 copy 1 0

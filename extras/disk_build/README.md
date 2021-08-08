@@ -14,5 +14,3 @@ McCosh C | [DSK](mccosh_C.zip) | Manual included on one of the dsk images.
 Scott Adams Adventures | [DSK](advgames.dsk) | No Manual
 Colossal Cave Adventure | [DSK](ADVENT.dsk) | No Manual.  Local changes included.
 VED2 | [DSK](ved.dsk) | No Manual.  Editor much like vi.
-
-flex_srces.dsk
