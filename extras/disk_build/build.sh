@@ -16,6 +16,10 @@ mount 1 DIAG6809.DSK
 copy 1 0
 umount 1
 
+mount 1 pascal.dsk
+copy 1 0
+umount 1
+
 mount 1 F77.DSK	
 copy 1 0
 

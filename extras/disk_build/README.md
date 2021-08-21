@@ -7,6 +7,7 @@ Tool | Disk | Documentation
 TSC FLEX 9.1 | [DSK](original_flex09_AB178.dsk) | [FLEX User's Manual](<FLEX users manual 1979.pdf>)
 TSC FLEX Sources | [DSK](flex_srces.dsk) | [FLEX Programmer's Manual](<FLEX programmers manual 1979.pdf>)
 TSC Diagnostics | [DSK](DIAG6809.DSK) | [6809 FLEX Diagnistics Manual](<6809 FLEX diagnostics.pdf>)
+TSC Pascal | [DSK](pascal.dsk) | [FLEX Pascal User's Manual](pascal.pdf)
 TSC Fortran-77 | [DSK](F77.DSK) | [Fortran 77 Manual](<Fortran 77 1981.pdf>)
 TSC XBASIC | [DSK](XBASIC_2.DSK) | [Extended Basic User's Manual](xbasic.pdf)
 RBASIC | [DSK](RBASIC.DSK) | [RBASIC User's Manual](RBASIC.PDF)
