@@ -10,8 +10,9 @@ TSC Diagnostics | [DSK](DIAG6809.DSK) | [6809 FLEX Diagnistics Manual](<6809 FLE
 TSC Pascal | [DSK](pascal.dsk) | [FLEX Pascal User's Manual](pascal.pdf)
 TSC Fortran-77 | [DSK](F77.DSK) | [Fortran 77 Manual](<Fortran 77 1981.pdf>)
 TSC XBASIC | [DSK](XBASIC_2.DSK) | [Extended Basic User's Manual](xbasic.pdf)
+TSC Text Processing System | [DSK](TSC_TEXT_PROCESSOR.dsk) | [Text Processing System](TSC_Text_Processor.pdf)
 RBASIC | [DSK](RBASIC.DSK) | [RBASIC User's Manual](RBASIC.PDF)
 McCosh C | [DSK](mccosh_C.zip) | [James McCosh 'C' Compiler for FLEX](McCosh_C.pdf)
-Scott Adams Adventures | [DSK](advgames.dsk) | No Manual
+Scott Adams Adventures | [DSK](advgames.dsk) | No Manual.
 Colossal Cave Adventure | [DSK](ADVENT.dsk) | No Manual.  Local changes included.
 VED2 | [DSK](ved.dsk) | No Manual.  Editor much like vi.

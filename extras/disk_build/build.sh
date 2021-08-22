@@ -4,6 +4,11 @@ label 0 Flex
 rdbootfile ../bootsector.bin
 wrboot 0
 
+mount 1 TSC_TEXT_PROCESSOR.dsk 
+copy 1 0
+umount 1
+import 0 PR.TXT xxx=compress
+
 mount 1 original_flex09_AB178.dsk
 copy 1 0
 umount 1
