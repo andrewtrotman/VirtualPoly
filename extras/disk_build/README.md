@@ -1,6 +1,11 @@
 # Contents of FLEX disk
-The contents of the FLEX disk is mostly TSC software, all of which has been relased for commercial and non-commercial use by Dave Shirk, the copyright holder (see the [FLEX User Group page on Copyright](http://flexusergroup.com/flexusergroup/fug7.htm)
-Copyright for RBASIC was transferred to Frank Wilson for use by the FLEX User Group.  Scott Adams released the [Adventure International](https://en.wikipedia.org/wiki/Adventure_International) games as shareware.
+The contents of the FLEX disk is mostly TSC software, all of which has been relased for commercial and non-commercial use by Dave Shirk, the copyright holder (see the [FLEX User Group page on Copyright](http://flexusergroup.com/flexusergroup/fug7.htm))
+
+Copyright for RBASIC was transferred to Frank Wilson for use by the FLEX User Group.  Scott Adams released the [Adventure International](https://en.wikipedia.org/wiki/Adventure_International) games as shareware.  Collossal Cave is a C translation from he original Fortran and apears to be open source.
+
+VED appears to be a modified version of the editor that once came with the Aztec C Compiler - and appears to be open source.
+
+
 
 Tool | Disk | Documentation
 -----|------|--------------
