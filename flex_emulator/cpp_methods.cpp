@@ -79,6 +79,15 @@ void machine_rewind_cycles_spent(const void *object)
 	((computer *)object)->cycles = 0;
 	}
 
+/*
+	MACHINE_SET_CYCLES_SPENT()
+	--------------------------
+*/
+void machine_set_cycles_spent(const void *object, uint64_t new_value)
+    {
+    ((computer *)object)->cycles = new_value;
+    }
+
 
 /*
 	MACHINE_QUEUE_KEY_PRESS()

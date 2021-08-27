@@ -54,7 +54,7 @@ struct ContentView: View
 
 	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
 	let iOS_timer_hz: UInt64 = 25		// interrupts per second
-
+    
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 	@State var cpu_timer = Timer.publish(every: 1.0 / 25.0, on: .main, in: .common).autoconnect()
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
@@ -233,8 +233,34 @@ struct ContentView: View
 						{
 						var screen_did_change = false
 
-						let total_seconds_count = -initial_time.timeIntervalSinceNow
-						let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+                        /*
+                            The old method of keeping track of the clock cycles involved mapping clock time
+                            to cycles so that the emulator could catch up or slow down based on how busy the
+                            device is.  This isn't so good in the debugger because time doesn't stop and so
+                            it hangs when returning.
+                         
+                            An alternative method is to just add a time-slice worth of cycles and run to thee
+                            but this results in clock drift.
+                         
+                            The chosen solution is the first approach, but to jump the cycle count if we detect
+                            that something has gone wrong (i.e. we stopped for unexpected reasond.
+                        */
+                        // First approach
+//						let total_seconds_count = -initial_time.timeIntervalSinceNow
+//						let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+                        
+                        // Second approach
+//                      let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
+                        
+                        // Third approach
+                        let total_seconds_count = -initial_time.timeIntervalSinceNow
+                        let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+                        
+                        if end_cycle > machine_cycles_spent(machine.pointer) + 10 * (CPU_speed / iOS_timer_hz)
+                        	{
+                        	let was = machine_cycles_spent(machine.pointer)
+                        	machine_set_cycles_spent(machine.pointer, UInt64(Double(CPU_speed) * total_seconds_count) - (CPU_speed / iOS_timer_hz))
+                            }
 
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{

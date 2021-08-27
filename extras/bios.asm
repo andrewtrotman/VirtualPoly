@@ -24,7 +24,7 @@ BUFFER	EQU	$C100
 	INCLUDE serial.asm
 	INCLUDE io.asm
 	INCLUDE ata_ide.asm
-
+    INCLUDE poly_compatibility.asm
 	;
 	;	Strings and constants
 	;
@@ -83,7 +83,7 @@ vector_firq
 vector_irq
 	FDB BOOT
 vector_swi
-	FDB BOOT
+	FDB SWI_HANDLER
 vector_nmi
 	FDB BOOT
 vector_reset
