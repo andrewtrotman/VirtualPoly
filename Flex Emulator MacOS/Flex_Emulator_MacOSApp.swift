@@ -1,11 +1,11 @@
 /*
-	FLEX_EMULATOR.SWIFT
-	-------------------
+	FLEX_EMULATOR_MACOSAPP.SWIFT
+	----------------------------
 */
 import SwiftUI
 
 @main
-struct flex_emulator: App
+struct Flex_Emulator_MacOSApp: App
 	{
 	var body: some Scene
 		{

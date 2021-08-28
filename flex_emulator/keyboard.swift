@@ -3,7 +3,9 @@
 	--------------
 	Copyright (c) 2021 Andrew Trotman
 */
-import UIKit
+#if !os(macOS)
+	import UIKit
+#endif
 import Foundation
 
 let KEYBOARD_POLY = "Poly"
