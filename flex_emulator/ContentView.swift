@@ -258,7 +258,6 @@ struct ContentView: View
                         
                         if end_cycle > machine_cycles_spent(machine.pointer) + 10 * (CPU_speed / iOS_timer_hz)
                         	{
-                        	let was = machine_cycles_spent(machine.pointer)
                         	machine_set_cycles_spent(machine.pointer, UInt64(Double(CPU_speed) * total_seconds_count) - (CPU_speed / iOS_timer_hz))
                             }
 

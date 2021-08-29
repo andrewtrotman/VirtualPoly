@@ -4,9 +4,6 @@
 //
 //  Created by Andrew Trotman on 28/08/21.
 //
-
-import Foundation
-
 // Taken from: https://www.swiftbysundell.com/tips/making-uiimage-macos-compatible/
 
 // Either put this in a separate file that you only include in your macOS target or wrap the code in #if os(macOS) / #endif

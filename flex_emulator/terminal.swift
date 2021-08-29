@@ -257,6 +257,8 @@ class terminal
 		{
 		var character = raw_character
 
+//print(Character(UnicodeScalar(raw_character)))
+
 		if escape_mode
 			{
 			manage_escape_commands(character: raw_character)

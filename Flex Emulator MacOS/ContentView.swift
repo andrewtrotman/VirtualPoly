@@ -7,28 +7,75 @@ import SwiftUI
 import Foundation
 import CoreGraphics
 
-
-//
-// From: https://stackoverflow.com/questions/61153562/how-to-detect-keyboard-events-in-swiftui-on-macos
-//
+/*
+	STRUCT KEYEVENTHANDLING
+	-----------------------
+	Keyboard management for SwiftUI on the Mac.
+	Addapted from: https://stackoverflow.com/questions/61153562/how-to-detect-keyboard-events-in-swiftui-on-macos
+*/
 struct KeyEventHandling: NSViewRepresentable
 	{
+	@Binding var machine: machine_changer
+
+	/*
+		CLASS KEYVIEW
+		-------------
+	*/
 	class KeyView: NSView
 		{
+		var machine: machine_changer
+
+		/*
+			ACCEPTSFIRSTRESPONDER
+			---------------------
+		*/
 		override var acceptsFirstResponder: Bool
 			{
 			true
 			}
 
+		/*
+			KEYDOWN()
+			---------
+		*/
 		override func keyDown(with event: NSEvent)
 			{
-			print(">> key \(event.charactersIgnoringModifiers ?? "")")
+//			print(">> key \(event.charactersIgnoringModifiers ?? "")")
+			if event.characters?.count == 1
+				{
+				let ascii = Character(event.characters!).asciiValue!
+				let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
+				machine_queue_key_press(machine.pointer, flex_key)
+				}
 			}
-		}
 
+		/*
+			INIT()
+			------
+		*/
+		init(machine: machine_changer)
+			{
+			self.machine = machine
+			super.init(frame: .zero)
+			}
+
+		/*
+			INIT()
+			------
+		*/
+		required init?(coder: NSCoder)
+			{
+			fatalError("init(coder:) has not been implemented")
+			}
+	}
+
+	/*
+		MAKENSVIEW()
+		------------
+	*/
 	func makeNSView(context: Context) -> NSView
 		{
-		let view = KeyView()
+		let view = KeyView(machine: machine)
 		DispatchQueue.main.async
 			{ // wait till next event cycle
 			view.window?.makeFirstResponder(view)
@@ -36,15 +83,14 @@ struct KeyEventHandling: NSViewRepresentable
 		return view
 		}
 
+	/*
+		UPDATENSVIEW()
+		--------------
+	*/
 	func updateNSView(_ nsView: NSView, context: Context)
 		{
 		}
 	}
-
-
-
-
-
 
 /*
 	CLASS IMAGE_CHANGER
@@ -90,41 +136,27 @@ class machine_changer: ObservableObject
 */
 struct ContentView: View
 	{
+    @ObservedObject var app_state : AppState
+
 	@Environment(\.scenePhase) var scene_phase
 
-	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
-	let iOS_timer_hz: UInt64 = 25		// interrupts per second
+	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+	static let iOS_timer_hz: Double = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-	@State var cpu_timer = Timer.publish(every: 1.0 / 25.0, on: .main, in: .common).autoconnect()
+	@State var cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
-	@State var inactive = false						// iOS has made us inactive or background
 
 	@State var screen = terminal()
-	@State var keypad = keyboard()
 
 	@StateObject var img_screen = image_changer()
 
 	@State var initial_time = NSDate()
 	@State var previous_time = NSDate()
 	@State var previous_cycle_count: UInt64 = 0
-
-	/*
-		INIT()
-		------
-	*/
-	init()
-		{
-		stop_timers()
-		initial_time = NSDate()
-		previous_time = NSDate()
-		reset()
-		inactive = false
-		start_timers()
-		}
 
 	/*
 		RESET()
@@ -139,7 +171,7 @@ struct ContentView: View
 			machine_reset(machine.pointer);
 			}
 		screen.reset()
-		keypad.reset()
+		screen.set_width(new_width: .eighty)
 		}
 
 	/*
@@ -150,7 +182,7 @@ struct ContentView: View
 		{
 		one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 		flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-		cpu_timer = Timer.publish(every: 1.0 / Double(iOS_timer_hz), on: .main, in: .common).autoconnect()
+		cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
 		}
 
 	/*
@@ -165,136 +197,41 @@ struct ContentView: View
 		}
 
 	/*
-		FRAME_SIZE()
-		------------
-	*/
-	func frame_size() -> CGFloat
-		{
-		return 3
-		}
-
-	/*
-		BODY VIEW
-		---------
+		BODY
+		----
 	*/
 	var body: some View
 		{
 		VStack
 			{
-			Spacer()
-				.frame(maxHeight: frame_size())
-				.layoutPriority(1)
-
 			Image(nsImage: img_screen.image)
 				.resizable()
-				.frame(width:(NSScreen.main?.visibleFrame.size.height)! / 2 - frame_size(), height:(NSScreen.main?.visibleFrame.size.height)! / 2 - frame_size())
+				.frame(width:480 * app_state.screen_size, height:480 * app_state.screen_size)
 				.onAppear(perform:
 					{
 					render_text_screen()
 					})
-				.background(KeyEventHandling())
+				.background(KeyEventHandling(machine: $machine))
 
 			Spacer()
-				.frame(idealHeight: frame_size())
-				.layoutPriority(-1)
-
-			Group
-				{
-				let keyboard_image_to_use = keypad.keyboard_image()
-
-				GeometryReader
-					{ (geometry) in
-					VStack
-						{
-						Divider()
-							.frame(minHeight: frame_size(), alignment:.bottom)
-							.background(Color.black)
-
-						Image(nsImage: keyboard_image_to_use)
-							.resizable()
-							.frame(width: keypad.width(size: geometry.size), height: keypad.height(size: geometry.size), alignment: .bottom)
-							.simultaneousGesture(
-								DragGesture(minimumDistance: 0, coordinateSpace: .local)
-								.onEnded
-									{
-									let ascii = keypad.keyboard_press(width: keypad.width(size: geometry.size), height: keypad.height(size: geometry.size), location: $0.location)
-									switch (ascii)
-										{
-										case keyboard.key.KEY_NONE.rawValue:
-											break
-										case keyboard.key.KEY_PAUSE.rawValue:
-											if (!paused)
-												{
-												stop_timers()
-												}
-											else
-												{
-												start_timers()
-												machine_rewind_cycles_spent(machine.pointer)
-												initial_time = NSDate()
-												previous_time = NSDate()
-												previous_cycle_count = machine_cycles_spent(machine.pointer)
-												}
-											paused = !paused
-											/*
-												Turn the cursor on and render the screen state as it is.
-											*/
-											screen.flash_state = true
-											render_text_screen()
-										case keyboard.key.KEY_40_80.rawValue:		// 40 / 80 Column switch
-											screen.set_width(new_width: screen.get_width() == .eighty ? .fourty : .eighty)
-											render_text_screen()
-										case keyboard.key.KEY_RESET.rawValue:		// Reset button
-											reset();
-										default:
-											machine_queue_key_press(machine.pointer, CChar(ascii))
-										}
-									}
-							)
-						}
-    					.frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottom)
-					}
-				}
-
-			Spacer()
-				.frame(maxHeight: frame_size())
+				.frame(maxHeight: 0)
 				.onReceive(cpu_timer)
 					{ _ in
-					if (!paused && !inactive)
+					if (!paused)
 						{
 						var screen_did_change = false
 
-                        /*
-                            The old method of keeping track of the clock cycles involved mapping clock time
-                            to cycles so that the emulator could catch up or slow down based on how busy the
-                            device is.  This isn't so good in the debugger because time doesn't stop and so
-                            it hangs when returning.
-
-                            An alternative method is to just add a time-slice worth of cycles and run to thee
-                            but this results in clock drift.
-
-                            The chosen solution is the first approach, but to jump the cycle count if we detect
-                            that something has gone wrong (i.e. we stopped for unexpected reasond.
-                        */
-                        // First approach
-//						let total_seconds_count = -initial_time.timeIntervalSinceNow
-//						let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
-
-                        // Second approach
-//                      let end_cycle = machine_cycles_spent(machine.pointer) + CPU_speed / iOS_timer_hz
-
-                        // Third approach
                         let total_seconds_count = -initial_time.timeIntervalSinceNow
-                        let end_cycle = UInt64(Double(CPU_speed) * total_seconds_count)
+						let end_cycle = UInt64(ContentView.CPU_speed * total_seconds_count)
 
-                        if end_cycle > machine_cycles_spent(machine.pointer) + 10 * (CPU_speed / iOS_timer_hz)
+						if end_cycle > machine_cycles_spent(machine.pointer) + 10 * UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz))
                         	{
-                        	machine_set_cycles_spent(machine.pointer, UInt64(Double(CPU_speed) * total_seconds_count) - (CPU_speed / iOS_timer_hz))
+							machine_set_cycles_spent(machine.pointer, UInt64(Double(ContentView.CPU_speed) * total_seconds_count) - UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz)))
                             }
 
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
-							machine_step(machine.pointer, CPU_speed / iOS_timer_hz / 8);
+							machine_step(machine.pointer, UInt64(ContentView.CPU_speed / ContentView.iOS_timer_hz) / 8);
 
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
@@ -338,30 +275,19 @@ struct ContentView: View
 					if (machine.pointer == nil)
 						{
 						machine.pointer = machine_construct()
-						machine_deserialise(machine.pointer)
-						deserialise(path: get_serialised_filename())
-						}
-					}
-				.onChange(of: scene_phase)
-					{ new_phase in
-					switch new_phase
-						{
-						case .active:
-							inactive = false
-							machine_deserialise(machine.pointer)
-							deserialise(path: get_serialised_filename())
-						case .inactive, .background:
-							inactive = true
-							machine_serialise(machine.pointer)
-							serialise(path: get_serialised_filename())
-						@unknown default:
-							(
-							/* Nothing */
-							)
+//						machine_deserialise(machine.pointer)
+//						deserialise(path: get_serialised_filename())
+
+						stop_timers()
+						initial_time = NSDate()
+						previous_time = NSDate()
+						reset()
+						start_timers()
 						}
 					}
 		}
-		.background(Color.white)
+		.background(Color.black)
+		.frame(width: 480.0 * app_state.screen_size, height: 480.0 * app_state.screen_size)
 	}
 
 	/*
@@ -398,7 +324,6 @@ struct ContentView: View
 			try file.seekToEnd()
 
 			screen.serialise(file: file)
-			keypad.serialise(file: file)
 
 			file.write(Data(bytes: &paused, count:MemoryLayout.size(ofValue:paused)))
 
@@ -421,7 +346,6 @@ struct ContentView: View
 			let file = try FileHandle(forReadingFrom: path)
 
 			try screen.deserialise(file: file)
-			try keypad.deserialise(file: file)
 
 			let data = try file.read(upToCount: MemoryLayout.size(ofValue:paused))
 			paused = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: paused).self)})
@@ -436,17 +360,5 @@ struct ContentView: View
 			{
 			print("Failure to deserialise terminal: \(error)")
 			}
-		}
-	}
-
-/*
-	STRUCT CONTENTVIEW_PREVIEWS
-	---------------------------
-*/
-struct ContentView_Previews: PreviewProvider
-	{
-	static var previews: some View
-		{
-		ContentView()
 		}
 	}

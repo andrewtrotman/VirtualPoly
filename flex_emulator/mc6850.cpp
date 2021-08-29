@@ -12,8 +12,8 @@
 */
 void mc6850::reset(void)
 	{
-	input.clear();
-	output.clear();
+//	input.clear();
+//	output.clear();
 	}
 
 /*
