@@ -7,6 +7,45 @@ import SwiftUI
 import Foundation
 import CoreGraphics
 
+
+//
+// From: https://stackoverflow.com/questions/61153562/how-to-detect-keyboard-events-in-swiftui-on-macos
+//
+struct KeyEventHandling: NSViewRepresentable
+	{
+	class KeyView: NSView
+		{
+		override var acceptsFirstResponder: Bool
+			{
+			true
+			}
+
+		override func keyDown(with event: NSEvent)
+			{
+			print(">> key \(event.charactersIgnoringModifiers ?? "")")
+			}
+		}
+
+	func makeNSView(context: Context) -> NSView
+		{
+		let view = KeyView()
+		DispatchQueue.main.async
+			{ // wait till next event cycle
+			view.window?.makeFirstResponder(view)
+			}
+		return view
+		}
+
+	func updateNSView(_ nsView: NSView, context: Context)
+		{
+		}
+	}
+
+
+
+
+
+
 /*
 	CLASS IMAGE_CHANGER
 	-------------------
@@ -153,6 +192,7 @@ struct ContentView: View
 					{
 					render_text_screen()
 					})
+				.background(KeyEventHandling())
 
 			Spacer()
 				.frame(idealHeight: frame_size())
