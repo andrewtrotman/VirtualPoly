@@ -136,7 +136,7 @@ class machine_changer: ObservableObject
 */
 struct ContentView: View
 	{
-    @ObservedObject var app_state : AppState
+    @StateObject var app_state : AppState
 
 	@Environment(\.scenePhase) var scene_phase
 
@@ -275,6 +275,7 @@ struct ContentView: View
 					if (machine.pointer == nil)
 						{
 						machine.pointer = machine_construct()
+						AppState.shared.machine = machine.pointer
 //						machine_deserialise(machine.pointer)
 //						deserialise(path: get_serialised_filename())
 
