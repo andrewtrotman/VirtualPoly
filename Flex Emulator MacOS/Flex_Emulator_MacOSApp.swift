@@ -4,108 +4,75 @@
 */
 import SwiftUI
 
-func clipboard_has_pastable_text() -> Bool
+class AppState: ObservableObject
 	{
-//	NSPasteboard.general.string(forType:NSPasteboard.PasteboardType.string)
+	static let shared = AppState()
 
-//	let answer = NSPasteboard.general.canReadItem(withDataConformingToTypes: <#T##[String]#>)
-
-	let answer = NSPasteboard.general.pasteboardItems?.first?.string(forType: .string)
-	return answer == nil
+	var machine: UnsafeRawPointer? = nil
+	var screen: terminal? = nil
 	}
 
 @main
 struct Flex_Emulator_MacOSApp: App
 	{
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var app_state = AppState.shared
+    @State var clipboard_has_text = false
 	@State var zoooom = 1.0
 	@State var zoom = 1.0
-	@State var clipboard_has_text = clipboard_has_pastable_text()
 	var body: some Scene
 		{
 		WindowGroup
 			{
 			ContentView(app_state: app_state)
+				.onAppear
+					{
+					NSWindow.allowsAutomaticWindowTabbing = false
+					}
+				.onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification))
+					{ _ in
+					clipboard_has_text = NSPasteboard.general.canReadItem(withDataConformingToTypes: ["public.plain-text"])
+					}
+				.onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification))
+					{ _ in
+//					machine_serialise(AppState.shared.machine)
+					}
 			}
 			.commands
 				{
 				CommandGroup(replacing: .pasteboard)
 					{
-					Button("Cut"){}.keyboardShortcut("X").disabled(true)
-					Button("Copy"){}.keyboardShortcut("C")
+			//		Button("Copy"){}.keyboardShortcut("C").disabled(true)
 					Button("Paste")
 						{
-						print("Pasting something...")
-
-						if let myString = NSPasteboard.general.pasteboardItems?.first?.string(forType: .string)
+						if let paste_buffer = NSPasteboard.general.pasteboardItems?.first?.string(forType: .string)
 							{
-							print(myString)
+							for char in paste_buffer
+								{
+								if let ascii = char.asciiValue
+									{
+									machine_queue_key_press(AppState.shared.machine, CChar(ascii))
+									}
+								}
 							}
 						}
-						.keyboardShortcut("V")
-					Button("Paste and Match Style") { print("Pasting and Matching something...") }
-						.keyboardShortcut("V", modifiers: [.command, .option, .shift])
-					Button("Delete"){}.keyboardShortcut(.delete)
-					Button("Select All"){}.keyboardShortcut("A")
+						.keyboardShortcut("V").disabled(clipboard_has_text)
+			//		Button("Select All"){}.keyboardShortcut("A").disabled(true)
 					}
+				CommandGroup(replacing: .undoRedo) {}
+				CommandGroup(replacing: .sidebar) {}
 				CommandGroup(replacing: .systemServices) {}
 				CommandGroup(replacing: .newItem) {}
-				CommandGroup(after: .windowSize)
+				CommandGroup(after: .saveItem)
 					{
-					Picker(selection: $zoooom, label: Text("Zoooom"))
+					Divider()
+					Button("Reset")
 						{
-						Text("0.5x").tag(0.5)
-						Text("1.0x").tag(1.0)
-						Text("1.5x").tag(1.5)
-						Text("2.0x").tag(2.0)
+						print("Reset")
+						machine_reset(AppState.shared.machine)
+						AppState.shared.screen?.reset()
+						AppState.shared.screen?.set_width(new_width: .eighty)
 						}
-						.onReceive([self.zoooom].publisher.first())
-							{ value in
-							print("Z")
-							print(value)
-							if app_state.screen_size != CGFloat(value)
-								{
-								app_state.screen_size = CGFloat(value)
-								}
-							}
-					}
-				CommandMenu("FLEX")
-					{
-					Picker(selection: $zoom, label: Text("Zoom"))
-						{
-						Text("0.5x").tag(0.5)
-						Text("1.0x").tag(1.0)
-						Text("1.5x").tag(1.5)
-						Text("2.0x").tag(2.0)
-						}
-						.onReceive([self.zoom].publisher.first())
-							{ value in
-							print("X")
-							print(value)
-							if app_state.screen_size != CGFloat(value)
-								{
-								app_state.screen_size = CGFloat(value)
-								}
-							}
 					}
 				}
 		}
-	}
-
-class AppDelegate: NSObject, NSApplicationDelegate
-	{
-    func applicationWillTerminate(_ aNotification: Notification)
-		{
-		print("Bye")
-//		machine_serialise(AppState.shared.machine)
-		}
-	}
-
-class AppState: ObservableObject
-	{
-	static let shared = AppState()
-
-	@Published var screen_size: CGFloat = 1.0
-	var machine: UnsafeRawPointer? = nil
 	}

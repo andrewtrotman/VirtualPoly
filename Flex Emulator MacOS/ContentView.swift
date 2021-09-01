@@ -43,9 +43,11 @@ struct KeyEventHandling: NSViewRepresentable
 //			print(">> key \(event.charactersIgnoringModifiers ?? "")")
 			if event.characters?.count == 1
 				{
-				let ascii = Character(event.characters!).asciiValue!
-				let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
-				machine_queue_key_press(machine.pointer, flex_key)
+				if let ascii = Character(event.characters!).asciiValue
+					{
+					let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
+					machine_queue_key_press(machine.pointer, flex_key)
+					}
 				}
 			}
 
@@ -138,8 +140,6 @@ struct ContentView: View
 	{
     @StateObject var app_state : AppState
 
-	@Environment(\.scenePhase) var scene_phase
-
 	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 
@@ -206,7 +206,6 @@ struct ContentView: View
 			{
 			Image(nsImage: img_screen.image)
 				.resizable()
-				.frame(width:480 * app_state.screen_size, height:480 * app_state.screen_size)
 				.onAppear(perform:
 					{
 					render_text_screen()
@@ -276,6 +275,7 @@ struct ContentView: View
 						{
 						machine.pointer = machine_construct()
 						AppState.shared.machine = machine.pointer
+						AppState.shared.screen = screen
 //						machine_deserialise(machine.pointer)
 //						deserialise(path: get_serialised_filename())
 
@@ -288,7 +288,6 @@ struct ContentView: View
 					}
 		}
 		.background(Color.black)
-		.frame(width: 480.0 * app_state.screen_size, height: 480.0 * app_state.screen_size)
 	}
 
 	/*

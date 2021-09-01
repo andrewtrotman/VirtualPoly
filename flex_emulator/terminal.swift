@@ -435,7 +435,7 @@ class terminal
 		let glyph_base = 0
 		let from = (Int(character) - 32 + glyph_base) * 10
 
-		if (flash_state && screen_y == row) && (screen_x == column || (screen_x == 39 && column >= 39))
+		if (flash_state && screen_y == row) && (screen_x == column || (screen_x == 79 && column >= 79))
 			{
 			swap(&foreground, &background);
 			}
