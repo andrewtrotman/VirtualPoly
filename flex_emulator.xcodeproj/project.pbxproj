@@ -16,6 +16,7 @@
 		496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 496F1DD8267C80CD0036C9F6 /* flex.dsk */; };
 		496F4D2726901F3900D18C22 /* keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496F4D2626901F3900D18C22 /* keyboard.swift */; };
 		499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 499A044D267747BE0036F04D /* ROM_FLEX.cpp */; };
+		499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499B50F526DF60F3002F8D66 /* Acknowledgements.swift */; };
 		49B31D75266F508400706439 /* mc6809.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D74266F508400706439 /* mc6809.cpp */; };
 		49B31D78266F50EF00706439 /* usim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D76266F50EF00706439 /* usim.cpp */; };
 		49B31D7E266F550C00706439 /* mc6850.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D7C266F550C00706439 /* mc6850.cpp */; };
@@ -97,6 +98,7 @@
 		496F4D2626901F3900D18C22 /* keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = keyboard.swift; sourceTree = "<group>"; };
 		499A044D267747BE0036F04D /* ROM_FLEX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_FLEX.cpp; sourceTree = "<group>"; };
 		499A04512677483B0036F04D /* ROM_FLEX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_FLEX.h; sourceTree = "<group>"; };
+		499B50F526DF60F3002F8D66 /* Acknowledgements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
 		49B31D73266F508400706439 /* mc6809.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6809.h; sourceTree = "<group>"; };
 		49B31D74266F508400706439 /* mc6809.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6809.cpp; sourceTree = "<group>"; };
 		49B31D76266F50EF00706439 /* usim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = usim.cpp; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				49D1C21926D9D03E00015409 /* Flex_Emulator_MacOSApp.swift */,
 				49D1C25226DA065900015409 /* Compatibility.swift */,
 				49D1C21B26D9D03E00015409 /* ContentView.swift */,
+				499B50F526DF60F3002F8D66 /* Acknowledgements.swift */,
 				49D1C21D26D9D03F00015409 /* Assets.xcassets */,
 				49D1C22226D9D03F00015409 /* Info.plist */,
 				49D1C22326D9D03F00015409 /* Flex_Emulator_MacOS.entitlements */,
@@ -553,6 +556,7 @@
 				49D1C24826DA056100015409 /* mc6809.cpp in Sources */,
 				49D1C24526DA056100015409 /* ROM_FLEX.cpp in Sources */,
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
+				499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */,
 				49D1C24926DA056200015409 /* saa5050_font.cpp in Sources */,
 				49D1C21A26D9D03E00015409 /* Flex_Emulator_MacOSApp.swift in Sources */,
 				49D1C24D26DA056200015409 /* usim.cpp in Sources */,

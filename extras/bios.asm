@@ -30,7 +30,7 @@ BUFFER	EQU	$C100
 	;
 	PRAGMA cescapes
 bios_startup_message
-	FCN "         Pinnated 6809 for iOS\r\n   Copyright (C) 2021 Andrew Trotman\r\nIncludes Usim by R.P.Bellis (see GitHub)\r\n"
+	FCN "             Pinnated 6809\r\n   Copyright (C) 2021 Andrew Trotman\r\n"
 
 ;
 ;	MAIN

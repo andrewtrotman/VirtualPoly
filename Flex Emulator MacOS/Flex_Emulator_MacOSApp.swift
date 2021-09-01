@@ -15,10 +15,10 @@ class AppState: ObservableObject
 @main
 struct Flex_Emulator_MacOSApp: App
 	{
+    @Environment(\.openURL) var openURL
     @StateObject var app_state = AppState.shared
-    @State var clipboard_has_text = false
-	@State var zoooom = 1.0
-	@State var zoom = 1.0
+    @State private var clipboard_has_text = false
+
 	var body: some Scene
 		{
 		WindowGroup
@@ -67,12 +67,27 @@ struct Flex_Emulator_MacOSApp: App
 					Divider()
 					Button("Reset")
 						{
-						print("Reset")
 						machine_reset(AppState.shared.machine)
 						AppState.shared.screen?.reset()
 						AppState.shared.screen?.set_width(new_width: .eighty)
 						}
 					}
+
+				CommandGroup(after: .help)
+					{
+					Divider()
+					Button("Acknowledgements")
+						{
+						if let url = URL(string: "Flex-Emulator-MacOS://Acknowledgements")
+							{
+                     		NSWorkspace.shared.open(url)
+							}
+						}
+					}
 				}
+		WindowGroup("Acknowledgements")
+			{
+			Acknowledgements()
+			}.handlesExternalEvents(matching: Set(arrayLiteral: "Acknowledgements"))
 		}
 	}
