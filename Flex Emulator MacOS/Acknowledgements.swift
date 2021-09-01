@@ -16,12 +16,15 @@ struct Acknowledgements: View
 		{
 		VStack
 			{
+			Spacer()
 			Text("Includes Usim by R.P.Bellis")
 			Button("OK")
 				{
 				self.presentationMode.wrappedValue.dismiss()
 				}
-			}.frame(width:200, height: 200)
+			Spacer()
+			}
+			.frame(width: 200, height: 200)
 		}
 	}
 
