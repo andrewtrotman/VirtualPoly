@@ -18,6 +18,7 @@ struct Flex_Emulator_MacOSApp: App
     @Environment(\.openURL) var openURL
     @StateObject var app_state = AppState.shared
     @State private var clipboard_has_text = false
+    @State private var acknowledgements_open = false
 
 	var body: some Scene
 		{
@@ -78,16 +79,20 @@ struct Flex_Emulator_MacOSApp: App
 					Divider()
 					Button("Acknowledgements")
 						{
-						if let url = URL(string: "Flex-Emulator-MacOS://Acknowledgements")
+						if !acknowledgements_open
 							{
-                     		NSWorkspace.shared.open(url)
+							acknowledgements_open = true
+							if let url = URL(string: "Flex-Emulator-MacOS://Acknowledgements")
+								{
+								NSWorkspace.shared.open(url)
+								}
 							}
 						}
 					}
 				}
 		WindowGroup("Acknowledgements")
 			{
-			Acknowledgements()
+			Acknowledgements(state: $acknowledgements_open)
 			}.handlesExternalEvents(matching: Set(arrayLiteral: "Acknowledgements"))
 		}
 	}
