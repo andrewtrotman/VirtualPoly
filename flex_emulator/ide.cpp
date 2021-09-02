@@ -114,6 +114,7 @@ std::string ide::move_disks_to_user_space(const std::string &filename)
 		auto bundle_disk = std::filesystem::path(CFStringGetCStringPtr(path, CFStringGetSystemEncoding()));
 
 		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::skip_existing, status);
+//		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::overwrite_existing, status);
 
 		CFRelease(url);
 		CFRelease(path);

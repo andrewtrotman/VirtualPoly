@@ -236,6 +236,7 @@ struct ContentView: View
 							while (response <= 0xFF)
 								{
 								screen.print_character(raw_character: UInt8(response & 0xFF))
+//print(Character(UnicodeScalar(UInt8(response))), terminator:"")
 								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
 								}
@@ -264,7 +265,7 @@ struct ContentView: View
 					let total_seconds_count = -initial_time.timeIntervalSinceNow
 					let current_seconds_count = -previous_time.timeIntervalSinceNow
 
-					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
+//					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
 
 					previous_time = NSDate()
 					previous_cycle_count = machine_cycles_spent(machine.pointer)
