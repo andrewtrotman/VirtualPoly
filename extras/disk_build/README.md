@@ -16,7 +16,7 @@ TSC Fortran-77 | [DSK](F77.DSK) | [Fortran 77 Manual](<Fortran 77 1981.pdf>)
 TSC XBASIC | [DSK](XBASIC_2.DSK) | [Extended Basic User's Manual](xbasic.pdf)
 TSC Text Processing System | [DSK](TSC_TEXT_PROCESSOR.dsk) | [Text Processing System](TSC_Text_Processor.pdf)
 TSC Pascal | [DSK](pascal.dsk) | [FLEX Pascal User's Manual](pascal.pdf)
-Omegasoft Pascal | [DSK](program_pascal_2-0_1.dsk) | [OmegaSoft Pascal Version 2 Language Handbook](OmegasoftPascal.pdf)
+OmegaSoft Pascal | [DSK](program_pascal_2-0_1.dsk) | [OmegaSoft Pascal Version 2 Language Handbook](OmegasoftPascal.pdf)
 RBASIC | [DSK](RBASIC.DSK) | [RBASIC User's Manual](RBASIC.PDF)
 McCosh C | [DSK](mccosh_C.zip) | [James McCosh 'C' Compiler for FLEX](McCosh_C.pdf)
 Scott Adams Adventures | [DSK](advgames.dsk) | No Manual.
