@@ -44,7 +44,7 @@ struct ContentView: View
 	{
     @StateObject var app_state : AppState
 
-	static let CPU_speed: Double = 50000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()

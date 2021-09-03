@@ -43,6 +43,8 @@
 		49E35E2F267F1D670078058B /* saa5055_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49E35E2D267F1D670078058B /* saa5055_font.cpp */; };
 		49F336C526E205400075EEBA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C426E205400075EEBA /* WebView.swift */; };
 		49F336C726E209A10075EEBA /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C626E209A10075EEBA /* Keyboard.swift */; };
+		49F336CA26E210760075EEBA /* mc6821.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C826E210760075EEBA /* mc6821.cpp */; };
+		49F336CB26E210760075EEBA /* mc6821.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C826E210760075EEBA /* mc6821.cpp */; };
 		49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0C266C523000408DAE /* flex_emulator.swift */; };
 		49F70B0F266C523000408DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B0E266C523000408DAE /* ContentView.swift */; };
 		49F70B11266C523100408DAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49F70B10266C523100408DAE /* Assets.xcassets */; };
@@ -128,6 +130,8 @@
 		49E35E2E267F1D670078058B /* saa5055_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa5055_font.h; sourceTree = "<group>"; };
 		49F336C426E205400075EEBA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		49F336C626E209A10075EEBA /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		49F336C826E210760075EEBA /* mc6821.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6821.cpp; sourceTree = "<group>"; };
+		49F336C926E210760075EEBA /* mc6821.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6821.h; sourceTree = "<group>"; };
 		49F70B09266C523000408DAE /* flex_emulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flex_emulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49F70B0C266C523000408DAE /* flex_emulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flex_emulator.swift; sourceTree = "<group>"; };
 		49F70B0E266C523000408DAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -283,6 +287,8 @@
 				49480DF42675DD4C00860A83 /* ide.cpp */,
 				49B31D7D266F550C00706439 /* mc6850.h */,
 				49B31D7C266F550C00706439 /* mc6850.cpp */,
+				49F336C826E210760075EEBA /* mc6821.cpp */,
+				49F336C926E210760075EEBA /* mc6821.h */,
 				49480DEF2674993E00860A83 /* saa5050_font.cpp */,
 				49480DF12674993E00860A83 /* saa5050_font.h */,
 				49E35E2D267F1D670078058B /* saa5055_font.cpp */,
@@ -570,6 +576,7 @@
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
 				499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */,
 				49D1C24926DA056200015409 /* saa5050_font.cpp in Sources */,
+				49F336CB26E210760075EEBA /* mc6821.cpp in Sources */,
 				49D1C21A26D9D03E00015409 /* Flex_Emulator_MacOSApp.swift in Sources */,
 				49D1C24D26DA056200015409 /* usim.cpp in Sources */,
 				49D1C25326DA065900015409 /* Compatibility.swift in Sources */,
@@ -598,6 +605,7 @@
 			files = (
 				49480DF62675DD4C00860A83 /* ide.cpp in Sources */,
 				49E35E2F267F1D670078058B /* saa5055_font.cpp in Sources */,
+				49F336CA26E210760075EEBA /* mc6821.cpp in Sources */,
 				49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */,
 				49B31D78266F50EF00706439 /* usim.cpp in Sources */,
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,

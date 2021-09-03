@@ -97,6 +97,16 @@ byte computer::read(word address)
 			break;
 
 		/*
+			Printer on 6821 PIA
+		*/
+		case 0xE01C:
+		case 0xE01D:
+		case 0xE01E:
+		case 0xE01F:
+			answer = printer.read(address - 0xE01C);
+			break;
+
+		/*
 			Computer Memory
 		*/
 		default:
@@ -140,6 +150,16 @@ void computer::write(word address, byte value)
 		case 0xE016:
 		case 0xE017:
 			hard_drive.write(address - 0xE010, value);
+			break;
+
+		/*
+			Printer on 6821 PIA
+		*/
+		case 0xE01C:
+		case 0xE01D:
+		case 0xE01E:
+		case 0xE01F:
+			printer.write(address - 0xE01C, value);
 			break;
 
 		/*
