@@ -1,71 +1,16 @@
-//
-//  Acknowledgements.swift
-//  Flex Emulator MacOS
-//
-//  Created by Andrew Trotman on 1/09/21.
-//
-
+/*
+	ACKNOWLEDGEMENTS.SWIFT
+	----------------------
+*/
 import Foundation
 import SwiftUI
-
-
 import WebKit
 
-
-
-struct WebView: NSViewRepresentable
-	{
-	@State var text: String
-
-    func makeCoordinator() -> WebView.Coordinator
-    	{
-        Coordinator(self)
-        }
-
-	func makeNSView(context: Context) -> WKWebView
-		{
-		let view = WKWebView()
-        view.navigationDelegate = context.coordinator
-		return view
-		}
-
-	func updateNSView(_ uiView: WKWebView, context: Context)
-		{
-		uiView.loadHTMLString(text, baseURL: nil)
-		}
-
-	class Coordinator: NSObject, WKNavigationDelegate
-		{
-		let parent: WebView
-
-		init(_ parent: WebView)
-			{
-			self.parent = parent
-			}
-
-		func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
-			{
-			if let url = navigationAction.request.url
-				{
-				if url.absoluteString.hasPrefix("http://") || url.absoluteString.hasPrefix("https://")
-					{
-					decisionHandler(.cancel)
-					NSWorkspace.shared.open(url)
-					}
-				else
-					{
-					decisionHandler(.allow)
-					}
-				}
-			else
-				{
-				decisionHandler(.allow)
-				}
-			}
-		}
-	}
-
-func message() -> String
+/*
+	MESSAGE()
+	---------
+*/
+private func message() -> String
 	{
 	do
 		{
@@ -78,6 +23,10 @@ func message() -> String
 		}
 }
 
+/*
+	STRUCT ACKNOWLEDGEMENTS
+	-----------------------
+*/
 struct Acknowledgements: View
 	{
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -103,6 +52,3 @@ struct Acknowledgements: View
 		.frame(width:(NSScreen.main?.visibleFrame.size.width)! / 2.0, height:(NSScreen.main?.visibleFrame.size.height)! / 2.0)
 		}
 	}
-
-
-

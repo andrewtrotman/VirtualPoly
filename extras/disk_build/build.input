@@ -65,7 +65,7 @@ mount 1 ved.dsk
 copy 1 0
 umount 1
 
-mount 1 ../disk_images/BB176.DSK
+mount 1 BB176.DSK
 copy 1 0
 umount 1
 

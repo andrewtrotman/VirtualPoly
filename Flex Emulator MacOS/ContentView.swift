@@ -8,93 +8,6 @@ import Foundation
 import CoreGraphics
 
 /*
-	STRUCT KEYEVENTHANDLING
-	-----------------------
-	Keyboard management for SwiftUI on the Mac.
-	Addapted from: https://stackoverflow.com/questions/61153562/how-to-detect-keyboard-events-in-swiftui-on-macos
-*/
-struct KeyEventHandling: NSViewRepresentable
-	{
-	@Binding var machine: machine_changer
-
-	/*
-		CLASS KEYVIEW
-		-------------
-	*/
-	class KeyView: NSView
-		{
-		var machine: machine_changer
-
-		/*
-			ACCEPTSFIRSTRESPONDER
-			---------------------
-		*/
-		override var acceptsFirstResponder: Bool
-			{
-			true
-			}
-
-		/*
-			KEYDOWN()
-			---------
-		*/
-		override func keyDown(with event: NSEvent)
-			{
-//			print(">> key \(event.charactersIgnoringModifiers ?? "")")
-			if event.characters?.count == 1
-				{
-				if let ascii = Character(event.characters!).asciiValue
-					{
-					let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
-					machine_queue_key_press(machine.pointer, flex_key)
-					}
-				}
-			}
-
-		/*
-			INIT()
-			------
-		*/
-		init(machine: machine_changer)
-			{
-			self.machine = machine
-			super.init(frame: .zero)
-			}
-
-		/*
-			INIT()
-			------
-		*/
-		required init?(coder: NSCoder)
-			{
-			fatalError("init(coder:) has not been implemented")
-			}
-	}
-
-	/*
-		MAKENSVIEW()
-		------------
-	*/
-	func makeNSView(context: Context) -> NSView
-		{
-		let view = KeyView(machine: machine)
-		DispatchQueue.main.async
-			{ // wait till next event cycle
-			view.window?.makeFirstResponder(view)
-			}
-		return view
-		}
-
-	/*
-		UPDATENSVIEW()
-		--------------
-	*/
-	func updateNSView(_ nsView: NSView, context: Context)
-		{
-		}
-	}
-
-/*
 	CLASS IMAGE_CHANGER
 	-------------------
 */
@@ -121,15 +34,6 @@ class image_changer: ObservableObject
 class machine_changer: ObservableObject
 	{
 	@Published public var pointer: UnsafeRawPointer? = nil
-
-	/*
-		INIT()
-		------
-	*/
-	init()
-		{
-		/* Nothing */
-		}
 	}
 
 /*
@@ -140,7 +44,7 @@ struct ContentView: View
 	{
     @StateObject var app_state : AppState
 
-	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 50000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -210,7 +114,7 @@ struct ContentView: View
 					{
 					render_text_screen()
 					})
-				.background(KeyEventHandling(machine: $machine))
+				.background(key_event_handling(machine: $machine))
 
 			Spacer()
 				.frame(maxHeight: 0)
@@ -277,8 +181,6 @@ struct ContentView: View
 						machine.pointer = machine_construct()
 						AppState.shared.machine = machine.pointer
 						AppState.shared.screen = screen
-//						machine_deserialise(machine.pointer)
-//						deserialise(path: get_serialised_filename())
 
 						stop_timers()
 						initial_time = NSDate()
@@ -300,66 +202,5 @@ struct ContentView: View
 		screen.render_entire_screen()
 		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
 		img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!, size: .zero)
-		}
-
-	/*
-		GET_SERIALISED_FILENAME()
-		-------------------------
-	*/
-	func get_serialised_filename() -> URL
-		{
-		return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("terminal.state")
-		}
-
-	/*
-		SERIALISE()
-		-----------
-	*/
-	func serialise(path: URL)
-		{
-		do
-			{
-			FileManager.default.createFile(atPath: path.path, contents: nil, attributes: nil)
-
-			let file = try FileHandle(forWritingTo: path)
-			try file.seekToEnd()
-
-			screen.serialise(file: file)
-
-			file.write(Data(bytes: &paused, count:MemoryLayout.size(ofValue:paused)))
-
-			file.closeFile()
-			}
-		catch let error as NSError
-			{
-			print("Failure to serialise terminal: \(error)")
-			}
-		}
-
-	/*
-		DESERIALISE()
-		-------------
-	*/
-	func deserialise(path: URL)
-		{
-		do
-			{
-			let file = try FileHandle(forReadingFrom: path)
-
-			try screen.deserialise(file: file)
-
-			let data = try file.read(upToCount: MemoryLayout.size(ofValue:paused))
-			paused = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: paused).self)})
-
-			file.closeFile()
-
-			initial_time = NSDate()
-			previous_time = NSDate()
-			previous_cycle_count = machine_cycles_spent(machine.pointer)
-			}
-		catch let error as NSError
-			{
-			print("Failure to deserialise terminal: \(error)")
-			}
 		}
 	}
