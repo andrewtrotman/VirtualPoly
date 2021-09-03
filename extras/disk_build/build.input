@@ -65,35 +65,8 @@ mount 1 ved.dsk
 copy 1 0
 umount 1
 
-
-
-#mount 1 ../disk_images/BB114.DSK
-#mount 1 ../disk_images/BB122.DSK			# PC=2.13 LC=2.10 CHAIN=2.0 RA=1.30 RE=1.30 LL=1.30 WORKS!
-#mount 1 ../disk_images/BB124.DSK			# PC=2.13 LC=2.10 CHAIN=2.0 RA=1.30 RE=1.30 LL=1.30 WORKS!
-
-#mount 1 ../disk_images/BB176.DSK
-# PC=2.20 LC=2.20 CHAIN=2.1 RA=1.40 RE=1.40 LL=1.40 WORKS!
-
-
-#mount 1 ../disk_images/BB184.DSK			# PC=2.21 LC=2.20 CHAIN=2.1 RA=1.40 RE=1.40 LL=1.40 BROKEN LC
-#mount 1 ../disk_images/OMSP-221.DSK		# PC=2.21 LC=2.20 CHAIN=2.1 RA=1.40 RE=1.40 LL=1.40 BROKEN LC
-#mount 1 ../disk_images/OMSPASCAL.DSK		# PC=2.21 LC=2.20 CHAIN=2.1 RA=1.40 RE=1.40 LL=1.40 BROKEN LC
-#mount 1 ../disk_images/OMSPASCL.DSK		# PC=2.10 LC=2.10 CHAIN=2.0 RA=1.20 RE=1.20 LL=1.20 BROKEN RL.RO
-#mount 1 ../disk_images/OMSPascal_v2.21.dsk # PC=2.21 LC=2.20 CHAIN=2.1 RA=1.40 RE=1.40 LL=1.40 BROKEN LC
+mount 1 ../disk_images/BB176.DSK
 copy 1 0
-umount 1
-delete 0.STARTUP.TXT
-
-
-mount 1 program_pascal_2-0_1.dsk
-copy 1.PASCAL.CMD 0
-#copy 1.PC.CMD 0
-#copy 1.RE.CMD 0
-#copy 1.RA.CMD 0
-#copy 1.LL.CMD 0
-#copy 1.PASLNK.RO 0
-#copy 1.RL.RO 0
-copy 1.PRIMES.TXT 0
 umount 1
 
 import 0 PATCH.TXT xxx=compress
