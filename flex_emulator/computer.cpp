@@ -110,9 +110,6 @@ byte computer::read(word address)
 			Computer Memory
 		*/
 		default:
-			if (address >= 0xE000 && address < 0xF000)
-				int x = 0;
-
 			answer = memory[address];
 		}
 

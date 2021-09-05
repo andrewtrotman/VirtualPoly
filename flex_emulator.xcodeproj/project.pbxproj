@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		491DD9D0268D4E9200039A24 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 491DD9CF268D4E9200039A24 /* user.dsk */; };
 		492E929726DB825F000DA1F9 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 492E929626DB825F000DA1F9 /* Credits.rtf */; };
 		4944EF422670801A00445780 /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF412670801A00445780 /* computer.cpp */; };
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
@@ -38,8 +37,9 @@
 		49D1C24D26DA056200015409 /* usim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D76266F50EF00706439 /* usim.cpp */; };
 		49D1C24F26DA056900015409 /* terminal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD34C5268F043000F56EF3 /* terminal.swift */; };
 		49D1C25026DA056F00015409 /* flex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 496F1DD8267C80CD0036C9F6 /* flex.dsk */; };
-		49D1C25126DA056F00015409 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 491DD9CF268D4E9200039A24 /* user.dsk */; };
 		49D1C25326DA065900015409 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1C25226DA065900015409 /* Compatibility.swift */; };
+		49D3980B26E4AD1B00A75F04 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49D3980A26E4AD1A00A75F04 /* user.dsk */; };
+		49D3980C26E4ADFA00A75F04 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49D3980A26E4AD1A00A75F04 /* user.dsk */; };
 		49E35E2F267F1D670078058B /* saa5055_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49E35E2D267F1D670078058B /* saa5055_font.cpp */; };
 		49F336C526E205400075EEBA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C426E205400075EEBA /* WebView.swift */; };
 		49F336C726E209A10075EEBA /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C626E209A10075EEBA /* Keyboard.swift */; };
@@ -89,7 +89,6 @@
 
 /* Begin PBXFileReference section */
 		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
-		491DD9CF268D4E9200039A24 /* user.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; name = user.dsk; path = extras/user.dsk; sourceTree = SOURCE_ROOT; };
 		492E929626DB825F000DA1F9 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
 		4944EF412670801A00445780 /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer.cpp; sourceTree = "<group>"; };
@@ -126,6 +125,7 @@
 		49D1C23726D9D03F00015409 /* Flex_Emulator_MacOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flex_Emulator_MacOSUITests.swift; sourceTree = "<group>"; };
 		49D1C23926D9D03F00015409 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49D1C25226DA065900015409 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
+		49D3980A26E4AD1A00A75F04 /* user.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = user.dsk; sourceTree = "<group>"; };
 		49E35E2D267F1D670078058B /* saa5055_font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saa5055_font.cpp; sourceTree = "<group>"; };
 		49E35E2E267F1D670078058B /* saa5055_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa5055_font.h; sourceTree = "<group>"; };
 		49F336C426E205400075EEBA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -303,7 +303,7 @@
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
 				496F1DD8267C80CD0036C9F6 /* flex.dsk */,
-				491DD9CF268D4E9200039A24 /* user.dsk */,
+				49D3980A26E4AD1A00A75F04 /* user.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -510,9 +510,9 @@
 				492E929726DB825F000DA1F9 /* Credits.rtf in Resources */,
 				49D1C25026DA056F00015409 /* flex.dsk in Resources */,
 				49D1C22126D9D03F00015409 /* Preview Assets.xcassets in Resources */,
+				49D3980C26E4ADFA00A75F04 /* user.dsk in Resources */,
 				49FE869C26E060FB00B5D2F9 /* Acknowledgements.html in Resources */,
 				49D1C21E26D9D03F00015409 /* Assets.xcassets in Resources */,
-				49D1C25126DA056F00015409 /* user.dsk in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,9 +535,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */,
-				491DD9D0268D4E9200039A24 /* user.dsk in Resources */,
 				49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */,
 				49F70B11266C523100408DAE /* Assets.xcassets in Resources */,
+				49D3980B26E4AD1B00A75F04 /* user.dsk in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,7 +681,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pinnated.Flex-Emulator-MacOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -708,7 +708,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pinnated.Flex-Emulator-MacOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

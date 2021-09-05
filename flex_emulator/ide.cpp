@@ -92,9 +92,11 @@ ide::ide()
 	*/
 	std::string filename = move_disks_to_user_space("flex.dsk");
 	read_entire_file(filename.c_str(), disk_0);
+	disk_0_sectors_per_track = disk_0[0x227];
 
 	filename = move_disks_to_user_space("user.dsk");
 	read_entire_file(filename.c_str(), disk_1);
+	disk_1_sectors_per_track = disk_1[0x227];
 	}
 
 /*
@@ -105,7 +107,7 @@ std::string ide::move_disks_to_user_space(const std::string &filename)
 	{
 	auto full_filename = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
 	std::error_code status;
-	if (!exists(full_filename, status))
+//	if (!exists(full_filename, status))
 		{
 		CFBundleRef bundle = CFBundleGetMainBundle();
 		CFStringRef munged_name = CFStringCreateWithCString(NULL, filename.c_str(), kCFStringEncodingUTF8);
@@ -238,11 +240,31 @@ void ide::write(word address, byte value)
 			else if (command_register == command_read_sector || command_register == command_write_sector)
 				{
 				uint32_t disk_number = (disk_head_register >> 4) & 0x01;
-				uint32_t sector = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
+				uint32_t block = (cylinder_high_register << 16) | (cylinder_low_register << 8) | sector_number_register;
+
+				/*
+					Convert from the block number the ROM generates to a track / sector number.
+				*/
+				uint32_t sector = block % 254;
+				uint32_t track = block / 254;
+
+				/*
+					Now convert to a disk offset location.
+				*/
 				if (disk_number == 0)
-					current = ((uint8_t *)&disk_0[0]) + sector * 256;
+					{
+					uint32_t actual = track * disk_0_sectors_per_track + sector;
+					current = ((uint8_t *)&disk_0[0]) + actual * 256;
+					}
 				else // 	disk_number == 1
-					current = ((uint8_t *)&disk_1[0]) + sector * 256;
+					{
+					uint32_t actual = track * disk_1_sectors_per_track + sector;
+					current = ((uint8_t *)&disk_1[0]) + actual * 256;
+					}
+					
+				/*
+					And the end if 256 bytes later because FLEX sectors are 256 bytes in size
+				*/
 				end = current + 256 * sector_count_register;
 				}
 			break;

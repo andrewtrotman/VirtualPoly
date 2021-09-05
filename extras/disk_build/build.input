@@ -1,4 +1,7 @@
-new flex.dsk t254,s254
+#new flex.dsk t254,s254
+
+new user.dsk t256,s64
+new flex.dsk t256,s64
 mount 0 flex.dsk
 label 0 Flex
 rdbootfile ../bootsector.bin

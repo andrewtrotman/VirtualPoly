@@ -50,6 +50,9 @@ class ide
 		byte disk_head_register;
 		byte status_register;
 		byte command_register;
+		word disk_0_sectors_per_track;		// read the disk geometry from the FLEX disk itself.
+		word disk_1_sectors_per_track;		// read the disk geometry from the FLEX disk itself.
+
 	public:
 		std::string disk_0;			// the buffer containing the disk in drive 0
 		std::string disk_1;			// the buffer containing the disk in drive 1
