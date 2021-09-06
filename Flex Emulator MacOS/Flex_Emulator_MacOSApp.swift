@@ -21,8 +21,8 @@ struct Flex_Emulator_MacOSApp: App
     @State var text_selected = true
     @State var acknowledgements_open = false
     @State var disk_0: String = "Flex"
+    @State var disk_1: String = "User"
     @State var active = false
-
 
 	var body: some Scene
 		{
@@ -54,6 +54,7 @@ struct Flex_Emulator_MacOSApp: App
 				CommandGroup(replacing: .newItem) {}
 				CommandGroup(after: .saveItem)
 					{
+//					file_menu(disk_0_name: $disk_0, disk_1_name: $disk_1)
 					Divider()
 					Button("Reset")
 						{
@@ -109,6 +110,26 @@ struct cut_copy_paste_menu: View
 			}
 			.disabled(!can_paste)
 			.keyboardShortcut("v")
-//		Button("Select All"){}.keyboardShortcut("A").disabled(true)
+//		Button("Select All")
+//			{
+//
+//			}
+//			.keyboardShortcut("a")
+		}
+	}
+
+struct file_menu: View
+	{
+	@Binding var disk_0_name: String
+	@Binding var disk_1_name: String
+
+	var body: some View
+		{
+		Button("Drive 0: " + disk_0_name)
+			{
+			}
+		Button("Drive 1: " + disk_1_name)
+			{
+			}
 		}
 	}
