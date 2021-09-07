@@ -108,6 +108,16 @@ int machine_dequeue_serial_output(const void *object)
 	}
 
 /*
+	MACHINE_CHANGE_DISK()
+	---------------------
+	Returns the name of the FLEX disk
+*/
+const char *machine_change_disk(const void *object, uint8_t drive, const char *filename)
+	{
+	return ((computer *)object)->change_disk(drive, filename);
+	}
+
+/*
 	GET_SAA5050_FONT()
 	------------------
 */

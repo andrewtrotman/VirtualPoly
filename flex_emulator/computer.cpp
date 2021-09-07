@@ -29,8 +29,8 @@ computer::~computer()
 	}
 
 /*
-	COMPUTER::ET_SERIALISED_FILENAME()
-	----------------------------------
+	COMPUTER::GET_SERIALISED_FILENAME()
+	-----------------------------------
 */
 std::string computer::get_serialised_filename(void)
 	{
@@ -43,8 +43,8 @@ std::string computer::get_serialised_filename(void)
 */
 void computer::serialise(void)
 	{
-	hard_drive.save_disk("flex.dsk", hard_drive.disk_0);
-	hard_drive.save_disk("user.dsk", hard_drive.disk_1);
+	hard_drive.save_disk(0);
+	hard_drive.save_disk(1);
 	auto file = std::ofstream(get_serialised_filename());
 	file << *this;
 	file.close();
@@ -59,6 +59,17 @@ void computer::deserialise(void)
 	auto file = std::ifstream(get_serialised_filename());
 	file >> *this;
 	file.close();
+	}
+
+/*
+	COMPUTER::CHANGE_DISK()
+	-----------------------
+*/
+const char *computer::change_disk(uint8_t drive, const char *filename)
+	{
+	hard_drive.load_disk(drive, filename);
+	disk_name = hard_drive.flex_diskname(drive);
+	return disk_name.c_str();
 	}
 
 /*

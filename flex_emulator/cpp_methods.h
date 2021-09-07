@@ -23,4 +23,5 @@ extern "C"
 	uint8_t *get_saa5050_font(void);
 	void machine_deserialise(const void  *object);
 	void machine_serialise(const void *object);
+	const char *machine_change_disk(const void *object, uint8_t drive, const char *filename);
 }

@@ -54,7 +54,7 @@ struct Flex_Emulator_MacOSApp: App
 				CommandGroup(replacing: .newItem) {}
 				CommandGroup(after: .saveItem)
 					{
-//					file_menu(disk_0_name: $disk_0, disk_1_name: $disk_1)
+					file_menu(disk_0_name: $disk_0, disk_1_name: $disk_1)
 					Divider()
 					Button("Reset")
 						{
@@ -127,9 +127,31 @@ struct file_menu: View
 		{
 		Button("Drive 0: " + disk_0_name)
 			{
+			if let got = showOpenPanel()
+				{
+				let c_name = machine_change_disk(AppState.shared.machine, 0, got)
+				disk_0_name = String(cString: c_name!)
+				}
 			}
 		Button("Drive 1: " + disk_1_name)
 			{
+			if let got = showOpenPanel()
+				{
+				let c_name = machine_change_disk(AppState.shared.machine, 1, got)
+				disk_1_name = String(cString: c_name!)
+				}
 			}
 		}
 	}
+
+func showOpenPanel() -> String?
+	{
+	let openPanel = NSOpenPanel()
+	openPanel.allowedFileTypes = ["dsk", "DSK"]
+	openPanel.allowsMultipleSelection = false
+	openPanel.canChooseDirectories = false
+	openPanel.canChooseFiles = true
+	let response = openPanel.runModal()
+	return response == .OK ? openPanel.url?.path : nil
+	}
+

@@ -8,7 +8,6 @@
 */
 #include <stdio.h>
 #include <unistd.h>
-#include <filesystem>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <CoreFoundation/CoreFoundation.h>
@@ -90,13 +89,20 @@ ide::ide()
 		By default we use the disk in the app's Documents folder, but if that doesn't exist then copy it from the
 		disk in the app's bundle.  This way the shipped disk is never modified, but the user's copy of that disk is.
 	*/
-	std::string filename = move_disks_to_user_space("flex.dsk");
-	read_entire_file(filename.c_str(), disk_0);
-	disk_0_sectors_per_track = disk_0[0x227];
+	move_disks_to_user_space("flex.dsk");
+	move_disks_to_user_space("user.dsk");
 
-	filename = move_disks_to_user_space("user.dsk");
-	read_entire_file(filename.c_str(), disk_1);
-	disk_1_sectors_per_track = disk_1[0x227];
+	load_disk(0, get_local_filename("flex.dsk").string().c_str());
+	load_disk(1, get_local_filename("user.dsk").string().c_str());
+	}
+
+/*
+	IDE::GET_LOCAL_FILENAME()
+	-------------------------
+*/
+std::filesystem::path ide::get_local_filename(const std::string &filename)
+	{
+	return std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
 	}
 
 /*
@@ -105,7 +111,7 @@ ide::ide()
 */
 std::string ide::move_disks_to_user_space(const std::string &filename)
 	{
-	auto full_filename = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
+	auto full_filename = get_local_filename(filename);
 	std::error_code status;
 //	if (!exists(full_filename, status))
 		{
@@ -135,13 +141,50 @@ ide::~ide()
 	}
 
 /*
+	IDE::LOAD_DISK()
+	----------------
+*/
+void ide::load_disk(uint8_t disk, const std::string &filename)
+	{
+	if (disk == 0)
+		{
+		disk_0_filename = filename;
+		read_entire_file(filename.c_str(), disk_0);
+		disk_0_sectors_per_track = disk_0[0x227];
+		}
+	else		// disk == 1
+		{
+		disk_1_filename = filename;
+		read_entire_file(filename.c_str(), disk_1);
+		disk_1_sectors_per_track = disk_0[0x227];
+		}
+	}
+
+/*
 	IDE::SAVE_DISK()
 	----------------
 */
-void ide::save_disk(const std::string &filename, const std::string &disk)
+void ide::save_disk(uint8_t disk)
 	{
-	auto full_filename = std::filesystem::path(getenv("HOME")) / std::filesystem::path("Documents") / std::filesystem::path(filename);
-	write_entire_file(full_filename.c_str(), disk);
+	if (disk == 0)
+		if	(disk_0_filename.size() != 0)
+			write_entire_file(disk_0_filename, disk_0);
+
+	if (disk == 1)
+		if	(disk_1_filename.size() != 0)
+			write_entire_file(disk_1_filename, disk_1);
+	}
+
+/*
+	IDE::FLEX_DISKNAME()
+	--------------------
+*/
+std::string ide::flex_diskname(uint8_t disk)
+	{
+	if (disk == 0)
+		return std::string(&disk_0[0x210], 0x0B);
+	else		// disk == 1
+		return std::string(&disk_1[0x210], 0x0B);
 	}
 
 /*

@@ -7,16 +7,17 @@
 	NOTE: 256 byte sectors not 512-byte sectors
 
 	The methods used by the ROM include:
-		ata_ide_command_read_sector	EQU	$20
+		ata_ide_command_read_sector		EQU	$20
 		ata_ide_command_write_sector	EQU	$30
 		ata_ide_command_identfy			EQU	$EC
-		ata_ide_command_set_feature	EQU	$EF
-			ata_ide_feature_8_bit			EQU	$01
+		ata_ide_command_set_feature		EQU	$EF
+			ata_ide_feature_8_bit		EQU	$01
 */
 #pragma once
 
 #include <string>
 #include <iostream>
+#include <filesystem>
 
 #include "typedefs.h"
 
@@ -54,18 +55,26 @@ class ide
 		word disk_1_sectors_per_track;		// read the disk geometry from the FLEX disk itself.
 
 	public:
-		std::string disk_0;			// the buffer containing the disk in drive 0
-		std::string disk_1;			// the buffer containing the disk in drive 1
+		std::string disk_0_filename;		// local file system (MacOS, etc) filename
+		std::string disk_0;					// the buffer containing the disk in drive 0
+		std::string disk_1_filename;		// local file system (MacOS, etc) filename
+		std::string disk_1;					// the buffer containing the disk in drive 1
+
+	protected:
+		std::filesystem::path get_local_filename(const std::string &filename);
+		std::string move_disks_to_user_space(const std::string &filename);
 
 	public:
 		ide();
 		virtual ~ide();
 
-		void save_disk(const std::string &filename, const std::string &disk);
-		std::string move_disks_to_user_space(const std::string &filename);
+		void load_disk(uint8_t disk, const std::string &filename);
+		void save_disk(uint8_t disk);
 
 		byte read(word address);
 		void write(word address, byte value);
+
+		std::string flex_diskname(uint8_t disk);
 	};
 
 /*

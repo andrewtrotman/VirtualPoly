@@ -27,6 +27,7 @@ class computer : public mc6809
 		mc6850 terminal;
 		mc6821 printer;
 		ide hard_drive;
+		std::string disk_name;
 
 	private:
 		std::string get_serialised_filename();
@@ -43,6 +44,8 @@ class computer : public mc6809
 
 		virtual void queue_key_press(byte key);
 		virtual word dequeue_serial_output(void);
+
+		virtual const char *change_disk(uint8_t drive, const char *filename);
 	};
 
 /*
