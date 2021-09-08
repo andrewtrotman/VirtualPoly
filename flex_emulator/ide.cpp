@@ -162,7 +162,7 @@ void ide::disk_load(uint8_t disk, const std::string &filename)
 		{
 		disk_1_filename = filename;
 		read_entire_file(filename.c_str(), disk_1);
-		disk_1_sectors_per_track = disk_0[0x227];
+		disk_1_sectors_per_track = disk_1[0x227];
 		disk_1_did_change = false;
 		}
 	}
