@@ -50,5 +50,9 @@ struct Acknowledgements: View
 			Spacer()
 			}
 		.frame(width:(NSScreen.main?.visibleFrame.size.width)! / 2.0, height:(NSScreen.main?.visibleFrame.size.height)! / 2.0)
+		.onDisappear()
+			{
+			state = false
+			}
 		}
-	}
+}

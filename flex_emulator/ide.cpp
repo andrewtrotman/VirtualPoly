@@ -92,9 +92,23 @@ ide::ide()
 	move_disks_to_user_space("flex.dsk");
 	move_disks_to_user_space("user.dsk");
 
-	load_disk(0, get_local_filename("flex.dsk").string().c_str());
-	load_disk(1, get_local_filename("user.dsk").string().c_str());
+	disk_load(0, get_local_filename("flex.dsk").string().c_str());
+	disk_load(1, get_local_filename("user.dsk").string().c_str());
+
+	disk_0_did_change = false;
+	disk_1_did_change = false;
 	}
+
+/*
+	IDE::~IDE()
+	-----------
+*/
+ide::~ide()
+	{
+	disk_save(0);
+	disk_save(1);
+	}
+
 
 /*
 	IDE::GET_LOCAL_FILENAME()
@@ -132,47 +146,58 @@ std::string ide::move_disks_to_user_space(const std::string &filename)
 	}
 
 /*
-	IDE::~IDE()
-	-----------
-*/
-ide::~ide()
-	{
-	/* Nothing */
-	}
-
-/*
-	IDE::LOAD_DISK()
+	IDE::DISK_LOAD()
 	----------------
 */
-void ide::load_disk(uint8_t disk, const std::string &filename)
+void ide::disk_load(uint8_t disk, const std::string &filename)
 	{
 	if (disk == 0)
 		{
 		disk_0_filename = filename;
 		read_entire_file(filename.c_str(), disk_0);
 		disk_0_sectors_per_track = disk_0[0x227];
+		disk_0_did_change = false;
 		}
 	else		// disk == 1
 		{
 		disk_1_filename = filename;
 		read_entire_file(filename.c_str(), disk_1);
 		disk_1_sectors_per_track = disk_0[0x227];
+		disk_1_did_change = false;
 		}
 	}
 
 /*
-	IDE::SAVE_DISK()
+	IDE::DISK_SAVE()
 	----------------
 */
-void ide::save_disk(uint8_t disk)
+void ide::disk_save(uint8_t disk)
+	{
+ 	if (disk == 0 && disk_0_did_change)
+		if	(disk_0_filename.size() != 0)
+			{
+			write_entire_file(disk_0_filename, disk_0);
+			disk_0_did_change = false;
+			}
+
+	if (disk == 1 && disk_1_did_change)
+		if	(disk_1_filename.size() != 0)
+			{
+			write_entire_file(disk_1_filename, disk_1);
+			disk_1_did_change = false;
+			}
+	}
+
+/*
+	DISK_DID_CHANGE()
+	-----------------
+*/
+bool ide::disk_did_change(uint8_t disk)
 	{
 	if (disk == 0)
-		if	(disk_0_filename.size() != 0)
-			write_entire_file(disk_0_filename, disk_0);
-
-	if (disk == 1)
-		if	(disk_1_filename.size() != 0)
-			write_entire_file(disk_1_filename, disk_1);
+		return disk_0_did_change;
+	else		// disk == 1
+		return disk_1_did_change;
 	}
 
 /*
@@ -298,11 +323,15 @@ void ide::write(word address, byte value)
 					{
 					uint32_t actual = track * disk_0_sectors_per_track + sector;
 					current = ((uint8_t *)&disk_0[0]) + actual * 256;
+					if (command_register == command_write_sector)
+						disk_0_did_change = true;
 					}
 				else // 	disk_number == 1
 					{
 					uint32_t actual = track * disk_1_sectors_per_track + sector;
 					current = ((uint8_t *)&disk_1[0]) + actual * 256;
+					if (command_register == command_write_sector)
+						disk_1_did_change = true;
 					}
 					
 				/*

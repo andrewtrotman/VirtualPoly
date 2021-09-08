@@ -59,6 +59,8 @@ class ide
 		std::string disk_0;					// the buffer containing the disk in drive 0
 		std::string disk_1_filename;		// local file system (MacOS, etc) filename
 		std::string disk_1;					// the buffer containing the disk in drive 1
+		bool disk_0_did_change;				// has the disk been written to?
+		bool disk_1_did_change;				// has the disk been written to?
 
 	protected:
 		std::filesystem::path get_local_filename(const std::string &filename);
@@ -68,8 +70,9 @@ class ide
 		ide();
 		virtual ~ide();
 
-		void load_disk(uint8_t disk, const std::string &filename);
-		void save_disk(uint8_t disk);
+		void disk_load(uint8_t disk, const std::string &filename);
+		void disk_save(uint8_t disk);
+		bool disk_did_change(uint8_t disk);
 
 		byte read(word address);
 		void write(word address, byte value);

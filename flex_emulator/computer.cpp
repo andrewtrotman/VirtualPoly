@@ -43,8 +43,8 @@ std::string computer::get_serialised_filename(void)
 */
 void computer::serialise(void)
 	{
-	hard_drive.save_disk(0);
-	hard_drive.save_disk(1);
+	hard_drive.disk_save(0);
+	hard_drive.disk_save(1);
 	auto file = std::ofstream(get_serialised_filename());
 	file << *this;
 	file.close();
@@ -67,7 +67,8 @@ void computer::deserialise(void)
 */
 const char *computer::change_disk(uint8_t drive, const char *filename)
 	{
-	hard_drive.load_disk(drive, filename);
+	hard_drive.disk_save(drive);
+	hard_drive.disk_load(drive, filename);
 	disk_name = hard_drive.flex_diskname(drive);
 	return disk_name.c_str();
 	}

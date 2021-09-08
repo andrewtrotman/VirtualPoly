@@ -12,9 +12,18 @@ class AppState: ObservableObject
 	var screen: terminal? = nil
 	}
 
+class AppDelegate: NSObject, NSApplicationDelegate
+	{
+	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool
+		{
+		return true
+		}
+	}
+
 @main
 struct Flex_Emulator_MacOSApp: App
 	{
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.openURL) var openURL
     @StateObject var app_state = AppState.shared
     @State var clipboard_has_text = true
@@ -39,7 +48,7 @@ struct Flex_Emulator_MacOSApp: App
 					}
 				.onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification))
 					{ _ in
-//					machine_serialise(AppState.shared.machine)
+					machine_destruct(AppState.shared.machine)
 					}
 			}
 			.commands
