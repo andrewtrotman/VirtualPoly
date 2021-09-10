@@ -7,7 +7,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "computer.h"
+#include <stdint.h>
 
 extern "C"
 	{

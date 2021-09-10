@@ -4,6 +4,7 @@
 	Copyright (c) 2021 Andrew Trotman
 */
 #include "cpp_methods.h"
+#include "computer_arrow.h"
 
 /*
 	MACHINE_CONSTRUCT()
@@ -11,6 +12,7 @@
 */
 const void *machine_construct()
 	{
+//	computer *machine = new computer_arrow();
 	computer *machine = new computer();
 	machine->reset();
 	return (const void *)machine;
