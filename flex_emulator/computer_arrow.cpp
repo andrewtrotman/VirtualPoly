@@ -39,6 +39,8 @@ const uint8_t *computer_arrow::screen_buffer(void)
 	----------------------
 	E000-E7FF Screen RAM				// appears to be at E800
 	F000-FFFF ROM ("Menu")
+
+	E008
 */
 byte computer_arrow::read(word address)
 	{
