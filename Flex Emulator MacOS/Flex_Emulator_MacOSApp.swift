@@ -9,7 +9,8 @@ class AppState: ObservableObject
 	static let shared = AppState()
 
 	var machine: UnsafeRawPointer? = nil
-	var screen: terminal? = nil
+//	var screen: terminal? = nil
+	var screen: screen_arrow? = nil
 	}
 
 class AppDelegate: NSObject, NSApplicationDelegate

@@ -46,6 +46,7 @@ class computer : public mc6809
 		virtual word dequeue_serial_output(void);
 
 		virtual const char *change_disk(uint8_t drive, const char *filename);
+		virtual const uint8_t *screen_buffer(void);
 	};
 
 /*

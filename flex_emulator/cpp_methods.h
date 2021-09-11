@@ -24,4 +24,5 @@ extern "C"
 	void machine_deserialise(const void  *object);
 	void machine_serialise(const void *object);
 	const char *machine_change_disk(const void *object, uint8_t drive, const char *filename);
+	const uint8_t *machine_get_screen_buffer(const void *object);
 }

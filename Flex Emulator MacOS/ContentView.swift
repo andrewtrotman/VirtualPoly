@@ -54,7 +54,8 @@ struct ContentView: View
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
 
-	@State var screen = terminal()
+//	@State var screen = terminal()
+	@State var screen = screen_arrow()
 
 	@StateObject var img_screen = image_changer()
 
@@ -75,7 +76,7 @@ struct ContentView: View
 			machine_reset(machine.pointer);
 			}
 		screen.reset()
-		screen.set_width(new_width: .eighty)
+		screen.set_width(new_width: terminal.screen_width.eighty)
 		}
 
 	/*
@@ -139,12 +140,13 @@ struct ContentView: View
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
 								{
-								screen.print_character(raw_character: UInt8(response & 0xFF))
+//								screen.print_character(raw_character: UInt8(response & 0xFF))
 //print(Character(UnicodeScalar(UInt8(response))), terminator:"")
 								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
 								}
 
+screen_did_change = true
 							if screen_did_change
 								{
 								render_text_screen()
@@ -157,7 +159,7 @@ struct ContentView: View
 					{ _ in
 					if !paused
 						{
-						screen.flash_state.toggle()
+//						screen.flash_state.toggle()
 						render_text_screen()
 						}
 					}
@@ -179,6 +181,7 @@ struct ContentView: View
 					if (machine.pointer == nil)
 						{
 						machine.pointer = machine_construct()
+						screen.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer
 						AppState.shared.screen = screen
 

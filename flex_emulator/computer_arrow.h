@@ -19,4 +19,6 @@ class computer_arrow : public computer
 
 		virtual byte read(word offset);
 		virtual void write(word offset, byte val);
+
+		virtual const uint8_t *screen_buffer(void);
 	};

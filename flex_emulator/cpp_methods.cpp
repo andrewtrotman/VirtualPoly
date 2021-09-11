@@ -12,8 +12,8 @@
 */
 const void *machine_construct()
 	{
-//	computer *machine = new computer_arrow();
-	computer *machine = new computer();
+	computer *machine = new computer_arrow();
+//	computer *machine = new computer();
 	machine->reset();
 	return (const void *)machine;
 	}
@@ -117,6 +117,11 @@ int machine_dequeue_serial_output(const void *object)
 const char *machine_change_disk(const void *object, uint8_t drive, const char *filename)
 	{
 	return ((computer *)object)->change_disk(drive, filename);
+	}
+
+const uint8_t *machine_get_screen_buffer(const void *object)
+	{
+	return ((computer *)object)->screen_buffer();
 	}
 
 /*

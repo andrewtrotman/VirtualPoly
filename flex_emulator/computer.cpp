@@ -38,6 +38,15 @@ std::string computer::get_serialised_filename(void)
 	}
 
 /*
+	COMPUTER::SCREEN_BUFFER()
+	-------------------------
+*/
+const uint8_t *computer::screen_buffer(void)
+	{
+	return nullptr;
+	}
+
+/*
 	COMPUTER::SERIALISE()
 	---------------------
 */

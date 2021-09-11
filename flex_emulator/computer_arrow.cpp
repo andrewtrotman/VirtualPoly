@@ -26,8 +26,17 @@ computer_arrow::~computer_arrow()
 	}
 
 /*
-	COMPUTER::READ()
-	----------------
+	COMPUTER_ARROW::SCREEN_BUFFER()
+	-------------------------------
+*/
+const uint8_t *computer_arrow::screen_buffer(void)
+	{
+	return memory + 0xE800;
+	}
+
+/*
+	COMPUTER_ARROW::READ()
+	----------------------
 	E000-E7FF Screen RAM				// appears to be at E800
 	F000-FFFF ROM ("Menu")
 */
@@ -37,15 +46,15 @@ byte computer_arrow::read(word address)
 
 	answer = memory[address];
 
-	if (address >= 0xE000 && address < 0xF000)
-		int x = 0;
+//	if (address >= 0xE000 && address < 0xE800)
+//		int x = 0;
 
 	return answer;
 	}
 
 /*
-	COMPUTER::WRITE()
-	-----------------
+	COMPUTER_ARROW::WRITE()
+	-----------------------
 	E000-E7FF Screen RAM				// appears to be at E800
 	F000-FFFF ROM ("Menu")
 */
