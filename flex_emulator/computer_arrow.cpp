@@ -11,7 +11,8 @@
 	--------------------------------
 */
 computer_arrow::computer_arrow() :
-	computer()
+	computer(),
+	keyboard(keyboard_input)
 	{
 	memcpy(memory + 0xF000, ROM_arrow_menu, 0x1000);
 	}
@@ -37,19 +38,25 @@ const uint8_t *computer_arrow::screen_buffer(void)
 /*
 	COMPUTER_ARROW::READ()
 	----------------------
-	E000-E7FF Screen RAM				// appears to be at E800
-	F000-FFFF ROM ("Menu")
-
-	E008
+	0000 - 7FFF RAM
+	E008 & E00C Keyboard Controller
+	E800 - EFFF Screen RAM
+	F000 - FFFF ROM ("Menu")
 */
 byte computer_arrow::read(word address)
 	{
 	byte answer;
 
-	answer = memory[address];
-
-//	if (address >= 0xE000 && address < 0xE800)
-//		int x = 0;
+	/*
+		Keyboard controller
+	*/
+	if (address == 0xE008 || address == 0xE00C)
+		answer = keyboard.read(address - 0xE008);
+	/*
+		Screen RAM, Physical RAM, and ROM
+	*/
+	else
+		answer = memory[address];
 
 	return answer;
 	}
@@ -57,19 +64,29 @@ byte computer_arrow::read(word address)
 /*
 	COMPUTER_ARROW::WRITE()
 	-----------------------
-	E000-E7FF Screen RAM				// appears to be at E800
-	F000-FFFF ROM ("Menu")
+	0000 - 7FFF RAM
+	E008 & E00C Keyboard Controller
+	E800 - EFFF Screen RAM
+	F000 - FFFF ROM ("Menu")
 */
 void computer_arrow::write(word address, byte value)
 	{
 	/*
-		Screen RAM
-	*/
-	if (address >= 0xE000 && address < 0xF000)
-		memory[address] = value;
-	/*
 		Physical RAM
 	*/
-	else if (address < 0x8000)
-			memory[address] = value;
+	if (address < 0x8000)
+		memory[address] = value;
+	/*
+		Keyboard controller
+	*/
+	else if (address == 0xE008 || address == 0xE00C)
+		keyboard.write(address - 0xE008, value);
+	/*
+		Screen RAM
+	*/
+	else if (address >= 0xE000 && address < 0xF000)
+		memory[address] = value;
+	/*
+		ROM	 (cannot write to ROM)
+	*/
 	}

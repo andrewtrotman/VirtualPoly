@@ -5,12 +5,14 @@
 	Re-factoring (c) 2010 Andrew Trotman
 	Ported to Mac 2021 Andrew Trotman
 */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "usim.h"
+
+
+word start_of_instruction = 0;
 
 /*
 	USIM::RUN()
@@ -30,7 +32,13 @@ void USim::run(void)
 void USim::step(uint64_t times)
 	{
 	for (uint64_t count = 0; count < times; count++)
+		{
+		start_of_instruction = pc;
+
+if (start_of_instruction == 0xFAEF)
+	int x = 0;
 		execute();
+		}
 	}
 
 /*

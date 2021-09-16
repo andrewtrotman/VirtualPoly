@@ -6,6 +6,7 @@
 #pragma once
 
 #include "computer.h"
+#include "keyboard_arrow.h"
 
 /*
 	CLASS COMPUTER_ARROW
@@ -13,6 +14,9 @@
 */
 class computer_arrow : public computer
 	{
+	private:
+		keyboard_arrow keyboard;
+		
 	public:
 		computer_arrow();
 		virtual ~computer_arrow();

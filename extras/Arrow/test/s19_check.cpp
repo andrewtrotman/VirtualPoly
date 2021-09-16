@@ -7,7 +7,7 @@
 #include <string.h>
 
 char buffer[1024 * 1024];
-uint8_t cpu_memory[0xFFFF];
+uint8_t cpu_memory[0x10000];
 
 size_t line_number = 0;
 
@@ -93,8 +93,12 @@ int main(int argc, const char *argv[])
 
 //		printf("\n%02X vs %02X\n", stated_checksum, checksum);
 		}
-puts("uint8_t ROM = {");
+	fclose(fp);
 
+	/*
+		Dump out C source code
+	*/
+	puts("uint8_t ROM = {");
 	uint32_t here = low_address;
 	while (here < high_address)
 		{
@@ -112,5 +116,14 @@ puts("uint8_t ROM = {");
 		puts("");
 		}
 	puts("};");
+
+	/*
+		Binary Dump
+	*/
+	FILE *fp_out = fopen("EPROM.DUMP.BIN", "w+b");
+	fwrite(cpu_memory, sizeof(cpu_memory), sizeof(*cpu_memory), fp_out);
+	fclose(fp_out);
+
+	return 0;
 	}
 

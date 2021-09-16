@@ -21,7 +21,7 @@ class computer : public mc6809
 	friend std::ostream &operator<<(std::ostream &into, const computer &simulator);
 	friend std::istream &operator>>(std::istream &from, computer &simulator);
 
-	private:
+	protected:
 		std::deque<byte> keyboard_input;
 		std::deque<byte> serial_output;
 		mc6850 terminal;
