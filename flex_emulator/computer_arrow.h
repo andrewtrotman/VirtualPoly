@@ -25,4 +25,5 @@ class computer_arrow : public computer
 		virtual void write(word offset, byte val);
 
 		virtual const uint8_t *screen_buffer(void);
+		virtual void queue_key_press(byte key);
 	};

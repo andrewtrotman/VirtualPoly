@@ -30,4 +30,6 @@ class keyboard_arrow
 
 		virtual uint8_t read(uint16_t address);
 		virtual void write(uint16_t address, uint8_t value);
+
+		virtual void queue_key_press(byte key);
 	};

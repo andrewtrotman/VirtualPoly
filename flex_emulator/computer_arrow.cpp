@@ -36,6 +36,15 @@ const uint8_t *computer_arrow::screen_buffer(void)
 	}
 
 /*
+	COMPUTER_ARROW::QUEUE_KEY_PRESS()
+	---------------------------------
+*/
+void computer_arrow::queue_key_press(byte key)
+	{
+	keyboard.queue_key_press(key);
+	}
+
+/*
 	COMPUTER_ARROW::READ()
 	----------------------
 	0000 - 7FFF RAM

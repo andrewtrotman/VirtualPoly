@@ -849,10 +849,10 @@ FB7F 9    39             RTS            ;		Return
 ;	This is broken into sets of 8 sets of 7 keys
 ;
 ;	Keyboard layout is:
-;	ESC 2 4 5 6  8  0       - 1 3 5 6 7   :
-;	TAB W R Y I  P  ]       Q E T U O [  LF
-;	  A D G J L  @  DEL   NIL S F H K ;  \
-;     Z C B M .  SP CR      X V N , / BS 4
+;	ESC 2 4 6 8 0  -       1 3 5 7 9 : ^
+;	TAB W R Y I P  ]       Q E T U O [  LF
+;	  A D G J L @  DEL   NIL S F H K ;  \
+;     Z C B M . SP CR      X V N , / BS 4
 ;
 ;	Where:
 ;	LF  = $0A
