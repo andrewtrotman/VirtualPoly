@@ -19,13 +19,13 @@ extern word start_of_instruction;
 class keyboard_arrow
 	{
 	private:
-		std::deque<byte> &keystream;
+		std::deque<byte> keystream;
 		bool announce;
 		bool reset;
 		uint8_t bit_check;
 		
 	public:
-		keyboard_arrow(std::deque<byte> &keystream);
+		keyboard_arrow();
 		virtual ~keyboard_arrow();
 
 		virtual uint8_t read(uint16_t address);

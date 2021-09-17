@@ -9,8 +9,7 @@
 	KEYBOARD_ARROW::KEYBOARD_ARROW()
 	--------------------------------
 */
-keyboard_arrow::keyboard_arrow(std::deque<byte> &keystream):
-	keystream(keystream),
+keyboard_arrow::keyboard_arrow():
 	announce(false)
 	{
 	/* Nothing */
@@ -27,6 +26,8 @@ keyboard_arrow::~keyboard_arrow()
 
 
 uint8_t where_in_sequence = 0;
+
+#ifdef NEVER
 static const uint8_t byte_sequence[] =
 	{
 	/*
@@ -57,7 +58,7 @@ static const uint8_t byte_sequence[] =
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	};
-
+#endif
 /*
 	KEYBOARD_ARROW::READ()
 	----------------------
@@ -67,33 +68,43 @@ uint8_t keyboard_arrow::read(uint16_t address)
 	uint8_t answer = 0;
 
 	if (reset)
+		{
 		answer = 0x80;
+		printf("%04X: Reset = %02X\n", start_of_instruction, answer);
+		}
 	else if (announce)
 		{
-		if (keystream.size() != 0)
-			answer = 0x88;
+		if (keystream.size() == 0)
+			answer = 0xFF;
 		else
+			{
 			answer = 0x00;
-		announce = false;
+			announce = false;
+			}
+		printf("%04X: Announce = %02X\n", start_of_instruction, answer);
 		}
 	else
 		{
 		uint8_t check = where_in_sequence % 3;
 		if (check == 0 || check == 2)
 			{
-			if ((bit_check & byte_sequence[where_in_sequence]) != byte_sequence[where_in_sequence])
+			if ((bit_check & keystream.front()) != keystream.front())
 				{
 				answer = 0x00;
+				keystream.pop_front();
 				where_in_sequence++;
 				}
 			else
 				answer = 0xFF;
 			}
 		else
-			answer = byte_sequence[where_in_sequence++];
+			{
+			answer = keystream.front();
+			keystream.pop_front();
+			where_in_sequence++;
+			}
+		printf("%04X: Read %04X = %02X\n", start_of_instruction, address + 0xE008, answer);
 		}
-
-	printf("%04X: Read %04X = %02X\n", start_of_instruction, address + 0xE008, answer);
 
 	return answer;
 	}
@@ -112,14 +123,18 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 			reset = true;
 			where_in_sequence = 0xFF;
 			}
-		else if (value == 0x00 && where_in_sequence != 0)
+		else if (value == 0x00 && (where_in_sequence % 3) == 0)
 			{
 			reset = false;
 			announce = true;
 			where_in_sequence = 0;
 			}
 		else
+			{
+			reset = false;
+			announce = false;
 			bit_check = value;
+			}
 		}
 	}
 
@@ -129,6 +144,7 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 */
 void keyboard_arrow::queue_key_press(byte key)
 	{
+	const uint8_t bits[] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
 	const char plain_keys[8][8] =
 		{
 		"\u001B24680-",
@@ -149,7 +165,14 @@ void keyboard_arrow::queue_key_press(byte key)
 		const char *pos = strchr(plain_keys[row], key);
 		if (pos != NULL)
 			{
-			std::cout << "row: " << row << " col: " << pos - plain_keys[row] << " mod: " << 0 << "\n";
+			std::cout << plain_keys[row] << "\n";
+			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - plain_keys[row]] << " mod: " << 0 << "\n";
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - plain_keys[row]]);
+			keystream.push_back(0x01);
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - plain_keys[row]]);
+			keystream.push_back(0x01);
 			}
 		}
 
@@ -166,11 +189,16 @@ void keyboard_arrow::queue_key_press(byte key)
 		};
 	for (uint16_t row = 0; row < 8; row++)
 		{
-		const char *pos = strchr(plain_keys[row], key);
+		const char *pos = strchr(shift_keys[row], key);
 		if (pos != NULL)
 			{
-			std::cout << "row: " << row << " col: " << pos - plain_keys[row] << " mod: " << 0x7F << "\n";
+			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - plain_keys[row]] << " mod: " << 0 << "\n";
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - plain_keys[row]]);
+			keystream.push_back(0x7F);
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - plain_keys[row]]);
+			keystream.push_back(0x7F);
 			}
 		}
-
 	}

@@ -5,15 +5,20 @@
 */
 #include "computer_arrow.h"
 #include "ROM_arrow_menu.h"
+#include "ROM_arrow_BASIC.h"
+#include "ROM_arrow_monitor.h"
+#include "ROM_arrow_debugger.h"
 
 /*
 	COMPUTER_ARROW::COMPUTER_ARROW()
 	--------------------------------
 */
 computer_arrow::computer_arrow() :
-	computer(),
-	keyboard(keyboard_input)
+	computer()
 	{
+	memcpy(memory + 0x8000, ROM_arrow_BASIC, 0x2000);
+	memcpy(memory + 0xA000, ROM_arrow_debugger, 0x2000);
+	memcpy(memory + 0xD000, ROM_arrow_monitor, 0x1000);
 	memcpy(memory + 0xF000, ROM_arrow_menu, 0x1000);
 	}
 
