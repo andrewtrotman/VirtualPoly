@@ -10,7 +10,9 @@
 	--------------------------------
 */
 keyboard_arrow::keyboard_arrow():
-	announce(false)
+	reset(true),
+	announce(false),
+	report(false)
 	{
 	/* Nothing */
 	}
@@ -93,6 +95,8 @@ uint8_t keyboard_arrow::read(uint16_t address)
 				answer = 0x00;
 				keystream.pop_front();
 				where_in_sequence++;
+				if (keystream.size() % 3 == 0)
+					report = false;
 				}
 			else
 				answer = 0xFF;
@@ -102,6 +106,11 @@ uint8_t keyboard_arrow::read(uint16_t address)
 			answer = keystream.front();
 			keystream.pop_front();
 			where_in_sequence++;
+			if (keystream.size() % 3 == 0)
+				{
+				report = false;
+				announce = true;
+				}
 			}
 		printf("%04X: Read %04X = %02X\n", start_of_instruction, address + 0xE008, answer);
 		}
@@ -123,7 +132,7 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 			reset = true;
 			where_in_sequence = 0xFF;
 			}
-		else if (value == 0x00 && (where_in_sequence % 3) == 0)
+		else if (value == 0x00 && !report)
 			{
 			reset = false;
 			announce = true;
@@ -133,6 +142,7 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 			{
 			reset = false;
 			announce = false;
+			report = true;
 			bit_check = value;
 			}
 		}
@@ -165,7 +175,6 @@ void keyboard_arrow::queue_key_press(byte key)
 		const char *pos = strchr(plain_keys[row], key);
 		if (pos != NULL)
 			{
-			std::cout << plain_keys[row] << "\n";
 			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - plain_keys[row]] << " mod: " << 0 << "\n";
 			keystream.push_back(bits[row + 1]);
 			keystream.push_back(bits[pos - plain_keys[row]]);

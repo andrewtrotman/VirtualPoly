@@ -20,8 +20,9 @@ class keyboard_arrow
 	{
 	private:
 		std::deque<byte> keystream;
-		bool announce;
 		bool reset;
+		bool announce;
+		bool report;
 		uint8_t bit_check;
 		
 	public:
