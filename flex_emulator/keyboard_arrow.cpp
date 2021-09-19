@@ -249,7 +249,7 @@ void keyboard_arrow::queue_key_press(byte key)
 			//	^_
 				break;
 			case '_':
-				break;
+				return;
 			}
 		}
 

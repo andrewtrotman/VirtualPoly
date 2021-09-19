@@ -54,8 +54,7 @@ struct ContentView: View
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
 
-	@State var screen = terminal()
-//	@State var screen = screen_arrow()
+	@State var screen: screen_base? = nil
 
 	@StateObject var img_screen = image_changer()
 
@@ -75,8 +74,8 @@ struct ContentView: View
 			{
 			machine_reset(machine.pointer);
 			}
-		screen.reset()
-		screen.set_width(new_width: terminal.screen_width.eighty)
+		screen!.reset()
+		screen!.set_width(new_width: terminal.screen_width.eighty)
 		}
 
 	/*
@@ -140,7 +139,7 @@ struct ContentView: View
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
 								{
-								screen.print_character(raw_character: UInt8(response & 0xFF))
+								screen!.print_character(raw_character: UInt8(response & 0xFF))
 
 //print(Character(UnicodeScalar(UInt8(response))), terminator:"")
 								screen_did_change = true
@@ -159,7 +158,7 @@ struct ContentView: View
 					{ _ in
 					if !paused
 						{
-						screen.flash_state.toggle()
+						screen!.flash_state.toggle()
 						render_text_screen()
 						}
 					}
@@ -180,10 +179,17 @@ struct ContentView: View
 					{
 					if (machine.pointer == nil)
 						{
-//						machine.pointer = machine_construct(ARROW)
-						machine.pointer = machine_construct(PINNATED)
-						let screen_buffer: UnsafePointer<UInt8>? = machine_get_screen_buffer(machine.pointer)
-						screen.set_screen_buffer(screen_buffer: screen_buffer)
+						if (AppState.shared.emulated_machine == ARROW)
+							{
+							machine.pointer = machine_construct(ARROW)
+							screen = screen_arrow()
+							}
+						else
+							{
+							machine.pointer = machine_construct(PINNATED)
+							screen = terminal()
+							}
+						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer
 						AppState.shared.screen = screen
 
@@ -204,8 +210,8 @@ struct ContentView: View
 	*/
 	func render_text_screen()
 		{
-		screen.render_entire_screen()
-		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
+		screen!.render_entire_screen()
+		memcpy(img_screen.frame_buffer, screen!.bitmap, 480 * 240 * 4)
 		img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!, size: .zero)
 		}
 	}
