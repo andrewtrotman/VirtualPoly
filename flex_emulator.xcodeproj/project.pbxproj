@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4910487626F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
+		4910487726F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
 		492E929726DB825F000DA1F9 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 492E929626DB825F000DA1F9 /* Credits.rtf */; };
 		4944EF422670801A00445780 /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF412670801A00445780 /* computer.cpp */; };
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
@@ -102,6 +104,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4910487526F6F8AA00C54511 /* screen_base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_base.swift; sourceTree = "<group>"; };
 		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
 		492E929626DB825F000DA1F9 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
@@ -308,6 +311,7 @@
 				495A221C26EB54FD00555F2B /* computer_arrow.h */,
 				49CFF18D26F1EB95008C8668 /* keyboard_arrow.cpp */,
 				49CFF18C26F1EB95008C8668 /* keyboard_arrow.h */,
+				4910487526F6F8AA00C54511 /* screen_base.swift */,
 				49C0985126EC34EF00C10535 /* screen_arrow.swift */,
 				49B31D7A266F518D00706439 /* typedefs.h */,
 				49B31D79266F512300706439 /* misc.h */,
@@ -602,6 +606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4910487726F6F8AA00C54511 /* screen_base.swift in Sources */,
 				49D1C24726DA056100015409 /* mc6850.cpp in Sources */,
 				49F336C526E205400075EEBA /* WebView.swift in Sources */,
 				49D1C24C26DA056200015409 /* ide.cpp in Sources */,
@@ -669,6 +674,7 @@
 				4944EF422670801A00445780 /* computer.cpp in Sources */,
 				49FD34C6268F043000F56EF3 /* terminal.swift in Sources */,
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,
+				4910487626F6F8AA00C54511 /* screen_base.swift in Sources */,
 				495A221926EB529700555F2B /* ROM_arrow_menu.cpp in Sources */,
 				49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */,
 				49B0649C26F4761700153AE5 /* ROM_arrow_debugger.cpp in Sources */,

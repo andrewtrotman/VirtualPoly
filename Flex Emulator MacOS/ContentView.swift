@@ -54,8 +54,8 @@ struct ContentView: View
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
 
-//	@State var screen = terminal()
-	@State var screen = screen_arrow()
+	@State var screen = terminal()
+//	@State var screen = screen_arrow()
 
 	@StateObject var img_screen = image_changer()
 
@@ -140,14 +140,14 @@ struct ContentView: View
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
 								{
-//								screen.print_character(raw_character: UInt8(response & 0xFF))
+								screen.print_character(raw_character: UInt8(response & 0xFF))
+
 //print(Character(UnicodeScalar(UInt8(response))), terminator:"")
 								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
 								}
 
-screen_did_change = true
-							if screen_did_change
+							if screen_did_change || machine_did_screen_change(machine.pointer)
 								{
 								render_text_screen()
 								break;
@@ -159,29 +159,31 @@ screen_did_change = true
 					{ _ in
 					if !paused
 						{
-//						screen.flash_state.toggle()
+						screen.flash_state.toggle()
 						render_text_screen()
 						}
 					}
 				.onReceive(one_second_timer)
 					{ _ in
-					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
-					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
-
-					let total_seconds_count = -initial_time.timeIntervalSinceNow
-					let current_seconds_count = -previous_time.timeIntervalSinceNow
-
+//					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
+//					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
+//
+//					let total_seconds_count = -initial_time.timeIntervalSinceNow
+//					let current_seconds_count = -previous_time.timeIntervalSinceNow
+//
 //					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
-
-					previous_time = NSDate()
-					previous_cycle_count = machine_cycles_spent(machine.pointer)
+//
+//					previous_time = NSDate()
+//					previous_cycle_count = machine_cycles_spent(machine.pointer)
 					}
 				.onAppear
 					{
 					if (machine.pointer == nil)
 						{
-						machine.pointer = machine_construct()
-						screen.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
+//						machine.pointer = machine_construct(ARROW)
+						machine.pointer = machine_construct(PINNATED)
+						let screen_buffer: UnsafePointer<UInt8>? = machine_get_screen_buffer(machine.pointer)
+						screen.set_screen_buffer(screen_buffer: screen_buffer)
 						AppState.shared.machine = machine.pointer
 						AppState.shared.screen = screen
 

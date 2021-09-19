@@ -158,6 +158,8 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 */
 void keyboard_arrow::queue_key_press(byte key)
 	{
+	uint8_t row = 0, column = 0, modifier = 0;
+	const char *pos;
 	const uint8_t bits[] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
 	const char plain_keys[8][8] =
 		{
@@ -172,26 +174,20 @@ void keyboard_arrow::queue_key_press(byte key)
 		};
 
 	/*
-		key presses without any modifiers
+		Key presses without any modifiers
 	*/
-	for (uint16_t row = 0; row < 8; row++)
-		{
-		const char *pos = strchr(plain_keys[row], key);
-		if (pos != NULL)
+	for (uint16_t string = 0; string < 8; string++)
+		if ((pos = strchr(plain_keys[string], key)) != NULL)
 			{
-			std::cout << std::hex;
-			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - plain_keys[row]] << " mod: " << 0x01 << "\n";
-			std::cout << std::dec;
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - plain_keys[row]]);
-			keystream.push_back(0x01);
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - plain_keys[row]]);
-			keystream.push_back(0x01);
-			return;
+			row = bits[string + 1];
+			column = bits[pos - plain_keys[string]];
+			modifier = 0x01;
+			break;
 			}
-		}
 
+	/*
+		Keys with the shift key down
+	*/
 	const char shift_keys[8][8] =
 		{
 		"\u001B\"$&(0=",
@@ -203,52 +199,68 @@ void keyboard_arrow::queue_key_press(byte key)
 		"zcbm> \x0D",
 		"\u001bxvn<?\u0008"
 		};
-	for (uint16_t row = 0; row < 8; row++)
-		{
-		const char *pos = strchr(shift_keys[row], key);
-		if (pos != NULL)
-			{
-			std::cout << std::hex;
-			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - shift_keys[row]] << " mod: " << 0x7F << "\n";
-			std::cout << std::dec;
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - shift_keys[row]]);
-			keystream.push_back(0xFF);
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - shift_keys[row]]);
-			keystream.push_back(0xFF);
-			return;
-			}
-		}
+	if (modifier == 0)
+		for (uint16_t string = 0; string < 8; string++)
+			if ((pos = strchr(shift_keys[string], key)) != NULL)
+				{
+				row = bits[string + 1];
+				column = bits[pos - shift_keys[string]];
+				modifier = 0xFF;
+				break;
+				}
 
+	/*
+		Keys with the control key down
+	*/
 	const char control_keys[8][8] =
 		{
 		"       ",
-		"       ",
-		" \x17\x12\x19\x09\x10 ",
+		"      \x1e",
+		" \x17\x12\x19\x09\x10\x1d",
 		"\x11\x05\x14\x15\x0f  ",
 		"\x01\x04\x07\x0a\x0c  ",
-		" \x13\x06\x08\x0b  ",
+		" \x13\x06\x08\x0b \x1c",
 		"\x1a\x03\x02\x0d   ",
 		" \x18\x16\x0e   "
 		};
 
-	for (uint16_t row = 0; row < 8; row++)
+	if (modifier == 0)
+		for (uint16_t string = 0; string < 8; string++)
+			if ((pos = strchr(control_keys[string], key)) != NULL)
+				{
+				row = bits[string + 1];
+				column = bits[pos - control_keys[string]];
+				modifier = 0x1F;
+				break;
+				}
+	/*
+		Keys that are "hard" to do this way
+	*/
+	if (modifier == 0)
 		{
-		const char *pos = strchr(control_keys[row], key);
-		if (pos != NULL)
+		switch (key)
 			{
-			std::cout << std::hex;
-			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - control_keys[row]] << " mod: " << 0x1F << "\n";
-			std::cout << std::dec;
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - control_keys[row]]);
-			keystream.push_back(0x1F);
-			keystream.push_back(bits[row + 1]);
-			keystream.push_back(bits[pos - control_keys[row]]);
-			keystream.push_back(0x1F);
-			return;
+			case 0:
+				row = 0x1F;
+				column = 0x1F;
+				modifier = 0x1F;
+				break;
+			case 31:
+			//	^_
+				break;
+			case '_':
+				break;
 			}
 		}
 
+//	std::cout << std::hex;
+//	std::cout << "row: " << (int)row << " col: " << (int)column << " mod: " << (int)modifier << "\n";
+//	std::cout << std::dec;
+
+	keystream.push_back(row);
+	keystream.push_back(column);
+	keystream.push_back(modifier);
+	keystream.push_back(row);
+	keystream.push_back(column);
+	keystream.push_back(modifier);
 	}

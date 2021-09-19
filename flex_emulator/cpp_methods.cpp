@@ -10,10 +10,15 @@
 	MACHINE_CONSTRUCT()
 	-------------------
 */
-const void *machine_construct()
+const void *machine_construct(machine_type type)
 	{
-	computer *machine = new computer_arrow();
-//	computer *machine = new computer();
+	computer *machine;
+
+	if (type == PINNATED)
+		machine = new computer();
+	else
+		machine = new computer_arrow();
+
 	machine->reset();
 	return (const void *)machine;
 	}
@@ -119,9 +124,22 @@ const char *machine_change_disk(const void *object, uint8_t drive, const char *f
 	return ((computer *)object)->change_disk(drive, filename);
 	}
 
+/*
+	MACHINE_GET_SCREEN_BUFFER()
+	---------------------------
+*/
 const uint8_t *machine_get_screen_buffer(const void *object)
 	{
 	return ((computer *)object)->screen_buffer();
+	}
+
+/*
+	MACHINE_DID_SCREEN_CHANGE()
+	---------------------------
+*/
+bool machine_did_screen_change(const void *object)
+	{
+	return ((computer *)object)->did_screen_change();
 	}
 
 /*

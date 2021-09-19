@@ -14,7 +14,8 @@
 	--------------------
 */
 computer::computer() :
-	terminal(keyboard_input, serial_output)
+	terminal(keyboard_input, serial_output),
+	screen_changed(false)
 	{
 	memcpy(memory + 0xF000, ROM_FLEX, 0x1000);
 	}
@@ -187,6 +188,15 @@ void computer::write(word address, byte value)
 			if (address < 0xE000)
 				memory[address] = value;
 		}
+	}
+
+/*
+	COMPUTER::DID_SCREEN_CHANGE()
+	-----------------------------
+*/
+bool computer::did_screen_change(void)
+	{
+	return screen_changed;
 	}
 
 /*

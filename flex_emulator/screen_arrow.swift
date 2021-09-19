@@ -1,6 +1,6 @@
 /*
-	SREEN_ARROW.SWIFT
-	-----------------
+	SCREEN_ARROW.SWIFT
+	------------------
 	Copyright (c) 2021 Andrew Trotman
 */
 
@@ -10,32 +10,24 @@ import Foundation
 	CLASS SCREEN_ARROW
 	------------------
 */
-class screen_arrow
+class screen_arrow : screen_base
 	{
-	var bitmap = [UInt32]()					// the bitmap of the screen buffer
 	var screen: UnsafePointer<UInt8>?	// the bytemap of the screen buffer
 
 	/*
 		SET_SCREEN_BUFFER()
 		-------------------
 	*/
-	func set_screen_buffer(screen_buffer: UnsafePointer<UInt8>)
+	override func set_screen_buffer(screen_buffer: UnsafePointer<UInt8>?)
 		{
-		screen = screen_buffer
-		}
-
-	/*
-		SET_WIDTH()
-	*/
-	func set_width(new_width: terminal.screen_width)
-		{
+		screen = screen_buffer!
 		}
 
 	/*
 		RESET()
 		-------
 	*/
-	func reset()
+	override func reset()
 		{
 		bitmap = [UInt32](repeating: 0, count: 480 * 240)
 		}
@@ -44,7 +36,7 @@ class screen_arrow
 		RENDER_ENTURE_SCREEN()
 		----------------------
 	*/
-	func render_entire_screen()
+	override func render_entire_screen()
 		{
 		let width = 64
 

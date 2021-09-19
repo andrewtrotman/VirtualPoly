@@ -10,16 +10,8 @@ import Foundation
 	CLASS TERMINAL
 	--------------
 */
-class terminal
+class terminal : screen_base
 	{
-	enum screen_width: Int
-		{
-		case fourty = 40
-		case eighty = 80
-		}
-
-	var flash_state = false								// the status of the flashing cursor (0 = off, 1 = on)
-	private var rendering_width = screen_width.fourty		// how wide the screen appeara
 	private var row = 0												// current cursor row
 	private var column = 0											// current cursor column
 	private var escape_mode = false								// are we buffering escape characters?
@@ -28,22 +20,21 @@ class terminal
 	private let height = 24											// height of the screen buffer
 	private var screen = [UInt8]()								// the screen buffer
 
-	var bitmap = [UInt32]()											// the bitmap of the screen buffer
-
 	/*
 		INIT()
 		------
 	*/
-	init()
+	override init()
 		{
-		reset()
+		super.init()
+		self.reset()
 		}
 
 	/*
 		RESET()
 		-------
 	*/
-	func reset()
+	override func reset()
 		{
 		rendering_width = .fourty
 		row = 0
@@ -53,24 +44,6 @@ class terminal
 
 		screen = [UInt8](repeating: 32, count: width * height)
 		bitmap = [UInt32](repeating: 0, count: 480 * 240)
-		}
-
-	/*
-		SET_WIDTH()
-		-----------
-	*/
-	func set_width(new_width: screen_width)
-		{
-		rendering_width = new_width
-		}
-
-	/*
-		GET_WIDTH()
-		-----------
-	*/
-	func get_width() -> screen_width
-		{
-		return rendering_width
 		}
 
 	/*
@@ -253,7 +226,7 @@ class terminal
 			char ins[3]  = ESC [ L			/* Insert Line */
 			char dell[3] = ESC [ M			/* Delete Line */
 	*/
-	func print_character(raw_character: UInt8)
+	override func print_character(raw_character: UInt8)
 		{
 		var character = raw_character
 
@@ -347,7 +320,7 @@ class terminal
 		RENDER_ENTURE_SCREEN()
 		----------------------
 	*/
-	func render_entire_screen()
+	override func render_entire_screen()
 		{
 		let on: UInt32 = 0x00FFFFFF
 		let off: UInt32 = 0x00000000
@@ -457,7 +430,7 @@ class terminal
 		SERIALISE()
 		-----------
 	*/
-	func serialise(file: FileHandle)
+	override func serialise(file: FileHandle)
 		{
 		file.write(Data(screen))
 
@@ -472,29 +445,29 @@ class terminal
 
 	/*
 		DESERIALISE()
-		-----------
+		-------------
 	*/
-	func deserialise(file: FileHandle) throws
+	override func deserialise(file: FileHandle) throws
 		{
-			var data = try file.read(upToCount: screen.count)
-			data?.copyBytes(to: &screen, count: screen.count)
+		var data = try file.read(upToCount: screen.count)
+		data?.copyBytes(to: &screen, count: screen.count)
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:row))
-			row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: row).self)})
+		data = try file.read(upToCount: MemoryLayout.size(ofValue:row))
+		row = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: row).self)})
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:column))
-			column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: column).self)})
+		data = try file.read(upToCount: MemoryLayout.size(ofValue:column))
+		column = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: column).self)})
 
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_mode))
-			escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_mode).self)})
+		data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_mode))
+		escape_mode = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_mode).self)})
 
-			var escape_length = escape_sequence.count
-			data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_length))
-			escape_length = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_length).self)})
+		var escape_length = escape_sequence.count
+		data = try file.read(upToCount: MemoryLayout.size(ofValue:escape_length))
+		escape_length = data!.withUnsafeBytes({(rawPtr: UnsafeRawBufferPointer) in return rawPtr.load(as: type(of: escape_length).self)})
 
-			escape_sequence = [UInt8](repeating: 32, count: escape_length)
+		escape_sequence = [UInt8](repeating: 32, count: escape_length)
 
-			data = try file.read(upToCount: escape_sequence.count)
-			data?.copyBytes(to: &escape_sequence, count: escape_sequence.count)
+		data = try file.read(upToCount: escape_sequence.count)
+		data?.copyBytes(to: &escape_sequence, count: escape_sequence.count)
 		}
 	}

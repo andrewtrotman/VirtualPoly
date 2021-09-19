@@ -28,6 +28,7 @@ class computer : public mc6809
 		mc6821 printer;
 		ide hard_drive;
 		std::string disk_name;
+		bool screen_changed;
 
 	private:
 		std::string get_serialised_filename();
@@ -47,6 +48,8 @@ class computer : public mc6809
 
 		virtual const char *change_disk(uint8_t drive, const char *filename);
 		virtual const uint8_t *screen_buffer(void);
+
+		virtual bool did_screen_change(void);
 	};
 
 /*

@@ -10,7 +10,8 @@ class AppState: ObservableObject
 
 	var machine: UnsafeRawPointer? = nil
 //	var screen: terminal? = nil
-	var screen: screen_arrow? = nil
+//	var screen: screen_arrow? = nil
+	var screen: screen_base? = nil
 	}
 
 class AppDelegate: NSObject, NSApplicationDelegate

@@ -98,6 +98,14 @@ void computer_arrow::write(word address, byte value)
 	/*
 		Screen RAM
 	*/
+	else if (address >= 0xE800 && address < 0xEE10)
+		{
+		screen_changed = true;
+		memory[address] = value;
+		}
+	/*
+		Non-screen in the E000 - EFFF region
+	*/
 	else if (address >= 0xE000 && address < 0xF000)
 		memory[address] = value;
 	/*

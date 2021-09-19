@@ -8,10 +8,19 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
+#ifdef __cplusplus
 extern "C"
 	{
-	const void *machine_construct();
+#endif
+	typedef enum
+		{
+		PINNATED,
+		ARROW
+		} machine_type;
+
+	const void *machine_construct(machine_type type);
 	void machine_destruct(const void *object);
 	void machine_step(const void *object, uint64_t times);
 	void machine_reset(const void *object);
@@ -25,4 +34,8 @@ extern "C"
 	void machine_serialise(const void *object);
 	const char *machine_change_disk(const void *object, uint8_t drive, const char *filename);
 	const uint8_t *machine_get_screen_buffer(const void *object);
-}
+	bool machine_did_screen_change(const void *object);
+
+#ifdef __cplusplus
+	}
+#endif
