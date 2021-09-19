@@ -215,6 +215,7 @@ class terminal : screen_base
 			escape_mode = false
 			}
 	}
+	
 	/*
 		PRINT_CHARACTER()
 		-----------------

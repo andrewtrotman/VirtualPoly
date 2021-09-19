@@ -306,7 +306,7 @@ struct ContentView: View
 					{
 					if (machine.pointer == nil)
 						{
-						machine.pointer = machine_construct()
+						machine.pointer = machine_construct(PINNATED)
 						machine_deserialise(machine.pointer)
 						deserialise(path: get_serialised_filename())
 						}

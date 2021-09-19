@@ -44,8 +44,11 @@ struct key_event_handling: NSViewRepresentable
 				{
 				if let ascii = Character(event.characters!).asciiValue
 					{
-//					let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
-					let flex_key = ascii == 0x7F ? 0x7F : CChar(ascii)
+					var flex_key = CChar(ascii)
+					if (ascii == 0x7F && AppState.shared.emulated_machine == PINNATED)
+						{
+						flex_key = 0x08
+						}
 					machine_queue_key_press(machine.pointer, flex_key)
 					}
 				else
