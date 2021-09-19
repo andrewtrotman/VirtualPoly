@@ -811,7 +811,7 @@ FB4D 9    39             RTS            ;		Return
 ->
 FB4E      81 0F          CMPA    #$0F   ;		%0000 1111		This is a control character (like ^C)
 FB50 &    26 07          BNE     $FB59  ;		Nope
-FB52  @   C1 40          CMPB    #$40   ;		is it a character that cab become a control character (@, A-Z, etc.)
+FB52  @   C1 40          CMPB    #$40   ;		is it a character that can become a control character (@, A-Z, etc.)
 FB54 /)   2F 29          BLE     $FB7F  ;		Return
 FB56      C4 1F          ANDB    #$1F   ;		Turn it into a control character
 FB58 9    39             RTS            ;		Return
@@ -852,9 +852,9 @@ FB7F 9    39             RTS            ;		Return
 ;	ESC 2 4 6 8 0  -       1 3 5 7 9 : ^
 ;	TAB W R Y I P  ]       Q E T U O [  LF
 ;	  A D G J L @  DEL   NIL S F H K ;  \
-;     Z C B M . SP CR      X V N , / BS 4
+;     Z C B M . SP CR     UP X V N , / BS
 ;
-;	Where:
+; 	Where:
 ;	LF  = $0A
 ;	TAB = $09
 ;	ESC = $1B
@@ -862,7 +862,7 @@ FB7F 9    39             RTS            ;		Return
 ;	NIL = $00
 ;	SP  = $20
 ;	CR  = $0D
-;	VT  = $0B
+;	UP  = $0B  ;; ASCII VT (Vertical Tab)
 ;	BS  = $08
 ;
 FB80 1B 32 34 36 38 30 2D 31 33 35 37 39 3A 5E 09 57 .24680-13579:^.W   ;

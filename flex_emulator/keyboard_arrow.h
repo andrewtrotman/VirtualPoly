@@ -24,7 +24,8 @@ class keyboard_arrow
 		bool announce;
 		bool report;
 		uint8_t bit_check;
-		
+		uint8_t where_in_sequence;
+
 	public:
 		keyboard_arrow();
 		virtual ~keyboard_arrow();
