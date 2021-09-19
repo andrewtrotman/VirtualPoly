@@ -34,18 +34,6 @@ void USim::step(uint64_t times)
 	for (uint64_t count = 0; count < times; count++)
 		{
 		start_of_instruction = pc;
-
-if (start_of_instruction == 0xFAED)
-	int x = 0;
-if (start_of_instruction == 0xFAEF)
-	int x = 0;
-if (start_of_instruction == 0xFB1B)
-	int x = 0;
-
-
-if (start_of_instruction == 0xFB42)
-	int x = 0;
-
 		execute();
 		}
 	}

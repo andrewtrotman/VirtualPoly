@@ -68,17 +68,11 @@ uint8_t keyboard_arrow::read(uint16_t address)
 	uint8_t answer = 0;
 
 	if (address == 0x04)
-		{
 		answer = 0xFF;
-		printf("%04X: READ = %02X\n", start_of_instruction, answer);
-		}
 	else
 		{
 		if (mode == RESET)
-			{
 			answer = 0x80;
-			printf("%04X: Reset = %02X\n", start_of_instruction, answer);
-			}
 		else if (mode == ANNOUNCE)
 			{
 			if (keystream.size() == 0)
@@ -88,7 +82,6 @@ uint8_t keyboard_arrow::read(uint16_t address)
 				answer = 0x00;
 				mode = REPORT;
 				}
-			printf("%04X: Announce = %02X\n", start_of_instruction, answer);
 			}
 		else
 			{
@@ -119,7 +112,6 @@ uint8_t keyboard_arrow::read(uint16_t address)
 					where_in_sequence++;
 					}
 				}
-			printf("%04X: Read %04X = %02X\n", start_of_instruction, address + 0xE008, answer);
 			}
 		}
 	return answer;
@@ -131,7 +123,6 @@ uint8_t keyboard_arrow::read(uint16_t address)
 */
 void keyboard_arrow::write(uint16_t address, uint8_t value)
 	{
-	printf("%04X: Write %02X to %04X\n", start_of_instruction, value, address + 0xE008);
 	if (address == 4)
 		{
 		if (value == 0x9F)
@@ -152,6 +143,18 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 /*
 	KEYBOARD_ARROW::TRANSLATE()
 	---------------------------
+	Incoming:
+	DEL = 0x08
+	ESC = 0x1B
+	TAB = 0x09
+
+	BS = 0x7F
+	UP = 0x0B
+
+	down arrow = ^J
+	left arrow = ^H
+	right arrow = ^I
+	up arrow = ^K
 */
 void keyboard_arrow::queue_key_press(byte key)
 	{
@@ -160,12 +163,12 @@ void keyboard_arrow::queue_key_press(byte key)
 		{
 		"\u001B24680-",
 		"13579:^",
-		"\x09wryip]",
-		"qetuo[\x0A",
-		"adgjl@\x7F",
-		"\x01sfhk;\\",
-		"zcbm. \x0D",
-		"\u001bxvn,/\u0008"
+		"\x09WRYIP]",
+		"QETUO[\x0A",
+		"ADGJL@\x7F",
+		"\xFFSFHK;\\",
+		"ZCBM. \x0D",
+		"\u001bXVN,/\u0008"
 		};
 
 	/*
@@ -185,6 +188,7 @@ void keyboard_arrow::queue_key_press(byte key)
 			keystream.push_back(bits[row + 1]);
 			keystream.push_back(bits[pos - plain_keys[row]]);
 			keystream.push_back(0x01);
+			return;
 			}
 		}
 
@@ -192,12 +196,12 @@ void keyboard_arrow::queue_key_press(byte key)
 		{
 		"\u001B\"$&(0=",
 		"!#%')*~",
-		"\x09WRYIP}",
-		"QETUO{\x0A",
-		"ADGJL`\x7F",
-		"\x01SFHK+|",
-		"ZCBM> \x0D",
-		"\u001bXVN<?\u0008"
+		"\x09wryip}",
+		"qetuo{\x0A",
+		"adgjl`\x7F",
+		"\xFFsfhk+|",
+		"zcbm> \x0D",
+		"\u001bxvn<?\u0008"
 		};
 	for (uint16_t row = 0; row < 8; row++)
 		{
@@ -213,6 +217,38 @@ void keyboard_arrow::queue_key_press(byte key)
 			keystream.push_back(bits[row + 1]);
 			keystream.push_back(bits[pos - shift_keys[row]]);
 			keystream.push_back(0xFF);
+			return;
 			}
 		}
+
+	const char control_keys[8][8] =
+		{
+		"       ",
+		"       ",
+		" \x17\x12\x19\x09\x10 ",
+		"\x11\x05\x14\x15\x0f  ",
+		"\x01\x04\x07\x0a\x0c  ",
+		" \x13\x06\x08\x0b  ",
+		"\x1a\x03\x02\x0d   ",
+		" \x18\x16\x0e   "
+		};
+
+	for (uint16_t row = 0; row < 8; row++)
+		{
+		const char *pos = strchr(control_keys[row], key);
+		if (pos != NULL)
+			{
+			std::cout << std::hex;
+			std::cout << "row: " << (int)bits[row + 1] << " col: " << (int)bits[pos - control_keys[row]] << " mod: " << 0x1F << "\n";
+			std::cout << std::dec;
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - control_keys[row]]);
+			keystream.push_back(0x1F);
+			keystream.push_back(bits[row + 1]);
+			keystream.push_back(bits[pos - control_keys[row]]);
+			keystream.push_back(0x1F);
+			return;
+			}
+		}
+
 	}

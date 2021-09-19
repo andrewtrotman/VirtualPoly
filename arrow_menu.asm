@@ -855,9 +855,9 @@ FB7F 9    39             RTS            ;		Return
 ;     Z C B M . SP CR     UP X V N , / BS
 ;
 ; 	Where:
-;	LF  = $0A
-;	TAB = $09
 ;	ESC = $1B
+;	TAB = $09
+;	LF  = $0A
 ;	DEL = $7F
 ;	NIL = $00
 ;	SP  = $20
@@ -865,6 +865,20 @@ FB7F 9    39             RTS            ;		Return
 ;	UP  = $0B  ;; ASCII VT (Vertical Tab)
 ;	BS  = $08
 ;
+
+
+1B 32 34 36 38 30 2D
+31 33 35 37 39 3A 5E
+09 57 52 59 49 50 5D
+51 45 54 55 4F 5B 0A
+41 44 47 4A 4C 40 7F
+00 53 46 48 4B 3B 5C
+5A 43 42 4D 2E 20 0D
+0B 58 56 4E 2C 2F 08
+
+
+
+
 FB80 1B 32 34 36 38 30 2D 31 33 35 37 39 3A 5E 09 57 .24680-13579:^.W   ;
 FB90 52 59 49 50 5D 51 45 54 55 4F 5B 0A 41 44 47 4A RYIP]QETUO[.ADGJ   ;
 FBA0 4C 40 7F 00 53 46 48 4B 3B 5C 5A 43 42 4D 2E 20 L@..SFHK;\ZCBM.    ;

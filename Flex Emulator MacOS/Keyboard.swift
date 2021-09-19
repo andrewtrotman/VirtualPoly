@@ -2,6 +2,7 @@
 	KEYBOARD.SWIFT
 	--------------
 */
+import AppKit
 import SwiftUI
 import Foundation
 import CoreGraphics
@@ -45,6 +46,27 @@ struct key_event_handling: NSViewRepresentable
 					{
 					let flex_key = ascii == 0x7F ? 0x08 : CChar(ascii)
 					machine_queue_key_press(machine.pointer, flex_key)
+					}
+				else
+					{
+					let character = Int(event.keyCode)
+					let key_arrrow_left  = 123
+					let key_arrow_right = 124
+					let key_arrow_down = 125
+					let key_arrow_up = 126
+					switch character
+						{
+						case key_arrrow_left:
+							machine_queue_key_press(machine.pointer, 0x08)
+						case key_arrow_right:
+							machine_queue_key_press(machine.pointer, 0x09)
+						case key_arrow_down:
+							machine_queue_key_press(machine.pointer, 0x0A)
+						case key_arrow_up:
+							machine_queue_key_press(machine.pointer, 0x0B)
+						default:
+							break
+						}
 					}
 				}
 			}
