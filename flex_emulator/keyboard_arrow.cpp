@@ -10,9 +10,7 @@
 	--------------------------------
 */
 keyboard_arrow::keyboard_arrow():
-	reset(true),
-	announce(false),
-	report(false),
+	mode(RESET),
 	where_in_sequence(0)
 	{
 	/* Nothing */
@@ -76,19 +74,19 @@ uint8_t keyboard_arrow::read(uint16_t address)
 		}
 	else
 		{
-		if (reset)
+		if (mode == RESET)
 			{
 			answer = 0x80;
 			printf("%04X: Reset = %02X\n", start_of_instruction, answer);
 			}
-		else if (announce)
+		else if (mode == ANNOUNCE)
 			{
 			if (keystream.size() == 0)
 				answer = 0xFF;
 			else
 				{
 				answer = 0x00;
-				announce = false;
+				mode = REPORT;
 				}
 			printf("%04X: Announce = %02X\n", start_of_instruction, answer);
 			}
@@ -105,7 +103,7 @@ uint8_t keyboard_arrow::read(uint16_t address)
 					keystream.pop_front();
 					where_in_sequence++;
 					if (keystream.size() % 3 == 0)
-						report = false;
+						mode = ANNOUNCE;
 					}
 				else
 					answer = 0xFF;
@@ -137,21 +135,15 @@ void keyboard_arrow::write(uint16_t address, uint8_t value)
 	if (address == 4)
 		{
 		if (value == 0x9F)
+			mode = RESET;
+		else if ((value == 0x00) && (keystream.size() % 3 == 0) && mode != REPORT)
 			{
-			reset = true;
-			where_in_sequence = 0xFF;
-			}
-		else if ((value == 0x00) && (keystream.size() % 3 == 0))
-			{
-			reset = false;
-			announce = true;
+			mode = ANNOUNCE;
 			where_in_sequence = 0;
 			}
 		else
 			{
-			reset = false;
-			announce = false;
-			report = true;
+			mode = REPORT;
 			bit_check = value;
 			}
 		}
@@ -198,14 +190,14 @@ void keyboard_arrow::queue_key_press(byte key)
 
 	const char shift_keys[8][8] =
 		{
-		"\u001B\"$&(0-",
-		"!#%'):^",
-		"\x09WRYIP=",
-		"QETUO;\x0A",
+		"\u001B\"$&(0=",
+		"!#%')*~",
+		"\x09WRYIP}",
+		"QETUO{\x0A",
 		"ADGJL`\x7F",
-		"\x01SFHK*|",
+		"\x01SFHK+|",
 		"ZCBM> \x0D",
-		"\u001bXVN</\u0008"
+		"\u001bXVN<?\u0008"
 		};
 	for (uint16_t row = 0; row < 8; row++)
 		{

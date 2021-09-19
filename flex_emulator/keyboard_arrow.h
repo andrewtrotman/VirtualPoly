@@ -18,11 +18,16 @@ extern word start_of_instruction;
 */
 class keyboard_arrow
 	{
+	enum keyboard_mode
+		{
+		RESET,
+		ANNOUNCE,
+		REPORT
+		};
+
 	private:
 		std::deque<byte> keystream;
-		bool reset;
-		bool announce;
-		bool report;
+		keyboard_mode mode;
 		uint8_t bit_check;
 		uint8_t where_in_sequence;
 
