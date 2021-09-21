@@ -20,7 +20,7 @@ class USim
 {
 public:
 	int halted;					// are we in the halted state?
-	byte memory[0x10000];	// memory
+	byte memory[0x200000];		// memory (2MB)
 	word ir, pc;				// internal register and program counter
 
 protected:

@@ -17,7 +17,9 @@ computer::computer() :
 	terminal(keyboard_input, serial_output),
 	screen_changed(false)
 	{
-	memcpy(memory + 0xF000, ROM_FLEX, 0x1000);
+	prot = true;
+	memset(bios, 0, sizeof(bios));
+	memcpy(bios + 0xF000, ROM_FLEX, 0x1000);
 	}
 
 /*
@@ -90,50 +92,56 @@ const char *computer::change_disk(uint8_t drive, const char *filename)
 	E010-E017 IDE hard drive controller
 	F000-FFFF ROM
 */
-byte computer::read(word address)
+byte computer::read(word raw_address)
 	{
 	byte answer;
+	uint32_t address = raw_address;
 
-	switch (address)
+	if (prot && raw_address >= 0xE000)
 		{
-		/*
-			Terminal RS232 Port
-		*/
-		case 0xE004:
-		case 0xE005:
-			answer = terminal.read(address - 0xE004);
-			break;
+		switch (raw_address)
+			{
+			/*
+				Terminal RS232 Port
+			*/
+			case 0xE004:
+			case 0xE005:
+				answer = terminal.read(raw_address - 0xE004);
+				break;
 
-		/*
-			IDE hard disk controller
-		*/
-		case 0xE010:
-		case 0xE011:
-		case 0xE012:
-		case 0xE013:
-		case 0xE014:
-		case 0xE015:
-		case 0xE016:
-		case 0xE017:
-			answer = hard_drive.read(address - 0xE010);
-			break;
+			/*
+				IDE hard disk controller
+			*/
+			case 0xE010:
+			case 0xE011:
+			case 0xE012:
+			case 0xE013:
+			case 0xE014:
+			case 0xE015:
+			case 0xE016:
+			case 0xE017:
+				answer = hard_drive.read(raw_address - 0xE010);
+				break;
 
-		/*
-			Printer on 6821 PIA
-		*/
-		case 0xE01C:
-		case 0xE01D:
-		case 0xE01E:
-		case 0xE01F:
-			answer = printer.read(address - 0xE01C);
-			break;
+			/*
+				Printer on 6821 PIA
+			*/
+			case 0xE01C:
+			case 0xE01D:
+			case 0xE01E:
+			case 0xE01F:
+				answer = printer.read(raw_address - 0xE01C);
+				break;
 
-		/*
-			Computer Memory
-		*/
-		default:
-			answer = memory[address];
+			/*
+				Protected mode memory (BIOS, text screen, etc)
+			*/
+			default:
+				answer = bios[raw_address];
+			}
 		}
+	else
+		answer = memory[address];
 
 	return answer;
 	}
@@ -145,49 +153,56 @@ byte computer::read(word address)
 	E010-E017 IDE hard drive controller
 	F000-FFFF ROM
 */
-void computer::write(word address, byte value)
+void computer::write(word raw_address, byte value)
 	{
-	switch (address)
+	uint32_t address = raw_address;
+
+	if (prot && raw_address >= 0xE000)
 		{
-		/*
-			Terminal RS232 Port
-		*/
-		case 0xE004:
-		case 0xE005:
-			terminal.write(address - 0xE004, value);
-			break;
+		switch (raw_address)
+			{
+			/*
+				Terminal RS232 Port
+			*/
+			case 0xE004:
+			case 0xE005:
+				terminal.write(raw_address - 0xE004, value);
+				break;
 
-		/*
-			IDE hard disk controller
-		*/
-		case 0xE010:
-		case 0xE011:
-		case 0xE012:
-		case 0xE013:
-		case 0xE014:
-		case 0xE015:
-		case 0xE016:
-		case 0xE017:
-			hard_drive.write(address - 0xE010, value);
-			break;
+			/*
+				IDE hard disk controller
+			*/
+			case 0xE010:
+			case 0xE011:
+			case 0xE012:
+			case 0xE013:
+			case 0xE014:
+			case 0xE015:
+			case 0xE016:
+			case 0xE017:
+				hard_drive.write(raw_address - 0xE010, value);
+				break;
 
-		/*
-			Printer on 6821 PIA
-		*/
-		case 0xE01C:
-		case 0xE01D:
-		case 0xE01E:
-		case 0xE01F:
-			printer.write(address - 0xE01C, value);
-			break;
+			/*
+				Printer on 6821 PIA
+			*/
+			case 0xE01C:
+			case 0xE01D:
+			case 0xE01E:
+			case 0xE01F:
+				printer.write(raw_address - 0xE01C, value);
+				break;
 
-		/*
-			Computer Memory
-		*/
-		default:
-			if (address < 0xE000)
-				memory[address] = value;
+			/*
+				Computer Memory
+			*/
+			default:
+				if (raw_address < 0xF000)
+					bios[raw_address] = value;
+			}
 		}
+	else
+		memory[address] = value;
 	}
 
 /*

@@ -26,9 +26,11 @@ class computer : public mc6809
 		std::deque<byte> serial_output;
 		mc6850 terminal;
 		mc6821 printer;
+		bool prot;					// protected (BIOS) mode?
 		ide hard_drive;
 		std::string disk_name;
 		bool screen_changed;
+		uint8_t bios[0x10000];		// the BIOS is in a seperate space from the RAM
 
 	private:
 		std::string get_serialised_filename();
