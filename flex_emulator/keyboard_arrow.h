@@ -10,8 +10,6 @@
 
 #include "typedefs.h"
 
-extern word start_of_instruction;
-
 /*
 	CLASS KEYBOARD_ARROW
 	--------------------

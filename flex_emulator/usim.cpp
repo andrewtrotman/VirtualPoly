@@ -11,9 +11,6 @@
 
 #include "usim.h"
 
-
-word start_of_instruction = 0;
-
 /*
 	USIM::RUN()
 	-----------

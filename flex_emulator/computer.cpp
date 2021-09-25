@@ -15,9 +15,10 @@
 */
 computer::computer() :
 	terminal(keyboard_input, serial_output),
+	prot(true),
+	leave_prot(false),
 	screen_changed(false)
 	{
-	prot = true;
 	memset(bios, 0, sizeof(bios));
 	memcpy(bios + 0xF000, ROM_FLEX, 0x1000);
 	}
@@ -29,6 +30,34 @@ computer::computer() :
 computer::~computer()
 	{
 	/*	Nothing */
+	}
+
+/*
+	COMPUTER::RESET()
+	-----------------
+*/
+void computer::reset(void)
+	{
+	mc6809::reset();
+	prot = true;
+	leave_prot = false;
+	screen_changed = false;
+	}
+
+/*
+	COMPUTER::STEP()
+	----------------
+*/
+void computer::step(uint64_t times)
+	{
+	for (uint64_t count = 0; count < times; count++)
+		{
+		start_of_instruction = pc;
+		bool leave_prot_now = leave_prot;
+		execute();
+		if (leave_prot_now)
+			prot = leave_prot = false;
+		}
 	}
 
 /*
@@ -134,6 +163,13 @@ byte computer::read(word raw_address)
 				break;
 
 			/*
+				Prot switch at 0xE040
+			*/
+			case 0xE040:
+				answer = 0;
+				break;
+
+			/*
 				Protected mode memory (BIOS, text screen, etc)
 			*/
 			default:
@@ -191,6 +227,15 @@ void computer::write(word raw_address, byte value)
 			case 0xE01E:
 			case 0xE01F:
 				printer.write(raw_address - 0xE01C, value);
+				break;
+
+			/*
+				Prot switch
+				We leave prot at the end of the next instruction.
+				This is so that we can write to E040 in one instruction and then RTI in the next (RTI takes 2 clock cycles).
+			*/
+			case 0xE040:
+				leave_prot = true;
 				break;
 
 			/*

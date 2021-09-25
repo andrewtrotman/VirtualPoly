@@ -27,6 +27,7 @@ class computer : public mc6809
 		mc6850 terminal;
 		mc6821 printer;
 		bool prot;					// protected (BIOS) mode?
+		bool leave_prot;			// Are we in transition out of prot
 		ide hard_drive;
 		std::string disk_name;
 		bool screen_changed;
@@ -38,6 +39,9 @@ class computer : public mc6809
 	public:
 		computer();
 		virtual ~computer();
+
+		virtual void reset(void);
+		virtual void step(uint64_t times);
 
 		virtual void serialise(void);
 		virtual void deserialise(void);
