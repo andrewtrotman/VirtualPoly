@@ -15,7 +15,9 @@ BOOT
 BUFFER	EQU	$C100
 
 	LDU #$A000
-	LDS #$8000
+	LDS #$9000
+	LDA #$00
+	TFR A,DP
 	LBRA main
 
 	;
@@ -37,6 +39,11 @@ bios_startup_message
 ;	----
 ;
 main
+	;
+	;	Configure the RAM DAT page table
+	;
+	INCLUDE ram.asm
+
 	;
 	;	Initialise the serial port
 	;

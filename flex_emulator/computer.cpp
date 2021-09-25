@@ -17,6 +17,7 @@ computer::computer() :
 	terminal(keyboard_input, serial_output),
 	prot(true),
 	leave_prot(false),
+	dat_bank(1),
 	screen_changed(false)
 	{
 	memset(bios, 0, sizeof(bios));
@@ -42,6 +43,7 @@ void computer::reset(void)
 	prot = true;
 	leave_prot = false;
 	screen_changed = false;
+	dat_bank = 1;
 	}
 
 /*
@@ -115,6 +117,28 @@ const char *computer::change_disk(uint8_t drive, const char *filename)
 	}
 
 /*
+	COMPUTER::RAW_TO_PHYSICAL()
+	---------------------------
+	Translate a logical address into a physical address
+	dat_bank selects which of the 2 DAT banks we use
+	the top 3 bits of the address select the DAT register
+	the dat register forms the top 8 address bits
+	the bottom 13 bits of the address are the offset
+	remember... the DAT is in 1s compliment
+
+	[DAT][ADDRESS] = DDDD DDDA AAAA AAAA AAAA
+	where DAT = [B][ADDRESS] B AAA
+*/
+qword computer::raw_to_physical(word raw_address)
+	{
+	qword dat_register = (raw_address >> 13) + 8 * (dat_bank - 1);
+	qword top_bits = ~bios[0xE050 + dat_register] & 0xFF;
+	qword physical_address =  (raw_address & 0x1FFF) | (top_bits << 13);
+
+	return physical_address;
+	}
+
+/*
 	COMPUTER::READ()
 	----------------
 	E004-E005 ACIA  (MC6850)
@@ -124,7 +148,6 @@ const char *computer::change_disk(uint8_t drive, const char *filename)
 byte computer::read(word raw_address)
 	{
 	byte answer;
-	uint32_t address = raw_address;
 
 	if (prot && raw_address >= 0xE000)
 		{
@@ -170,6 +193,42 @@ byte computer::read(word raw_address)
 				break;
 
 			/*
+				DAT Dynamic Address Translation at 0xE050-E05F
+			*/
+			case 0xE050:
+			case 0xE051:
+			case 0xE052:
+			case 0xE053:
+			case 0xE054:
+			case 0xE055:
+			case 0xE056:
+			case 0xE057:
+			case 0xE058:
+			case 0xE059:
+			case 0xE05A:
+			case 0xE05B:
+			case 0xE05C:
+			case 0xE05D:
+			case 0xE05E:
+			case 0xE05F:
+				answer = bios[raw_address];		 // this is the page lookup table (in 1s compliment)
+				break;
+
+			/*
+				Memory Map 1 select at 0xE060
+			*/
+			case 0xE060:
+				answer = 0;
+				break;
+
+			/*
+				Memory Map 2 select at 0xE70
+			*/
+			case 0xE070:
+				answer = 0;
+				break;
+
+			/*
 				Protected mode memory (BIOS, text screen, etc)
 			*/
 			default:
@@ -177,7 +236,7 @@ byte computer::read(word raw_address)
 			}
 		}
 	else
-		answer = memory[address];
+		answer = memory[raw_to_physical(raw_address)];
 
 	return answer;
 	}
@@ -191,8 +250,6 @@ byte computer::read(word raw_address)
 */
 void computer::write(word raw_address, byte value)
 	{
-	uint32_t address = raw_address;
-
 	if (prot && raw_address >= 0xE000)
 		{
 		switch (raw_address)
@@ -239,6 +296,42 @@ void computer::write(word raw_address, byte value)
 				break;
 
 			/*
+				DAT Dynamic Address Translation at 0xE050-E05F
+			*/
+			case 0xE050:
+			case 0xE051:
+			case 0xE052:
+			case 0xE053:
+			case 0xE054:
+			case 0xE055:
+			case 0xE056:
+			case 0xE057:
+			case 0xE058:
+			case 0xE059:
+			case 0xE05A:
+			case 0xE05B:
+			case 0xE05C:
+			case 0xE05D:
+			case 0xE05E:
+			case 0xE05F:
+				bios[raw_address] = value;
+				break;
+
+			/*
+				Memory Map 1 select at 0xE060
+			*/
+			case 0xE060:
+				dat_bank = 1;
+				break;
+
+			/*
+				Memory Map 2 select at 0xE70
+			*/
+			case 0xE070:
+				dat_bank = 2;
+				break;
+
+			/*
 				Computer Memory
 			*/
 			default:
@@ -247,7 +340,7 @@ void computer::write(word raw_address, byte value)
 			}
 		}
 	else
-		memory[address] = value;
+		memory[raw_to_physical(raw_address)] = value;
 	}
 
 /*

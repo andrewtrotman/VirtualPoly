@@ -28,6 +28,7 @@ class computer : public mc6809
 		mc6821 printer;
 		bool prot;					// protected (BIOS) mode?
 		bool leave_prot;			// Are we in transition out of prot
+		uint8_t dat_bank;			// which of the two DAT tables to use
 		ide hard_drive;
 		std::string disk_name;
 		bool screen_changed;
@@ -45,6 +46,8 @@ class computer : public mc6809
 
 		virtual void serialise(void);
 		virtual void deserialise(void);
+
+		virtual qword raw_to_physical(word raw_address);
 
 		virtual byte read(word offset);
 		virtual void write(word offset, byte val);
