@@ -9,7 +9,7 @@ ROM_FLEX.cpp : bios.asm io.asm serial.asm ata_ide.asm
 	srec_cat bios.F000 -o ROM_FLEX.cpp -c_array
 
 bootsector.bin : loader.asm
-	lwasm --format=raw -o bootsector.bin loader.asm
+	lwasm --format=raw -o bootsector.bin --list=bootsector.lst loader.asm
 
 clean:
 	rm *.s19 *.lst *.map *.o *.F000 ROM_FLEX.cpp bootsector.bin

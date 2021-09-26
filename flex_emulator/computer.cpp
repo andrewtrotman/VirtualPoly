@@ -57,6 +57,7 @@ void computer::step(uint64_t times)
 		start_of_instruction = pc;
 		bool leave_prot_now = leave_prot;
 		execute();
+
 		if (leave_prot_now)
 			prot = leave_prot = false;
 		}
@@ -374,4 +375,63 @@ word computer::dequeue_serial_output(void)
 	serial_output.pop_front();
 
 	return answer;
+	}
+/*
+	COMPUTER::SWI()
+	---------------
+*/
+void computer::swi(void)
+	{
+	prot = true;
+	mc6809::swi();
+	}
+
+/*
+	COMPUTER::SWI2()
+	----------------
+*/
+void computer::swi2(void)
+	{
+	prot = true;
+	mc6809::swi2();
+	}
+
+/*
+	COMPUTER::SWI3()
+	----------------
+*/
+void computer::swi3(void)
+	{
+	prot = true;
+	mc6809::swi3();
+	}
+
+/*
+	COMPUTER::DO_NMI()
+	------------------
+*/
+void computer::do_nmi(void)
+	{
+	prot = true;
+	mc6809::do_nmi();
+	}
+
+/*
+	COMPUTER::DO_FIRQ()
+	-------------------
+*/
+void computer::do_firq(void)
+	{
+	prot = true;
+	mc6809::do_firq();
+	}
+
+/*
+	COMPUTER::DO_IRQ()
+	------------------
+*/
+void computer::do_irq(void)
+	{
+	prot = true;
+	mc6809::do_irq();
 	}

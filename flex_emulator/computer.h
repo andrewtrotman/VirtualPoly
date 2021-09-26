@@ -44,6 +44,13 @@ class computer : public mc6809
 		virtual void reset(void);
 		virtual void step(uint64_t times);
 
+		virtual void do_nmi(void);
+		virtual void do_firq(void);
+		virtual void do_irq(void);
+		virtual void swi(void);
+		virtual void swi2(void);
+		virtual void swi3(void);
+
 		virtual void serialise(void);
 		virtual void deserialise(void);
 
