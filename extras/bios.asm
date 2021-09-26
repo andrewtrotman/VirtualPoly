@@ -110,21 +110,21 @@ FLEX_HANDLER
     ; When SWI is called the next byte is the function
     ; so we extract it and increment the return address
     ;
-    LDU $0A,S   ; Return address
-    LDB ,U+     ; SWI function
-    ASLB        ; Turn the function number into a table offset
-    STU $0A,S   ; The new return address (after the function numner)
+    PSHS B				; Save B
+    LDU $0B,S   		; Return address
+    LDB ,U+     		; SWI function
+    ASLB        		; Turn the function number into a table offset
+    STU $0B,S   		; The new return address (after the function numner)
 
     LDU #FLEX_FUNCTION_TABLE
-
     LEAU B,U
-    JSR [,U]
-;    JSR [B,U]
+    PULS B				; Restore B
+    JSR [,U]			; do the call
 
+	TFR D,U				; put A and B into U
     EXG A,CC			; put CC back onto the stack by swapping with A, storing A, and swapping back
-    STA ,S				; note that STA affects the Z flag, so we have to restore the flags before D
-    EXG A,CC
-    STD	$01,S			; Save A and B
+    STA ,S				; note that STA affects the Z flag, so we have to restore the flags before saving D
+    STU	$01,S			; Save A and B
 
 	STA 0xE040			; leave PROT mode after the RTI
 	RTI
