@@ -10,8 +10,10 @@ io_string_crlf
 ;	-------
 ;	Initialise the I/O console subsystem
 ;
+FLEX_TINIT		; TERMINAL INITIALIZATION
 io_init
 	LBSR	serial_init
+	LBSR	screen_init
 	RTS
 
 ;
@@ -19,8 +21,20 @@ io_init
 ;	----------
 ;	Print the character in A
 ;
+FLEX_OUTCH		; OUTPUT CHARACTER
 io_putchar
 	LBSR	serial_putchar
+	LBSR	screen_putchar
+	RTS
+
+;
+;	IO_GETCHAR_ECHO
+;	---------------
+;
+FLEX_INCH		; INPUT CHARACTER W/ ECHO
+io_getchar_echo
+	LBSR 	serial_getchar
+	BSR 	io_putchar
 	RTS
 
 ;
@@ -137,7 +151,7 @@ io_dump_memory_16_printable
 	BLO	io_dump_memory_16_print
 	LDA	#'.'
 io_dump_memory_16_print
-	BSR 	io_putchar
+	LBSR 	io_putchar
 	DECB
 	BNE	io_dump_memory_16_more_chars
 

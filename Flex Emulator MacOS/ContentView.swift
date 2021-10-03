@@ -187,7 +187,8 @@ struct ContentView: View
 						else
 							{
 							machine.pointer = machine_construct(PINNATED)
-							screen = terminal()
+							screen = screen_pinnated()
+//							screen = terminal()
 							}
 						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer

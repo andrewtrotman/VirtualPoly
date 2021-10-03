@@ -56,8 +56,8 @@ void computer::step(uint64_t times)
 		{
 		start_of_instruction = pc;
 		bool leave_prot_now = leave_prot;
-		execute();
 
+		execute();
 		if (leave_prot_now)
 			prot = leave_prot = false;
 		}
@@ -78,7 +78,7 @@ std::string computer::get_serialised_filename(void)
 */
 const uint8_t *computer::screen_buffer(void)
 	{
-	return nullptr;
+	return bios + 0xE800;
 	}
 
 /*

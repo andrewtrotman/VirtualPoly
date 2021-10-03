@@ -27,6 +27,7 @@ BUFFER	EQU	$C100
 	INCLUDE io.asm
 	INCLUDE ata_ide.asm
     INCLUDE poly_compatibility.asm
+    INCLUDE screen.asm
 	;
 	;	Strings and constants
 	;

@@ -57,6 +57,8 @@
 		49D3980B26E4AD1B00A75F04 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49D3980A26E4AD1A00A75F04 /* user.dsk */; };
 		49D3980C26E4ADFA00A75F04 /* user.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49D3980A26E4AD1A00A75F04 /* user.dsk */; };
 		49E35E2F267F1D670078058B /* saa5055_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49E35E2D267F1D670078058B /* saa5055_font.cpp */; };
+		49ED162627094EE900669717 /* screen_pinnated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ED162527094EE900669717 /* screen_pinnated.swift */; };
+		49ED162727094EE900669717 /* screen_pinnated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ED162527094EE900669717 /* screen_pinnated.swift */; };
 		49F336C526E205400075EEBA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C426E205400075EEBA /* WebView.swift */; };
 		49F336C726E209A10075EEBA /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C626E209A10075EEBA /* Keyboard.swift */; };
 		49F336CA26E210760075EEBA /* mc6821.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F336C826E210760075EEBA /* mc6821.cpp */; };
@@ -158,6 +160,7 @@
 		49D3980A26E4AD1A00A75F04 /* user.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = user.dsk; sourceTree = "<group>"; };
 		49E35E2D267F1D670078058B /* saa5055_font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saa5055_font.cpp; sourceTree = "<group>"; };
 		49E35E2E267F1D670078058B /* saa5055_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa5055_font.h; sourceTree = "<group>"; };
+		49ED162527094EE900669717 /* screen_pinnated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = screen_pinnated.swift; sourceTree = "<group>"; };
 		49F336C426E205400075EEBA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		49F336C626E209A10075EEBA /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		49F336C826E210760075EEBA /* mc6821.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6821.cpp; sourceTree = "<group>"; };
@@ -313,6 +316,7 @@
 				49CFF18C26F1EB95008C8668 /* keyboard_arrow.h */,
 				4910487526F6F8AA00C54511 /* screen_base.swift */,
 				49C0985126EC34EF00C10535 /* screen_arrow.swift */,
+				49ED162527094EE900669717 /* screen_pinnated.swift */,
 				49B31D7A266F518D00706439 /* typedefs.h */,
 				49B31D79266F512300706439 /* misc.h */,
 				49B31D77266F50EF00706439 /* usim.h */,
@@ -622,6 +626,7 @@
 				49B0649D26F4761700153AE5 /* ROM_arrow_debugger.cpp in Sources */,
 				49F336C726E209A10075EEBA /* Keyboard.swift in Sources */,
 				49D1C24F26DA056900015409 /* terminal.swift in Sources */,
+				49ED162727094EE900669717 /* screen_pinnated.swift in Sources */,
 				49D1C24826DA056100015409 /* mc6809.cpp in Sources */,
 				49D1C24526DA056100015409 /* ROM_FLEX.cpp in Sources */,
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
@@ -665,6 +670,7 @@
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,
 				49480DF22674993E00860A83 /* saa5050.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
+				49ED162627094EE900669717 /* screen_pinnated.swift in Sources */,
 				49C0985226EC34EF00C10535 /* screen_arrow.swift in Sources */,
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
 				499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */,
