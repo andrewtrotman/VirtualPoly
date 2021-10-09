@@ -19,7 +19,7 @@ struct key_event_handling: NSViewRepresentable
 
 	/*
 		CLASS KEY_VIEW
-		----------=---
+		--------------
 	*/
 	class key_view: NSView
 		{
