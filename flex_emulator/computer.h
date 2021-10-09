@@ -77,6 +77,11 @@ inline std::ostream &operator<<(std::ostream &into, const computer &simulator)
 	qword queue_size = 0;
 
 	operator<<(into, (mc6809 &)simulator);
+	into.write((char *)&simulator.bios[0], sizeof(simulator.bios));
+
+	into.write((char *)&simulator.prot, sizeof(simulator.prot));
+	into.write((char *)&simulator.leave_prot, sizeof(simulator.leave_prot));
+	into.write((char *)&simulator.dat_bank, sizeof(simulator.dat_bank));
 
 	queue_size = simulator.keyboard_input.size();
 	into.write((char *)&queue_size, sizeof(queue_size));
@@ -103,6 +108,11 @@ inline std::istream &operator>>(std::istream &from, computer &simulator)
 	qword queue_size = 0;
 
 	operator>>(from, (mc6809 &)simulator);
+	from.read((char *)&simulator.bios[0], sizeof(simulator.bios));
+
+	from.read((char *)&simulator.prot, sizeof(simulator.prot));
+	from.read((char *)&simulator.leave_prot, sizeof(simulator.leave_prot));
+	from.read((char *)&simulator.dat_bank, sizeof(simulator.dat_bank));
 
 	from.read((char *)&queue_size, sizeof(queue_size));
 	for (qword count = 0; count < queue_size; count++)
@@ -120,6 +130,8 @@ inline std::istream &operator>>(std::istream &from, computer &simulator)
 
 	operator>>(from, simulator.terminal);
 	operator>>(from, simulator.hard_drive);
+
+	simulator.screen_changed = true;
 
 	return from;
 	}

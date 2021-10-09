@@ -127,7 +127,7 @@ std::string ide::move_disks_to_user_space(const std::string &filename)
 	{
 	auto full_filename = get_local_filename(filename);
 	std::error_code status;
-//	if (!exists(full_filename, status))
+	if (!exists(full_filename, status))
 		{
 		CFBundleRef bundle = CFBundleGetMainBundle();
 		CFStringRef munged_name = CFStringCreateWithCString(NULL, filename.c_str(), kCFStringEncodingUTF8);
@@ -135,8 +135,8 @@ std::string ide::move_disks_to_user_space(const std::string &filename)
 		CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
 		auto bundle_disk = std::filesystem::path(CFStringGetCStringPtr(path, CFStringGetSystemEncoding()));
 
-//		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::skip_existing, status);
-		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::overwrite_existing, status);
+		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::skip_existing, status);
+//		std::filesystem::copy_file(bundle_disk, full_filename, std::filesystem::copy_options::overwrite_existing, status);
 
 		CFRelease(url);
 		CFRelease(path);
@@ -273,7 +273,10 @@ void ide::write(word address, byte value)
 				if (current < end)
 					*current++ = value;
 				if (current == end)
+					{
 					status_register = 0x50;
+					command_register = 0;
+					}
 				}
 			break;
 		case 1:

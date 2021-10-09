@@ -31,13 +31,13 @@ class ide
 	friend inline std::istream &operator>>(std::istream &from, ide &simulator);
 
 	private:
-		const byte command_read_sector = 0x20;
-		const byte command_write_sector = 0x30;
-		const byte command_identfy = 0xEC;
-		const byte command_set_feature = 0xEF;
+		static const byte command_read_sector = 0x20;
+		static const byte command_write_sector = 0x30;
+		static const byte command_identfy = 0xEC;
+		static const byte command_set_feature = 0xEF;
 
 	private:
-		byte identify_buffer[512];	// the value of the device identify block
+		byte identify_buffer[512];		// the value of the device identify block
 		byte *current;					// current point on the disk
 		byte *end;						// end of the current sector
 
@@ -51,6 +51,7 @@ class ide
 		byte disk_head_register;
 		byte status_register;
 		byte command_register;
+
 		word disk_0_sectors_per_track;		// read the disk geometry from the FLEX disk itself.
 		word disk_1_sectors_per_track;		// read the disk geometry from the FLEX disk itself.
 
@@ -164,11 +165,15 @@ inline std::istream &operator>>(std::istream &from, ide &simulator)
 		{
 		simulator.current = ((byte *)&simulator.disk_0[0]) + reading_from;
 		simulator.end = ((byte *)&simulator.disk_0[0]) + reading_to;
+		if (simulator.command_register == ide::command_write_sector)
+			simulator.disk_0_did_change = true;
 		}
 	else if (which_disk == 1)
 		{
 		simulator.current = ((byte *)&simulator.disk_1[0]) + reading_from;
 		simulator.end = ((byte *)&simulator.disk_1[0]) + reading_to;
+		if (simulator.command_register == ide::command_write_sector)
+			simulator.disk_1_did_change = true;
 		}
 
 	return from;
