@@ -63,7 +63,8 @@ struct Flex_Emulator_MacOSApp: App
 				CommandGroup(replacing: .sidebar) {}
 				CommandGroup(replacing: .systemServices) {}
 				CommandGroup(replacing: .newItem) {}
-				CommandGroup(after: .saveItem)
+//				CommandGroup(after: .saveItem)
+				CommandMenu("6809")
 					{
 					file_menu(disk_0_name: $disk_0, disk_1_name: $disk_1)
 					Divider()
