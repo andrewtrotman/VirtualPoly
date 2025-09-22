@@ -124,13 +124,13 @@ struct ContentView: View
 						{
 						var screen_did_change = false
 
-                        let total_seconds_count = -initial_time.timeIntervalSinceNow
+                  let total_seconds_count = -initial_time.timeIntervalSinceNow
 						let end_cycle = UInt64(ContentView.CPU_speed * total_seconds_count)
 
 						if end_cycle > machine_cycles_spent(machine.pointer) + 10 * UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz))
-                        	{
+							{
 							machine_set_cycles_spent(machine.pointer, UInt64(Double(ContentView.CPU_speed) * total_seconds_count) - UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz)))
-                            }
+							}
 
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
