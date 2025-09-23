@@ -318,7 +318,7 @@ class terminal : screen_base
 		}
 
 	/*
-		RENDER_ENTURE_SCREEN()
+		RENDER_ENTIRE_SCREEN()
 		----------------------
 	*/
 	override func render_entire_screen()

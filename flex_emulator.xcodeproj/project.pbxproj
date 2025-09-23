@@ -9,6 +9,20 @@
 /* Begin PBXBuildFile section */
 		4910487626F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
 		4910487726F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
+		492195602E82200400136344 /* computer_poly_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly_1.cpp */; };
+		492195672E82215200136344 /* ROM_poly_BIOS_34.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */; };
+		492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */; };
+		492195692E82215200136344 /* ROM_poly_BASIC_34_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */; };
+		4921956A2E82215200136344 /* ROM_poly_BASIC_34_4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */; };
+		4921956B2E82215200136344 /* ROM_poly_BASIC_34_3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */; };
+		4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly_1.cpp */; };
+		4921956D2E824B1600136344 /* ROM_poly_BASIC_34_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */; };
+		4921956E2E824B1600136344 /* ROM_poly_BASIC_34_2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */; };
+		4921956F2E824B1600136344 /* ROM_poly_BASIC_34_3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */; };
+		492195702E824B1600136344 /* ROM_poly_BASIC_34_4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */; };
+		492195712E824B1600136344 /* ROM_poly_BIOS_34.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */; };
+		492195732E82518900136344 /* screen_poly_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492195722E82518900136344 /* screen_poly_1.swift */; };
+		492195742E82518900136344 /* screen_poly_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492195722E82518900136344 /* screen_poly_1.swift */; };
 		492E929726DB825F000DA1F9 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 492E929626DB825F000DA1F9 /* Credits.rtf */; };
 		4944EF422670801A00445780 /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF412670801A00445780 /* computer.cpp */; };
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
@@ -108,6 +122,15 @@
 /* Begin PBXFileReference section */
 		4910487526F6F8AA00C54511 /* screen_base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_base.swift; sourceTree = "<group>"; };
 		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
+		4921955E2E82200400136344 /* computer_poly_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_poly_1.cpp; sourceTree = "<group>"; };
+		4921955F2E82200400136344 /* computer_poly_1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_poly_1.h; sourceTree = "<group>"; };
+		492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BIOS_34.cpp; sourceTree = "<group>"; };
+		492195622E82215200136344 /* ROM_poly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_poly.h; sourceTree = "<group>"; };
+		492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_2.cpp; sourceTree = "<group>"; };
+		492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_1.cpp; sourceTree = "<group>"; };
+		492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_4.cpp; sourceTree = "<group>"; };
+		492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_3.cpp; sourceTree = "<group>"; };
+		492195722E82518900136344 /* screen_poly_1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_poly_1.swift; sourceTree = "<group>"; };
 		492E929626DB825F000DA1F9 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
 		4944EF412670801A00445780 /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer.cpp; sourceTree = "<group>"; };
@@ -310,13 +333,15 @@
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
 				4944EF402670801900445780 /* computer.h */,
 				4944EF412670801A00445780 /* computer.cpp */,
+				4921955F2E82200400136344 /* computer_poly_1.h */,
+				4921955E2E82200400136344 /* computer_poly_1.cpp */,
 				495A221D26EB54FD00555F2B /* computer_arrow.cpp */,
 				495A221C26EB54FD00555F2B /* computer_arrow.h */,
 				49CFF18D26F1EB95008C8668 /* keyboard_arrow.cpp */,
 				49CFF18C26F1EB95008C8668 /* keyboard_arrow.h */,
-				4910487526F6F8AA00C54511 /* screen_base.swift */,
 				49C0985126EC34EF00C10535 /* screen_arrow.swift */,
 				49ED162527094EE900669717 /* screen_pinnated.swift */,
+				492195722E82518900136344 /* screen_poly_1.swift */,
 				49B31D7A266F518D00706439 /* typedefs.h */,
 				49B31D79266F512300706439 /* misc.h */,
 				49B31D77266F50EF00706439 /* usim.h */,
@@ -339,12 +364,19 @@
 				499A044D267747BE0036F04D /* ROM_FLEX.cpp */,
 				495A221B26EB52C800555F2B /* ROM_arrow_menu.h */,
 				495A221826EB529700555F2B /* ROM_arrow_menu.cpp */,
+				4910487526F6F8AA00C54511 /* screen_base.swift */,
 				49B0649F26F4784A00153AE5 /* ROM_arrow_BASIC.h */,
 				49B0649626F4761700153AE5 /* ROM_arrow_BASIC.cpp */,
 				49B0649E26F4784A00153AE5 /* ROM_arrow_debugger.h */,
 				49B0649726F4761700153AE5 /* ROM_arrow_debugger.cpp */,
 				49B064A026F4784A00153AE5 /* ROM_arrow_monitor.h */,
 				49B0649526F4761700153AE5 /* ROM_arrow_monitor.cpp */,
+				492195622E82215200136344 /* ROM_poly.h */,
+				492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */,
+				492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */,
+				492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */,
+				492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */,
+				492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
 				496F4D2626901F3900D18C22 /* keyboard.swift */,
 				49FD34C5268F043000F56EF3 /* terminal.swift */,
@@ -610,6 +642,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */,
+				4921956D2E824B1600136344 /* ROM_poly_BASIC_34_1.cpp in Sources */,
+				4921956E2E824B1600136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
+				4921956F2E824B1600136344 /* ROM_poly_BASIC_34_3.cpp in Sources */,
+				492195702E824B1600136344 /* ROM_poly_BASIC_34_4.cpp in Sources */,
+				492195712E824B1600136344 /* ROM_poly_BIOS_34.cpp in Sources */,
 				4910487726F6F8AA00C54511 /* screen_base.swift in Sources */,
 				49D1C24726DA056100015409 /* mc6850.cpp in Sources */,
 				49F336C526E205400075EEBA /* WebView.swift in Sources */,
@@ -637,6 +675,7 @@
 				49B0649B26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
 				49D1C24D26DA056200015409 /* usim.cpp in Sources */,
 				49D1C25326DA065900015409 /* Compatibility.swift in Sources */,
+				492195742E82518900136344 /* screen_poly_1.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,8 +699,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				492195732E82518900136344 /* screen_poly_1.swift in Sources */,
 				49480DF62675DD4C00860A83 /* ide.cpp in Sources */,
 				49CFF18E26F1EB95008C8668 /* keyboard_arrow.cpp in Sources */,
+				4921956A2E82215200136344 /* ROM_poly_BASIC_34_4.cpp in Sources */,
 				49E35E2F267F1D670078058B /* saa5055_font.cpp in Sources */,
 				49F336CA26E210760075EEBA /* mc6821.cpp in Sources */,
 				49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */,
@@ -670,11 +711,16 @@
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,
 				49480DF22674993E00860A83 /* saa5050.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
+				492195602E82200400136344 /* computer_poly_1.cpp in Sources */,
+				492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
 				49ED162627094EE900669717 /* screen_pinnated.swift in Sources */,
+				4921956B2E82215200136344 /* ROM_poly_BASIC_34_3.cpp in Sources */,
 				49C0985226EC34EF00C10535 /* screen_arrow.swift in Sources */,
+				492195692E82215200136344 /* ROM_poly_BASIC_34_1.cpp in Sources */,
 				49F70B0F266C523000408DAE /* ContentView.swift in Sources */,
 				499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */,
 				49B0649826F4761700153AE5 /* ROM_arrow_monitor.cpp in Sources */,
+				492195672E82215200136344 /* ROM_poly_BIOS_34.cpp in Sources */,
 				496F4D2726901F3900D18C22 /* keyboard.swift in Sources */,
 				49B0649A26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
 				4944EF422670801A00445780 /* computer.cpp in Sources */,

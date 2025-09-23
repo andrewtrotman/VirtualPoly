@@ -17,7 +17,8 @@ extern "C"
 	typedef enum
 		{
 		PINNATED,
-		ARROW
+		ARROW,
+		POLY_1
 		} machine_type;
 
 	const void *machine_construct(machine_type type);

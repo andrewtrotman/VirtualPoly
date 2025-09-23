@@ -19,9 +19,9 @@
 class USim
 {
 public:
-	int halted;					// are we in the halted state?
+	int halted;						// are we in the halted state?
 	byte memory[0x200000];		// memory (2MB)
-	word ir, pc;				// internal register and program counter
+	word ir, pc;					// internal register and program counter
 	word start_of_instruction;	// the address of the first byte of the current instruction
 
 protected:

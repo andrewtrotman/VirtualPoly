@@ -1,15 +1,15 @@
 /*
-	SCREEN_PINNATED.SWIFT
-	---------------------
-	Copyright (c) 2021 Andrew Trotman
+	SCREEN_POLY_1.SWIFT
+	-------------------
+	Copyright (c) 2025 Andrew Trotman
 */
 import Foundation
 
 /*
-	CLASS SCREEN_PINNATED
+	CLASS SCREEN_POLY_1
 	---------------------
 */
-class screen_pinnated : screen_base
+class screen_poly_1 : screen_base
 	{
 	var screen: UnsafePointer<UInt8>?	// the bytemap of the screen buffer
 	let black:   UInt32 = 0x00000000
@@ -42,6 +42,8 @@ class screen_pinnated : screen_base
 	/*
 		RENDER_ENTIRE_SCREEN()
 		----------------------
+		The Poly text screen is 40 columns by 24 lines.  There is apparently an emulated 80-column mode
+		using screen 5, but I've never seen it in action on a running Poly, so don't know what it looks like!
 	*/
 	override func render_entire_screen()
 		{
@@ -95,7 +97,7 @@ class screen_pinnated : screen_base
 	/*
 		DRAW_SCREEN()
 		-------------
-		64-column text screen renderer
+		Render one character to the screen
 	*/
 	private func draw_screen(screen_x: Int, screen_y: Int, character: UInt8, foreground: UInt32, background: UInt32)
 		{

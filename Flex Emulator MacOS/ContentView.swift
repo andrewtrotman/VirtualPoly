@@ -42,7 +42,7 @@ class machine_changer: ObservableObject
 */
 struct ContentView: View
 	{
-    @StateObject var app_state : AppState
+	@StateObject var app_state : AppState
 
 	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
@@ -184,12 +184,18 @@ struct ContentView: View
 							machine.pointer = machine_construct(ARROW)
 							screen = screen_arrow()
 							}
-						else
+						else if (AppState.shared.emulated_machine == PINNATED)
 							{
 							machine.pointer = machine_construct(PINNATED)
 //							screen = screen_pinnated()
 							screen = terminal()
 							}
+						else	// must be a Poly emulator
+							{
+							machine.pointer = machine_construct(POLY_1)
+							screen = screen_poly_1()
+							}
+
 						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer
 						AppState.shared.screen = screen

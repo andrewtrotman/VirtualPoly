@@ -19,9 +19,9 @@ class screen_base
 		case eighty = 80
 		}
 
-	var rendering_width = screen_width.fourty		// how wide the screen appeara
+	var rendering_width = screen_width.fourty		// width of the screen in characters
 	var flash_state = false								// the status of the flashing cursor (0 = off, 1 = on)
-	var bitmap = [UInt32]()											// the bitmap of the screen buffer
+	var bitmap = [UInt32]()								// the bitmap of the screen buffer
 
 	/*
 		SET_SCREEN_BUFFER()

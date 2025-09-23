@@ -5,6 +5,7 @@
 */
 #include "cpp_methods.h"
 #include "computer_arrow.h"
+#include "computer_poly_1.h"
 
 /*
 	MACHINE_CONSTRUCT()
@@ -16,8 +17,10 @@ const void *machine_construct(machine_type type)
 
 	if (type == PINNATED)
 		machine = new computer();
-	else
+	else if (type == ARROW)
 		machine = new computer_arrow();
+	else
+		machine = new computer_poly_1();
 
 	machine->reset();
 	return (const void *)machine;

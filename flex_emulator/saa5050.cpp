@@ -117,7 +117,7 @@ if (text_double_height)
 	for (y = 0; y < 20; y++)
 		{
 		pos = font[from + (y >> 1)];
-		into = canvas + (pos_x * 12 + pos_y * 10 * 480) + y * 480;
+		into = canvas + (pos_x * 12 + pos_y * 10 * 480) + (y * 480);
 
 		for (x = 2; x < 8; x++)
 			if (pos & (0x80 >> x))
@@ -147,7 +147,7 @@ else
 	for (y = 0; y < 10; y++)
 		{
 		pos = font[from + y];
-		into = canvas + (pos_x * 12 + pos_y * 10 * 480) + y * 480;
+		into = canvas + (pos_x * 12 + pos_y * 10 * 480) + (y * 480);
 
 		for (x = 2; x < 8; x++)
 			if (pos & (0x80 >> x))
