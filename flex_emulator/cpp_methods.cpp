@@ -146,6 +146,15 @@ bool machine_did_screen_change(const void *object)
 	}
 
 /*
+	MACHINE_POLY_1_RENDER_SCREEN()
+	------------------------------
+*/
+void machine_poly_1_render_screen(const void *object, void *screen_buffer)
+	{
+	((computer *)object)->render((uint32_t *)screen_buffer);
+	}
+
+/*
 	GET_SAA5050_FONT()
 	------------------
 */

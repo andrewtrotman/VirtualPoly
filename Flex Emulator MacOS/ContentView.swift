@@ -193,7 +193,9 @@ struct ContentView: View
 						else	// must be a Poly emulator
 							{
 							machine.pointer = machine_construct(POLY_1)
-							screen = screen_poly_1()
+							let poly_screen = screen_poly_1()
+							poly_screen.set_machine(poly: machine.pointer)
+							screen = poly_screen
 							}
 
 						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))

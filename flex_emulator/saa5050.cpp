@@ -10,6 +10,18 @@
 #define FALSE 0
 #define TRUE (!FALSE)
 
+static uint32_t colour_table[] =
+	{
+	0x00000000,
+	0x000000FF,
+	0x0000FF00,
+	0x0000FFFF,
+	0x00FF0000,
+	0x00FF00FF,
+	0x00FFFF00,
+	0x00FFFFFF
+	};
+
 /*
 	SAA5050::SAA5050()
 	------------------
@@ -27,11 +39,11 @@ glyph_base = text_graphics_mode = text_double_height = conceal = 0;
 	SAA5050::PRINT_CHAR()
 	---------------------
 */
-long saa5050::print_char(unsigned char *canvas, long pos_x, long pos_y, unsigned char ch, long text_flash_state)
+long saa5050::print_char(uint32_t *canvas, long pos_x, long pos_y, unsigned char ch, long text_flash_state)
 {
 long true_glyph_base;
 long from, x, y, pos;
-unsigned char *into;
+uint32_t *into;
 unsigned char on, off, background_colour;
 
 if (ch == 0x00)		// 0x00 isn't used (and isn't special either)
@@ -123,8 +135,8 @@ if (text_double_height)
 			if (pos & (0x80 >> x))
 				if (on != 0)
 					{
-					*into++ = on;
-					*into++ = on;
+					*into++ = colour_table[on];
+					*into++ = colour_table[on];
 					}
 				else
 					{
@@ -134,8 +146,8 @@ if (text_double_height)
 			else
 				if (off != 0)
 					{
-					*into++ = off;
-					*into++ = off;
+					*into++ = colour_table[off];
+					*into++ = colour_table[off];
 					}
 				else
 					{
@@ -153,8 +165,8 @@ else
 			if (pos & (0x80 >> x))
 				if (on != 0)
 					{
-					*into++ = on;
-					*into++ = on;
+					*into++ = colour_table[on];
+					*into++ = colour_table[on];
 					}
 				else
 					{
@@ -164,8 +176,8 @@ else
 			else
 				if (off != 0)
 					{
-					*into++ = off;
-					*into++ = off;
+					*into++ = colour_table[off];
+					*into++ = colour_table[off];
 					}
 				else
 					{
@@ -181,7 +193,7 @@ return text_double_height;
 	SAA5050::PAINT_TEXT_PAGE()
 	--------------------------
 */
-void saa5050::paint_text_page(unsigned char *canvas, long text_flash_state)
+void saa5050::paint_text_page(uint32_t *canvas, long text_flash_state)
 {
 long line, column, double_height;
 unsigned char ch;

@@ -59,6 +59,7 @@ class computer_poly_1 : public computer
 		virtual const uint8_t *screen_buffer(void);
 
 		virtual bool did_screen_change(void);
+		virtual void render(uint32_t *screen_buffer);
 	};
 
 /*

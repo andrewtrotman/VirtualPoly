@@ -5,6 +5,8 @@
 */
 #pragma once
 
+#include <stdint.h>
+
 /*
 	class SAA5050
 	-------------
@@ -24,11 +26,11 @@ protected:
 	long flashing;
 
 protected:
-	long print_char(unsigned char *canvas, long pos_x, long pos_y, unsigned char ch, long text_flash_state);
+	long print_char(uint32_t *canvas, long pos_x, long pos_y, unsigned char ch, long text_flash_state);
 
 public:
 	saa5050(unsigned char *memory);
 	virtual ~saa5050() {}
 
-	void paint_text_page(unsigned char *canvas, long text_flash_state);
+	void paint_text_page(uint32_t *canvas, long text_flash_state);
 } ;

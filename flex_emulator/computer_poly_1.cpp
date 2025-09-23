@@ -88,6 +88,15 @@ const uint8_t *computer_poly_1::screen_buffer(void)
 	}
 
 /*
+	COMPUTER_POLY_1::RENDER()
+	-------------------------
+*/
+void computer_poly_1::render(uint32_t *screen_buffer)
+	{
+	text_page_1.paint_text_page(screen_buffer, false);
+	}
+
+/*
 	COMPUTER_POLY_1::SERIALISE()
 	----------------------------
 */
