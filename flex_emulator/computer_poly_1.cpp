@@ -397,8 +397,8 @@ void computer_poly_1::queue_key_press(byte key)
 */
 void computer_poly_1::queue_key_release(byte key)
 	{
-	pia2.arrived_b(key, 0, 0);						// the key has been released
-	queue_irq();
+//	pia2.arrived_b(key, 0, 0);						// the key has been released
+//	queue_irq();
 	}
 
 /*
