@@ -18,7 +18,6 @@ class computer_poly_1 : public computer
 	friend std::istream &operator>>(std::istream &from, computer_poly_1 &simulator);
 
 	protected:
-		std::deque<byte> keyboard_input;
 		bool prot;						// protected (BIOS) mode?
 		bool leave_prot;				// Are we in transition out of prot
 		uint8_t dat_bank;				// which of the two DAT tables to use
@@ -27,6 +26,7 @@ class computer_poly_1 : public computer
 		uint8_t bios[0x10000];		// the BIOS is in a seperate space from the RAM
 		saa5050 text_page_1;
 		saa5050 text_page_3;
+		mc6821 pia2;					// Poly keyboard interface is an ASCII-like keyboard attached to an mc6821
 
 	private:
 		std::string get_serialised_filename();
@@ -54,6 +54,7 @@ class computer_poly_1 : public computer
 		virtual void write(word offset, byte val);
 
 		virtual void queue_key_press(byte key);
+		virtual void queue_key_release(byte key);
 
 		virtual const char *change_disk(uint8_t drive, const char *filename);
 		virtual const uint8_t *screen_buffer(void);

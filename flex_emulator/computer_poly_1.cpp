@@ -60,12 +60,27 @@ void computer_poly_1::step(uint64_t times)
 	{
 	for (uint64_t count = 0; count < times; count++)
 		{
+		/*
+			Setup - are we about to leave protected mode (etc.).
+		*/
 		start_of_instruction = pc;
 		bool leave_prot_now = leave_prot;
 
+		/*
+			Execute the next instruction
+		*/
 		execute();
+
 		if (leave_prot_now)
+			{
 			prot = leave_prot = false;
+			}
+
+		/*
+			If there's an IRQ or FIRQ pending them process them (push registers and load PC)
+		*/
+		do_firq();
+		do_irq();
 		}
 	}
 
@@ -152,6 +167,7 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 /*
 	COMPUTER_POLY_1::READ()
 	-----------------------
+	E00C-E00F PIA   (MC6821)			Keyboard
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
 	E060      Memory Map 1 select
@@ -161,11 +177,23 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 byte computer_poly_1::read(word raw_address)
 	{
 	byte answer;
-
-	if (prot && raw_address >= 0xE000)
+	if (!prot)
+		answer = memory[raw_to_physical(raw_address)];				// User mode addressing
+	else
 		{
 		switch (raw_address)
 			{
+			/*
+				Keyboard controler
+				MC6821 PIA (Parallel Controller) at E00C-E00F
+			*/
+			case 0xE00C:
+			case 0xE00D:
+			case 0xE00E:
+			case 0xE00F:
+				answer = pia2.read(raw_address - 0xE00C);
+				break;
+
 			/*
 				Prot switch at 0xE040
 			*/
@@ -214,10 +242,16 @@ byte computer_poly_1::read(word raw_address)
 			*/
 			default:
 				answer = bios[raw_address];
+
+				if (raw_address < 0xE000)
+					answer = memory[raw_to_physical(raw_address)];				// User mode addressing
+				else if (raw_address < 0xE800)
+					answer = 0; 							// there's nothing here in the memory map
+				else
+					answer = bios[raw_address];
+				break;
 			}
 		}
-	else
-		answer = memory[raw_to_physical(raw_address)];
 
 	return answer;
 	}
@@ -237,10 +271,32 @@ byte computer_poly_1::read(word raw_address)
 */
 void computer_poly_1::write(word raw_address, byte value)
 	{
-	if (prot && raw_address >= 0xE000)
+	if (!prot)
+		{
+		unsigned long physical_address;
+
+		/*
+			User mode address translation
+		*/
+		physical_address = raw_to_physical(raw_address);
+		if (physical_address < 0xC000 || physical_address >= 0x10000)		// else we're in the BASIC ROM
+			memory[physical_address] = value;
+		}
+	else
 		{
 		switch (raw_address)
 			{
+			/*
+				Keyboard controler
+				MC6821 PIA (Parallel Controller) at E00C-E00F
+			*/
+			case 0xE00C:
+			case 0xE00D:
+			case 0xE00E:
+			case 0xE00F:
+				pia2.write(raw_address - 0xE00C, value);
+				break;
+
 			/*
 				Prot switch
 				We leave prot at the end of the next instruction.
@@ -290,18 +346,30 @@ void computer_poly_1::write(word raw_address, byte value)
 				Computer Memory (including text screen and system scratch RAM)
 			*/
 			default:
-				if (raw_address < 0xF000)
+				if (raw_address < 0xE000)
+					{
+					/*
+						User mode addressing
+						This is done with a recursive call so that we can catch any writes to the screen and update the flags
+					*/
+					prot = false;
+					write(raw_address, value);
+					prot = true;
+					}
+				else if (raw_address < 0xE800)
+					{ /* there's nothing here in the memory map */ }
+				else if (raw_address < 0xF000)
 					{
 					bios[raw_address] = value;
-					if (raw_address >= 0xE800 && raw_address <= 0xEBBF)
-						screen_changed = true;				// write to text page 1
-					if (raw_address >= 0xEC00 && raw_address <= 0xEFBF)
-						screen_changed = true;				// write to text page 3 (page 2 is a graphics page)
+					if (raw_address >= 0xE800 && raw_address < 0xEBC0)
+							screen_changed = true;				// write to text page 1
+					else if (raw_address >= 0xEC00 && raw_address < 0xEFC0)
+							screen_changed = true;				// write to text page 1
 					}
+				else
+					{ /* we're in the BIOS so can't write */ }
 			}
 		}
-	else
-		memory[raw_to_physical(raw_address)] = value;
 	}
 
 /*
@@ -319,7 +387,18 @@ bool computer_poly_1::did_screen_change(void)
 */
 void computer_poly_1::queue_key_press(byte key)
 	{
-	keyboard_input.push_back(key);
+	pia2.arrived_b(key, 1 << 7, 0);				// the key has been pressed
+	queue_irq();
+	}
+
+/*
+	COMPUTER_POLY_1::QUEUE_KEY_RELEASE()
+	------------------------------------
+*/
+void computer_poly_1::queue_key_release(byte key)
+	{
+	pia2.arrived_b(key, 0, 0);						// the key has been released
+	queue_irq();
 	}
 
 /*

@@ -109,6 +109,16 @@ void machine_queue_key_press(const void *object, char key)
 	}
 
 /*
+	MACHINE_QUEUE_KEY_RELEASE()
+	---------------------------
+*/
+void machine_queue_key_release(const void *object, char key)
+	{
+	((computer *)object)->queue_key_release(key);
+	}
+
+
+/*
 	MACHINE_DEQUEUE_SERIAL_OUTPUT()
 	-------------------------------
 */

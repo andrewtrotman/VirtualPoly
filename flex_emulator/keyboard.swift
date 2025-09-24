@@ -35,7 +35,7 @@ class keyboard
 	private let image_keyboard_caps_shift = UIImage(named: keyboard_mode + "KeyboardCapsShift")!
 	private let image_keyboard_caps_control = UIImage(named: keyboard_mode + "KeyboardCapsControl")!
 
-	private var caps = true				// caps lock is down?
+	private var caps = true					// caps lock is down?
 	private var shift = false				// shift key is down?
 	private var control = false			// cotrol key is down?
 
@@ -117,7 +117,7 @@ class keyboard
 			H = Up				(BS)
 			I = Down				(VT)
 			J = Right			(DC1)
-			R = Reset (not on keyboard)
+			R = Reset (not on keyboard, on back of Poly unit)
 	*/
 	private func compute_key_press(width: CGFloat, height:CGFloat, location: CGPoint) -> UInt8
 		{

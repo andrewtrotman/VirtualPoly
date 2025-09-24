@@ -60,6 +60,7 @@ class computer : public mc6809
 		virtual void write(word offset, byte val);
 
 		virtual void queue_key_press(byte key);
+		virtual void queue_key_release(byte key) {}
 		virtual word dequeue_serial_output(void);
 
 		virtual const char *change_disk(uint8_t drive, const char *filename);

@@ -1149,19 +1149,19 @@ void mc6809::andb(void)
 	---------------
 */
 void mc6809::andcc(void)
-	{
-	cc.all &= fetch();
+{
+cc.all &= fetch();
 
-	#ifdef NEVER
-	/*
-		BDA - add interrupt support
-	*/
-	if (!cc.bit.f && firqpend)	// FIRQ not masked
-		do_firq();
-	if (!cc.bit.i && irqpend)	// IRQ not masked
-		do_irq();
-	#endif
-	}
+#ifdef NEVER
+/*
+	BDA - add interrupt support
+*/
+if (!cc.bit.f && firqpend)	// FIRQ not masked
+	do_firq();
+if (!cc.bit.i && irqpend)	// IRQ not masked
+	do_irq();
+#endif
+}
 
 /*
 	MC6809::HELP_ASR()
@@ -1834,17 +1834,25 @@ void mc6809::help_eor(byte &x)
 */
 void mc6809::do_firq()
 	{
-	if (!cc.bit.f)	// FIRQ not masked
-		{
-		cc.bit.e = 0;	// not all regs on stack
-		help_psh(0x81, s, u);	// save cc, pc only
-		pc = read_word(0xfff6);	// fetch firq vector
-		cc.bit.f = cc.bit.i = 1; // Mask while servicing
-		firqpend = 0;	// Clear pending flag
-		cycles += 10;
-		}
-	else
-		firqpend = 1;	// FIRQ pending
+	if (firqpend > 0)
+		if (!cc.bit.f)	// FIRQ not masked
+			{
+			cc.bit.e = 0;					// not all regs on stack
+			help_psh(0x81, s, u);		// save cc, pc only
+			pc = read_word(0xfff6);		// fetch firq vector
+			cc.bit.f = cc.bit.i = 1; 	// Mask while servicing
+			firqpend--;						// Clear pending flag
+			cycles += 10;
+			}
+	}
+
+/*
+	MC6809::QUEUE_FIRQ()
+	--------------------
+*/
+void mc6809::queue_firq()
+	{
+	firqpend++;	// FIRQ pending
 	}
 
 /*
@@ -1947,17 +1955,25 @@ void mc6809::help_inc(byte &x)
 */
 void mc6809::do_irq()
 	{
-	if (!cc.bit.i)	// IRQ not masked
-		{
-		cc.bit.e = 1;	// all regs on stack
-		help_psh(0xff, s, u);
-		pc = read_word(0xfff8);	// fetch irq vector
-		cc.bit.i = 1;	// Mask IRQ while servicing
-		irqpend = 0;	// Clear pending flag
-		cycles += 19;
-		}
-	else
-		irqpend = 1;		// IRQ pending
+	if (irqpend > 0)
+		if (!cc.bit.i)	// IRQ not masked
+			{
+			cc.bit.e = 1;	// all regs on stack
+			help_psh(0xff, s, u);
+			pc = read_word(0xfff8);	// fetch irq vector
+			cc.bit.i = 1;	// Mask IRQ while servicing
+			irqpend--;	// Clear pending flag
+			cycles += 19;
+			}
+	}
+
+/*
+	QUEUE_IRQ()
+	-----------
+*/
+void mc6809::queue_irq()
+	{
+	irqpend++;		// IRQ pending
 	}
 
 /*

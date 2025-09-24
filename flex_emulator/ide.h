@@ -7,11 +7,11 @@
 	NOTE: 256 byte sectors not 512-byte sectors
 
 	The methods used by the ROM include:
-		ata_ide_command_read_sector		EQU	$20
+		ata_ide_command_read_sector	EQU	$20
 		ata_ide_command_write_sector	EQU	$30
 		ata_ide_command_identfy			EQU	$EC
-		ata_ide_command_set_feature		EQU	$EF
-			ata_ide_feature_8_bit		EQU	$01
+		ata_ide_command_set_feature	EQU	$EF
+		ata_ide_feature_8_bit			EQU	$01
 */
 #pragma once
 

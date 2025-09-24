@@ -186,7 +186,9 @@ class mc6809 : public USim
 		virtual void reset(void);		// CPU reset
 		virtual void do_nmi(void);
 		virtual void do_firq(void);
+		virtual void queue_firq();
 		virtual void do_irq(void);
+		virtual void queue_irq();
 		virtual void swi(void);
 		virtual void swi2(void);
 		virtual void swi3(void);

@@ -76,6 +76,47 @@ struct key_event_handling: NSViewRepresentable
 			}
 
 		/*
+			KEYUP()
+			-------
+		*/
+		override func keyUp(with event: NSEvent)
+			{
+			if event.characters?.count == 1
+				{
+				if let ascii = Character(event.characters!).asciiValue
+					{
+					var flex_key = CChar(ascii)
+					if (ascii == 0x7F && AppState.shared.emulated_machine == PINNATED)
+						{
+						flex_key = 0x08
+						}
+					machine_queue_key_release(machine.pointer, flex_key)
+					}
+				else
+					{
+					let character = Int(event.keyCode)
+					let key_arrrow_left  = 123
+					let key_arrow_right = 124
+					let key_arrow_down = 125
+					let key_arrow_up = 126
+					switch character
+						{
+						case key_arrrow_left:
+							machine_queue_key_release(machine.pointer, 0x08)
+						case key_arrow_right:
+							machine_queue_key_release(machine.pointer, 0x09)
+						case key_arrow_down:
+							machine_queue_key_release(machine.pointer, 0x0A)
+						case key_arrow_up:
+							machine_queue_key_release(machine.pointer, 0x0B)
+						default:
+							break
+						}
+					}
+				}
+			}
+
+		/*
 			INIT()
 			------
 		*/
