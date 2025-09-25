@@ -8,6 +8,7 @@
 #include "saa5050.h"
 #include "computer.h"
 
+class mc6840_with_irq;
 /*
 	CLASS COMPUTER_POLY_1
 	---------------------
@@ -19,7 +20,7 @@ class computer_poly_1 : public computer
 
 	protected:
 		bool prot;						// protected (BIOS) mode?
-		bool leave_prot;				// Are we in transition out of prot
+		int8_t cycles_before_leaving_prot;				// Are we in transition out of prot
 		uint8_t dat_bank;				// which of the two DAT tables to use
 		std::string disk_name;
 		bool screen_changed;
@@ -27,6 +28,7 @@ class computer_poly_1 : public computer
 		saa5050 text_page_1;
 		saa5050 text_page_3;
 		mc6821 pia2;					// Poly keyboard interface is an ASCII-like keyboard attached to an mc6821
+		mc6840_with_irq *timer;		// The Poly timer, used for sound (and other stuff too)
 
 	private:
 		std::string get_serialised_filename();
@@ -55,6 +57,9 @@ class computer_poly_1 : public computer
 
 		virtual void queue_key_press(byte key);
 		virtual void queue_key_release(byte key);
+
+		virtual void timer_irq() {}
+		virtual void timer_d_irq() {}
 
 		virtual const char *change_disk(uint8_t drive, const char *filename);
 		virtual const uint8_t *screen_buffer(void);

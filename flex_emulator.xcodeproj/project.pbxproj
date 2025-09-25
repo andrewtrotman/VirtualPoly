@@ -32,6 +32,8 @@
 		495A221A26EB52B900555F2B /* ROM_arrow_menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221826EB529700555F2B /* ROM_arrow_menu.cpp */; };
 		495A221E26EB54FD00555F2B /* computer_arrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221D26EB54FD00555F2B /* computer_arrow.cpp */; };
 		495A221F26EB54FD00555F2B /* computer_arrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221D26EB54FD00555F2B /* computer_arrow.cpp */; };
+		496B2FA82E84FD2D00B4FC19 /* mc6840.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 496B2FA52E84FD2C00B4FC19 /* mc6840.cpp */; };
+		496B2FA92E84FD2D00B4FC19 /* mc6840.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 496B2FA52E84FD2C00B4FC19 /* mc6840.cpp */; };
 		496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 496F1DD8267C80CD0036C9F6 /* flex.dsk */; };
 		496F4D2726901F3900D18C22 /* keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496F4D2626901F3900D18C22 /* keyboard.swift */; };
 		499A044F267747BF0036F04D /* ROM_FLEX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 499A044D267747BE0036F04D /* ROM_FLEX.cpp */; };
@@ -144,6 +146,9 @@
 		495A221B26EB52C800555F2B /* ROM_arrow_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_arrow_menu.h; sourceTree = "<group>"; };
 		495A221C26EB54FD00555F2B /* computer_arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_arrow.h; sourceTree = "<group>"; };
 		495A221D26EB54FD00555F2B /* computer_arrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_arrow.cpp; sourceTree = "<group>"; };
+		496B2FA12E84FD2C00B4FC19 /* mc6840_with_irq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6840_with_irq.h; sourceTree = "<group>"; };
+		496B2FA42E84FD2C00B4FC19 /* mc6840.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6840.h; sourceTree = "<group>"; };
+		496B2FA52E84FD2C00B4FC19 /* mc6840.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6840.cpp; sourceTree = "<group>"; };
 		496F1DD8267C80CD0036C9F6 /* flex.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = flex.dsk; sourceTree = "<group>"; };
 		496F4D2626901F3900D18C22 /* keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = keyboard.swift; sourceTree = "<group>"; };
 		499A044D267747BE0036F04D /* ROM_FLEX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_FLEX.cpp; sourceTree = "<group>"; };
@@ -347,10 +352,13 @@
 				49B31D74266F508400706439 /* mc6809.cpp */,
 				49480DF52675DD4C00860A83 /* ide.h */,
 				49480DF42675DD4C00860A83 /* ide.cpp */,
+				49F336C926E210760075EEBA /* mc6821.h */,
+				49F336C826E210760075EEBA /* mc6821.cpp */,
+				496B2FA42E84FD2C00B4FC19 /* mc6840.h */,
+				496B2FA52E84FD2C00B4FC19 /* mc6840.cpp */,
+				496B2FA12E84FD2C00B4FC19 /* mc6840_with_irq.h */,
 				49B31D7D266F550C00706439 /* mc6850.h */,
 				49B31D7C266F550C00706439 /* mc6850.cpp */,
-				49F336C826E210760075EEBA /* mc6821.cpp */,
-				49F336C926E210760075EEBA /* mc6821.h */,
 				49480DEF2674993E00860A83 /* saa5050_font.cpp */,
 				49480DF12674993E00860A83 /* saa5050_font.h */,
 				49E35E2D267F1D670078058B /* saa5055_font.cpp */,
@@ -668,6 +676,7 @@
 				49D1C24826DA056100015409 /* mc6809.cpp in Sources */,
 				49D1C24526DA056100015409 /* ROM_FLEX.cpp in Sources */,
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
+				496B2FA92E84FD2D00B4FC19 /* mc6840.cpp in Sources */,
 				499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */,
 				49D1C24926DA056200015409 /* saa5050_font.cpp in Sources */,
 				49F336CB26E210760075EEBA /* mc6821.cpp in Sources */,
@@ -728,6 +737,7 @@
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,
 				4910487626F6F8AA00C54511 /* screen_base.swift in Sources */,
 				495A221926EB529700555F2B /* ROM_arrow_menu.cpp in Sources */,
+				496B2FA82E84FD2D00B4FC19 /* mc6840.cpp in Sources */,
 				49F70B0D266C523000408DAE /* flex_emulator.swift in Sources */,
 				49B0649C26F4761700153AE5 /* ROM_arrow_debugger.cpp in Sources */,
 			);

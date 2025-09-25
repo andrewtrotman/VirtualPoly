@@ -39,8 +39,12 @@ class screen_poly_1 : screen_base
 	*/
 	override func render_entire_screen()
 		{
-		if (machine != nil)
+		if machine != nil
 			{
+			for which in 0 ..< bitmap.count
+				{
+				bitmap[which] = 0;
+				}
 			machine_poly_1_render_screen(machine, &bitmap)
 			}
 		}

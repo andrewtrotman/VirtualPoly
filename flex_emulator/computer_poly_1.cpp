@@ -7,6 +7,7 @@
 #include <filesystem>
 
 #include "ROM_poly.h"
+#include "mc6840_with_irq.h"
 #include "computer_poly_1.h"
 
 /*
@@ -15,11 +16,12 @@
 */
 computer_poly_1::computer_poly_1() :
 	prot(true),
-	leave_prot(false),
+	cycles_before_leaving_prot(-1),
 	dat_bank(1),
 	screen_changed(false),
 	text_page_1(bios + 0xE800),
-	text_page_3(bios + 0xEC00)
+	text_page_3(bios + 0xEC00),
+	timer(new mc6840_with_irq(this))
 	{
 	memset(bios, 0, sizeof(bios));
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);
@@ -36,7 +38,7 @@ computer_poly_1::computer_poly_1() :
 */
 computer_poly_1::~computer_poly_1()
 	{
-	/*	Nothing */
+	delete timer;
 	}
 
 /*
@@ -46,8 +48,9 @@ computer_poly_1::~computer_poly_1()
 void computer_poly_1::reset(void)
 	{
 	mc6809::reset();
+	timer->reset();
 	prot = true;
-	leave_prot = false;
+	cycles_before_leaving_prot = -1;
 	screen_changed = false;
 	dat_bank = 1;
 	}
@@ -63,24 +66,36 @@ void computer_poly_1::step(uint64_t times)
 		/*
 			Setup - are we about to leave protected mode (etc.).
 		*/
+		long long cycles = this->cycles;
 		start_of_instruction = pc;
-		bool leave_prot_now = leave_prot;
+		bool leave_prot_now = (prot && cycles_before_leaving_prot > 0);
 
 		/*
 			Execute the next instruction
 		*/
 		execute();
 
-		if (leave_prot_now)
+		long long cycles_spent = this->cycles - cycles;
+		if (leave_prot_now && (cycles_before_leaving_prot -= cycles_spent) <= 0)
 			{
-			prot = leave_prot = false;
+			cycles_before_leaving_prot = -1;
+			prot = false;
 			}
 
+//		for (long long current = 0; current < cycles_spent; current++)
+//			timer->step();
+
+//printf("%lld ", cycles_spent);
 		/*
 			If there's an IRQ or FIRQ pending them process them (push registers and load PC)
+			Note that FIRQ takes precidence over IRQ, and might immediately disable IRQ so we
+			check FIRQ first, then only check IRQ if there was no FIRQ.  The next instruction will
+			happen then IRQ will be checked (and might not happen).
 		*/
-		do_firq();
-		do_irq();
+		if (firqpend)
+			do_firq();
+		else if (irqpend)
+			do_irq();
 		}
 	}
 
@@ -150,10 +165,15 @@ const char *computer_poly_1::change_disk(uint8_t drive, const char *filename)
 	the top 3 bits of the address select the DAT register
 	the dat register forms the top 8 address bits
 	the bottom 13 bits of the address are the offset
-	remember... the DAT is in 1s compliment
+	remember... the DAT is in 1's compliment
 
 	[DAT][ADDRESS] = DDDD DDDA AAAA AAAA AAAA
 	where DAT = [B][ADDRESS] B AAA
+
+	Windows Emulator version:
+		return (((~dat[(dat_bank << 3) | (address >> 13)]) & 0x0F) << 13) | (address & 0x1FFF);
+
+	Note that this emulator expands the address space to 2MB but the Poly only had 128KB
 */
 qword computer_poly_1::raw_to_physical(word raw_address)
 	{
@@ -192,6 +212,21 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE00E:
 			case 0xE00F:
 				answer = pia2.read(raw_address - 0xE00C);
+				break;
+
+			/*
+				Timer
+				MC6840 Programmable Timer (Clock) at E020-E027
+			*/
+			case 0xE020:
+			case 0xE021:
+			case 0xE022:
+			case 0xE023:
+			case 0xE024:
+			case 0xE025:
+			case 0xE026:
+			case 0xE027:
+				answer = timer->read(raw_address - 0xE020);
 				break;
 
 			/*
@@ -241,8 +276,6 @@ byte computer_poly_1::read(word raw_address)
 				Protected mode memory (BIOS, text screen, etc)
 			*/
 			default:
-				answer = bios[raw_address];
-
 				if (raw_address < 0xE000)
 					answer = memory[raw_to_physical(raw_address)];				// User mode addressing
 				else if (raw_address < 0xE800)
@@ -298,12 +331,27 @@ void computer_poly_1::write(word raw_address, byte value)
 				break;
 
 			/*
+				Timer
+				MC6840 Programmable Timer (Clock) at E020-E027
+			*/
+			case 0xE020:
+			case 0xE021:
+			case 0xE022:
+			case 0xE023:
+			case 0xE024:
+			case 0xE025:
+			case 0xE026:
+			case 0xE027:
+				timer->write(raw_address - 0xE020, value);
+				break;
+
+			/*
 				Prot switch
 				We leave prot at the end of the next instruction.
 				This is so that we can write to E040 in one instruction and then RTI in the next (RTI takes 2 clock cycles).
 			*/
 			case 0xE040:
-				leave_prot = true;
+				cycles_before_leaving_prot = 2;
 				break;
 
 			/*
@@ -351,10 +399,11 @@ void computer_poly_1::write(word raw_address, byte value)
 					/*
 						User mode addressing
 						This is done with a recursive call so that we can catch any writes to the screen and update the flags
+						It also stops write to the BASIC ROMs
 					*/
 					prot = false;
 					write(raw_address, value);
-					prot = true;
+					prot = true;						// because we're already in PROT
 					}
 				else if (raw_address < 0xE800)
 					{ /* there's nothing here in the memory map */ }
