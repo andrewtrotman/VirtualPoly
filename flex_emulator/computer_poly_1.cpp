@@ -97,7 +97,6 @@ void computer_poly_1::step(uint64_t times)
 		/*
 			I don't think anything is on FIRQ on the Poly!
 		*/
-//			if (firqpend)
 //				do_firq();
 		}
 	}
@@ -159,7 +158,7 @@ void computer_poly_1::render(uint32_t *screen_buffer, bool flash_state)
 		Text screen 3
 	*/
 	if (display_context & 0x0100)			// screen 3
-			text_page_3.paint_text_page(screen_buffer, flash_state);
+		text_page_3.paint_text_page(screen_buffer, flash_state);
 
 	/*
 		Graphics screen 5 (2 and 4 interlaces)
@@ -247,6 +246,7 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 /*
 	COMPUTER_POLY_1::READ()
 	-----------------------
+	0000-DFFF RAM user-mode decoded RAM (see below)
 	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
 	E020-E027 PTM   (MC6840)			Real Time Clock
@@ -369,6 +369,7 @@ byte computer_poly_1::read(word raw_address)
 /*
 	COMPUTER_POLY_1::WRITE()
 	------------------------
+	0000-DFFF RAM user-mode decoded RAM (see below)
 	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
 	E020-E027 PTM   (MC6840)			Real Time Clock
@@ -529,7 +530,17 @@ bool computer_poly_1::did_screen_change(void)
 */
 void computer_poly_1::queue_key_press(byte key)
 	{
-	pia2.arrived_b(key, 1 << 7, 0);				// the key has been pressed
+	keyboard_input.push_back(key);
+
+/*
+	FIX - get the character out of the buffer and shove into the keyboard strobe.
+*/
+//	if (!pia2.is_signaling_irq())			// if the pia buffer is empty we can shove the next key into the buffer
+		{
+		byte head = keyboard_input.front();
+		keyboard_input.pop_front();
+		pia2.arrived_b(head, 1 << 7, 0);				// the key has been pressed
+		}
 	}
 
 /*
