@@ -6,8 +6,8 @@
 #include <fstream>
 #include <filesystem>
 
+#include "mc6840.h"
 #include "ROM_poly.h"
-#include "mc6840_with_irq.h"
 #include "computer_poly_1.h"
 
 /*
@@ -16,12 +16,10 @@
 */
 computer_poly_1::computer_poly_1() :
 	prot(true),
-	cycles_before_leaving_prot(-1),
 	dat_bank(1),
 	screen_changed(false),
 	text_page_1(bios + 0xE800),
-	text_page_3(bios + 0xEC00),
-	timer(new mc6840_with_irq(this))
+	text_page_3(bios + 0xEC00)
 	{
 	memset(bios, 0, sizeof(bios));
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);
@@ -38,7 +36,9 @@ computer_poly_1::computer_poly_1() :
 */
 computer_poly_1::~computer_poly_1()
 	{
-	delete timer;
+	/*
+		Nothing
+	*/
 	}
 
 /*
@@ -48,9 +48,8 @@ computer_poly_1::~computer_poly_1()
 void computer_poly_1::reset(void)
 	{
 	mc6809::reset();
-	timer->reset();
+	timer.reset();
 	prot = true;
-	cycles_before_leaving_prot = -1;
 	screen_changed = false;
 	dat_bank = 1;
 	}
@@ -68,34 +67,37 @@ void computer_poly_1::step(uint64_t times)
 		*/
 		long long cycles = this->cycles;
 		start_of_instruction = pc;
-		bool leave_prot_now = (prot && cycles_before_leaving_prot > 0);
+		bool leave_prot_now = (prot && leave_prot);
 
 		/*
 			Execute the next instruction
 		*/
 		execute();
 
-		long long cycles_spent = this->cycles - cycles;
-		if (leave_prot_now && (cycles_before_leaving_prot -= cycles_spent) <= 0)
+		if (leave_prot_now )
 			{
-			cycles_before_leaving_prot = -1;
+			leave_prot = false;
 			prot = false;
 			}
 
-//		for (long long current = 0; current < cycles_spent; current++)
-//			timer->step();
+		long long cycles_spent = this->cycles - cycles;
+		for (long long current = 0; current < cycles_spent; current++)
+			timer.step();
 
-//printf("%lld ", cycles_spent);
 		/*
 			If there's an IRQ or FIRQ pending them process them (push registers and load PC)
 			Note that FIRQ takes precidence over IRQ, and might immediately disable IRQ so we
 			check FIRQ first, then only check IRQ if there was no FIRQ.  The next instruction will
 			happen then IRQ will be checked (and might not happen).
 		*/
-		if (firqpend)
-			do_firq();
-		else if (irqpend)
+		if (pia2.is_signaling_irq() || timer.is_signaling_irq())
 			do_irq();
+
+		/*
+			I don't think anything is on FIRQ on the Poly!
+		*/
+//			if (firqpend)
+//				do_firq();
 		}
 	}
 
@@ -121,9 +123,55 @@ const uint8_t *computer_poly_1::screen_buffer(void)
 	COMPUTER_POLY_1::RENDER()
 	-------------------------
 */
-void computer_poly_1::render(uint32_t *screen_buffer)
+void computer_poly_1::render(uint32_t *screen_buffer, bool flash_state)
 	{
-	text_page_1.paint_text_page(screen_buffer, false);
+	/*
+		Background colours are half-intensity!
+	*/
+	static uint32_t background_colour_table[] =
+		{
+		0x00000000,
+		0x00000080,
+		0x00008000,
+		0x00008080,
+		0x00800000,
+		0x00800080,
+		0x00808000,
+		0x00808080
+		};
+
+	for (size_t pos = 0; pos < 480 * 240; pos++)
+		screen_buffer[pos] = background_colour_table[pia1.in_b() >> 4 & 0x07];
+
+	uint32_t display_context = pia1.in_b() << 8 | pia1.in_a();
+	if (display_context & 0x0100)			// screen 3
+			text_page_3.paint_text_page(screen_buffer, flash_state);
+
+	if (display_context & 0x0008)			// screen 1
+		text_page_1.paint_text_page(screen_buffer, flash_state);
+
+/*
+			memset(canvas, PALLETTE_BACKGROUND_BASE + ((client->pia->in_b() >> 4) & 0x07), WIDTH_IN_PIXELS * HEIGHT_IN_PIXELS);
+			display_context = client->pia->in_b() << 8 | client->pia->in_a();
+
+			if ((display_context & 0x0210) == 0x0200)			// screen 4 (no 480)
+				client->graphics_screen->render_page(canvas, client->memory + 0x8000, (client->pia->in_b() & 0x0C) >> 2);
+
+			if ((display_context & 0x0100) == 0x0100)			// screen 3
+				client->screen_3->paint_text_page(canvas, text_flash_state);
+
+			if ((display_context & 0x0030) == 0x0030)			// screen 5
+				client->graphics_screen->render_combined_pages(canvas, client->memory + 0x4000, client->memory + 0x8000);
+
+			if ((display_context & 0x0030) == 0x0020)			// screen 2
+				client->graphics_screen->render_page(canvas, client->memory + 0x4000, (client->pia->in_a() & 0x06) >> 1);
+
+			if ((display_context & 0x0270) == 0x0260)			// screens 2 and 4 colour mixed (the routine below only draws mixed pixels)
+				client->graphics_screen->render_mixed_pages(canvas, client->memory + 0x4000, client->memory + 0x8000);
+
+			if ((display_context & 0x0008) == 0x0008)			// screen 1
+				client->screen_1->paint_text_page(canvas, text_flash_state);
+*/
 	}
 
 /*
@@ -187,11 +235,17 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 /*
 	COMPUTER_POLY_1::READ()
 	-----------------------
+	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
+	E020-E027 PTM   (MC6840)			Real Time Clock
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
 	E060      Memory Map 1 select
 	E070      Memory Map 2 select
+	E800-EBBF Teletext 1 screen
+	EBC0-EBFF RAM System data
+	EC00-EFBF Teletext 2 screen
+	EFC0-EFFF RAM System data
 	F000-FFFF ROM
 */
 byte computer_poly_1::read(word raw_address)
@@ -203,6 +257,17 @@ byte computer_poly_1::read(word raw_address)
 		{
 		switch (raw_address)
 			{
+			/*
+				Screen controller
+				MC6821 PIA (Parallel Controller) at E000-E003
+			*/
+			case 0xE000:
+			case 0xE001:
+			case 0xE002:
+			case 0xE003:
+				answer = pia1.read(raw_address - 0xE000);
+				break;
+
 			/*
 				Keyboard controler
 				MC6821 PIA (Parallel Controller) at E00C-E00F
@@ -226,7 +291,7 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE025:
 			case 0xE026:
 			case 0xE027:
-				answer = timer->read(raw_address - 0xE020);
+				answer = timer.read(raw_address - 0xE020);
 				break;
 
 			/*
@@ -292,6 +357,9 @@ byte computer_poly_1::read(word raw_address)
 /*
 	COMPUTER_POLY_1::WRITE()
 	------------------------
+	E000-E003 PIA   (MC6821)			Video Controller
+	E00C-E00F PIA   (MC6821)			Keyboard
+	E020-E027 PTM   (MC6840)			Real Time Clock
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
 	E060      Memory Map 1 select
@@ -320,6 +388,17 @@ void computer_poly_1::write(word raw_address, byte value)
 		switch (raw_address)
 			{
 			/*
+				Screen controller
+				MC6821 PIA (Parallel Controller) at E000-E003
+			*/
+			case 0xE000:
+			case 0xE001:
+			case 0xE002:
+			case 0xE003:
+				pia1.write(raw_address - 0xE000, value);
+				break;
+
+			/*
 				Keyboard controler
 				MC6821 PIA (Parallel Controller) at E00C-E00F
 			*/
@@ -342,7 +421,7 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE025:
 			case 0xE026:
 			case 0xE027:
-				timer->write(raw_address - 0xE020, value);
+				timer.write(raw_address - 0xE020, value);
 				break;
 
 			/*
@@ -351,7 +430,7 @@ void computer_poly_1::write(word raw_address, byte value)
 				This is so that we can write to E040 in one instruction and then RTI in the next (RTI takes 2 clock cycles).
 			*/
 			case 0xE040:
-				cycles_before_leaving_prot = 2;
+				leave_prot = true;
 				break;
 
 			/*
@@ -427,7 +506,9 @@ void computer_poly_1::write(word raw_address, byte value)
 */
 bool computer_poly_1::did_screen_change(void)
 	{
-	return screen_changed;
+	auto changes = screen_changed;
+	screen_changed = false;
+	return changes;
 	}
 
 /*
@@ -437,7 +518,6 @@ bool computer_poly_1::did_screen_change(void)
 void computer_poly_1::queue_key_press(byte key)
 	{
 	pia2.arrived_b(key, 1 << 7, 0);				// the key has been pressed
-	queue_irq();
 	}
 
 /*
@@ -447,7 +527,6 @@ void computer_poly_1::queue_key_press(byte key)
 void computer_poly_1::queue_key_release(byte key)
 	{
 //	pia2.arrived_b(key, 0, 0);						// the key has been released
-//	queue_irq();
 	}
 
 /*

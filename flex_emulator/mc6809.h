@@ -51,7 +51,6 @@ class mc6809 : public USim
 				byte e:1;	// Entire
 				} bit;
 			} cc;
-		word	firqpend, irqpend;		// Interrupt support was added by BDA
 		qword cycles;						// number of clock cycles since power-on added by ASPT
 		byte post_byte;
 
@@ -186,9 +185,7 @@ class mc6809 : public USim
 		virtual void reset(void);		// CPU reset
 		virtual void do_nmi(void);
 		virtual void do_firq(void);
-		virtual void queue_firq();
 		virtual void do_irq(void);
-		virtual void queue_irq();
 		virtual void swi(void);
 		virtual void swi2(void);
 		virtual void swi3(void);
@@ -211,8 +208,6 @@ inline std::ostream &operator<<(std::ostream &into, const mc6809 &simulator)
 	into.write((char *)&simulator.dp, sizeof(simulator.dp));
 	into.write((char *)&simulator.acc.d, sizeof(simulator.acc.d));
 	into.write((char *)&simulator.cc.all, sizeof(simulator.cc.all));
-	into.write((char *)&simulator.firqpend, sizeof(simulator.firqpend));
-	into.write((char *)&simulator.irqpend, sizeof(simulator.irqpend));
 //	into.write((char *)&simulator.cycles, sizeof(simulator.cycles));
 	into.write((char *)&simulator.post_byte, sizeof(simulator.post_byte));
 
@@ -234,8 +229,6 @@ inline std::istream &operator>>(std::istream &from, mc6809 &simulator)
 	from.read((char *)&simulator.dp, sizeof(simulator.dp));
 	from.read((char *)&simulator.acc.d, sizeof(simulator.acc.d));
 	from.read((char *)&simulator.cc.all, sizeof(simulator.cc.all));
-	from.read((char *)&simulator.firqpend, sizeof(simulator.firqpend));
-	from.read((char *)&simulator.irqpend, sizeof(simulator.irqpend));
 //	from.read((char *)&simulator.cycles, sizeof(simulator.cycles));
 	from.read((char *)&simulator.post_byte, sizeof(simulator.post_byte));
 	simulator.cycles = 0;

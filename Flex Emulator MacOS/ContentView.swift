@@ -148,6 +148,7 @@ struct ContentView: View
 
 							if screen_did_change || machine_did_screen_change(machine.pointer)
 								{
+								screen_did_change = false;
 								render_text_screen()
 								break;
 								}

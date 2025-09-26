@@ -10,7 +10,7 @@
 #define FALSE 0
 #define TRUE (!FALSE)
 
-static uint32_t colour_table[] =
+static uint32_t saa_5050_colour_table[] =
 	{
 	0x00000000,
 	0x000000FF,
@@ -135,8 +135,8 @@ if (text_double_height)
 			if (pos & (0x80 >> x))
 				if (on != 0)
 					{
-					*into++ = colour_table[on];
-					*into++ = colour_table[on];
+					*into++ = saa_5050_colour_table[on];
+					*into++ = saa_5050_colour_table[on];
 					}
 				else
 					{
@@ -146,8 +146,8 @@ if (text_double_height)
 			else
 				if (off != 0)
 					{
-					*into++ = colour_table[off];
-					*into++ = colour_table[off];
+					*into++ = saa_5050_colour_table[off];
+					*into++ = saa_5050_colour_table[off];
 					}
 				else
 					{
@@ -165,8 +165,8 @@ else
 			if (pos & (0x80 >> x))
 				if (on != 0)
 					{
-					*into++ = colour_table[on];
-					*into++ = colour_table[on];
+					*into++ = saa_5050_colour_table[on];
+					*into++ = saa_5050_colour_table[on];
 					}
 				else
 					{
@@ -176,8 +176,8 @@ else
 			else
 				if (off != 0)
 					{
-					*into++ = colour_table[off];
-					*into++ = colour_table[off];
+					*into++ = saa_5050_colour_table[off];
+					*into++ = saa_5050_colour_table[off];
 					}
 				else
 					{

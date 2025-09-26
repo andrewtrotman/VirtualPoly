@@ -67,7 +67,7 @@ class computer : public mc6809
 		virtual const uint8_t *screen_buffer(void);
 
 		virtual bool did_screen_change(void);
-		virtual void render(uint32_t *screen_buffer)
+		virtual void render(uint32_t *screen_buffer, bool flash_state)
 			{
 			}
 	};

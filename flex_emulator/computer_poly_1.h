@@ -5,10 +5,10 @@
 */
 #pragma once
 
+#include "mc6840.h"
 #include "saa5050.h"
 #include "computer.h"
 
-class mc6840_with_irq;
 /*
 	CLASS COMPUTER_POLY_1
 	---------------------
@@ -20,15 +20,15 @@ class computer_poly_1 : public computer
 
 	protected:
 		bool prot;						// protected (BIOS) mode?
-		int8_t cycles_before_leaving_prot;				// Are we in transition out of prot
 		uint8_t dat_bank;				// which of the two DAT tables to use
 		std::string disk_name;
 		bool screen_changed;
 		uint8_t bios[0x10000];		// the BIOS is in a seperate space from the RAM
 		saa5050 text_page_1;
 		saa5050 text_page_3;
+		mc6821 pia1;					// Poly video control PIA, including background colours, which screens are displayed, etc.
 		mc6821 pia2;					// Poly keyboard interface is an ASCII-like keyboard attached to an mc6821
-		mc6840_with_irq *timer;		// The Poly timer, used for sound (and other stuff too)
+		mc6840 timer;					// The Poly timer, used for sound (and other stuff too)
 
 	private:
 		std::string get_serialised_filename();
@@ -65,7 +65,7 @@ class computer_poly_1 : public computer
 		virtual const uint8_t *screen_buffer(void);
 
 		virtual bool did_screen_change(void);
-		virtual void render(uint32_t *screen_buffer);
+		virtual void render(uint32_t *screen_buffer, bool flash_state);
 	};
 
 /*

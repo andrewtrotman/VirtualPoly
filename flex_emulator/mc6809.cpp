@@ -36,8 +36,6 @@ void mc6809::reset(void)
 	cc.all = 0x00;		/* Clear all flags */
 	cc.bit.i = 1;		/* IRQ disabled */
 	cc.bit.f = 1;		/* FIRQ disabled */
-	firqpend = 0;		/* No FIRQ pending */
-	irqpend = 0;		/* No IRQ pending */
 	}
 
 /*
@@ -1834,25 +1832,14 @@ void mc6809::help_eor(byte &x)
 */
 void mc6809::do_firq()
 	{
-	if (firqpend > 0)
-		if (!cc.bit.f)	// FIRQ not masked
-			{
-			cc.bit.e = 0;					// not all regs on stack
-			help_psh(0x81, s, u);		// save cc, pc only
-			pc = read_word(0xfff6);		// fetch firq vector
-			cc.bit.f = cc.bit.i = 1; 	// Mask while servicing
-			firqpend--;						// Clear pending flag
-			cycles += 10;
-			}
-	}
-
-/*
-	MC6809::QUEUE_FIRQ()
-	--------------------
-*/
-void mc6809::queue_firq()
-	{
-	firqpend++;	// FIRQ pending
+	if (!cc.bit.f)	// FIRQ not masked
+		{
+		cc.bit.e = 0;					// not all regs on stack
+		help_psh(0x81, s, u);		// save cc, pc only
+		pc = read_word(0xfff6);		// fetch firq vector
+		cc.bit.f = cc.bit.i = 1; 	// Mask while servicing
+		cycles += 10;
+		}
 	}
 
 /*
@@ -1955,25 +1942,14 @@ void mc6809::help_inc(byte &x)
 */
 void mc6809::do_irq()
 	{
-	if (irqpend > 0)
-		if (!cc.bit.i)	// IRQ not masked
-			{
-			cc.bit.e = 1;	// all regs on stack
-			help_psh(0xff, s, u);
-			pc = read_word(0xfff8);	// fetch irq vector
-			cc.bit.i = 1;	// Mask IRQ while servicing
-			irqpend--;	// Clear pending flag
-			cycles += 19;
-			}
-	}
-
-/*
-	QUEUE_IRQ()
-	-----------
-*/
-void mc6809::queue_irq()
-	{
-	irqpend++;		// IRQ pending
+	if (!cc.bit.i)	// IRQ not masked
+		{
+		cc.bit.e = 1;	// all regs on stack
+		help_psh(0xff, s, u);
+		pc = read_word(0xfff8);	// fetch irq vector
+		cc.bit.i = 1;	// Mask IRQ while servicing
+		cycles += 19;
+		}
 	}
 
 /*

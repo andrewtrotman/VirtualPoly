@@ -45,7 +45,7 @@ class screen_poly_1 : screen_base
 				{
 				bitmap[which] = 0;
 				}
-			machine_poly_1_render_screen(machine, &bitmap)
+			machine_poly_1_render_screen(machine, &bitmap, flash_state)
 			}
 		}
 	}

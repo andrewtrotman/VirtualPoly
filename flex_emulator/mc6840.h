@@ -26,9 +26,6 @@ protected:
 protected:
 	void compute_irq(void);
 
-	virtual void irq(void) {}
-	virtual void d_irq(void) {}
-
 public:
 	mc6840();
 	virtual ~mc6840() {}
@@ -38,4 +35,7 @@ public:
 	virtual byte read(word address);
 	virtual void write(word address, byte value);
 	virtual void reset(void);
+
+	virtual bool is_signaling_irq(void) { return status_register & 0x80; }
+
 } ;

@@ -35,18 +35,12 @@ class mc6821
 		uint8_t read(uint16_t address);
 		void write(uint16_t address, uint8_t value);
 
-		virtual uint8_t in_a(void) 		{ return byte_a; }
-		virtual void out_a(uint8_t value)
-			{
-			byte_a = value;
-//			printf("%c", value);
-			}
-		virtual uint8_t in_b(void)			{ return byte_b; }
-		virtual void out_b(uint8_t value)
-			{
-			byte_b = value;
-//			printf("%c", value);
-			}
+		virtual uint8_t in_a(void)          { return byte_a; }
+		virtual void out_a(uint8_t value)   { byte_a = value; }
+		virtual uint8_t in_b(void)          { return byte_b; }
+		virtual void out_b(uint8_t value)   { byte_b = value; }
 		virtual void arrived_a(uint8_t value, uint8_t ca1, uint8_t ca2);
 		virtual void arrived_b(uint8_t value, uint8_t cb1, uint8_t cb2);
+
+		virtual bool is_signaling_irq(void) { return cra & 0xC0 || crb & 0xC0; }
 	} ;
