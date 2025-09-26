@@ -7,6 +7,7 @@
 #include <filesystem>
 
 #include "mc6840.h"
+#include "graphics.h"
 #include "ROM_poly.h"
 #include "computer_poly_1.h"
 
@@ -140,38 +141,49 @@ void computer_poly_1::render(uint32_t *screen_buffer, bool flash_state)
 		0x00808080
 		};
 
+	uint32_t display_context = pia1.in_b() << 8 | pia1.in_a();
+
+	/*
+		Background (half-intensity)
+	*/
 	for (size_t pos = 0; pos < 480 * 240; pos++)
 		screen_buffer[pos] = background_colour_table[pia1.in_b() >> 4 & 0x07];
 
-	uint32_t display_context = pia1.in_b() << 8 | pia1.in_a();
+	/*
+		Graphics screen 4 (not screen 5)
+	*/
+	if ((display_context & 0x0210) == 0x0200)			// screen 4 (no 480 mode (i.e. "regular" screen 4)
+		graphics::render_page(screen_buffer, memory + 0x8000, (pia1.in_b() & 0x0C) >> 2);
+
+	/*
+		Text screen 3
+	*/
 	if (display_context & 0x0100)			// screen 3
 			text_page_3.paint_text_page(screen_buffer, flash_state);
 
+	/*
+		Graphics screen 5 (2 and 4 interlaces)
+	*/
+	if ((display_context & 0x0030) == 0x0030)			// screen 5
+		graphics::render_combined_pages(screen_buffer, memory + 0x4000, memory + 0x8000);
+
+	/*
+		Graphics screen 2 (not screen 5)
+	*/
+	if ((display_context & 0x0030) == 0x0020)			// screen 2
+		graphics::render_page(screen_buffer, memory + 0x4000, (pia1.in_a() & 0x06) >> 1);
+
+	/*
+		Graphics screen 2 and 4 colour mixed
+	*/
+	if ((display_context & 0x0270) == 0x0260)			// screens 2 and 4 colour mixed (the routine below only draws mixed pixels)
+		graphics::render_mixed_pages(screen_buffer, memory + 0x4000, memory + 0x8000);
+
+	/*
+		Text screen 1
+	*/
 	if (display_context & 0x0008)			// screen 1
 		text_page_1.paint_text_page(screen_buffer, flash_state);
-
-/*
-			memset(canvas, PALLETTE_BACKGROUND_BASE + ((client->pia->in_b() >> 4) & 0x07), WIDTH_IN_PIXELS * HEIGHT_IN_PIXELS);
-			display_context = client->pia->in_b() << 8 | client->pia->in_a();
-
-			if ((display_context & 0x0210) == 0x0200)			// screen 4 (no 480)
-				client->graphics_screen->render_page(canvas, client->memory + 0x8000, (client->pia->in_b() & 0x0C) >> 2);
-
-			if ((display_context & 0x0100) == 0x0100)			// screen 3
-				client->screen_3->paint_text_page(canvas, text_flash_state);
-
-			if ((display_context & 0x0030) == 0x0030)			// screen 5
-				client->graphics_screen->render_combined_pages(canvas, client->memory + 0x4000, client->memory + 0x8000);
-
-			if ((display_context & 0x0030) == 0x0020)			// screen 2
-				client->graphics_screen->render_page(canvas, client->memory + 0x4000, (client->pia->in_a() & 0x06) >> 1);
-
-			if ((display_context & 0x0270) == 0x0260)			// screens 2 and 4 colour mixed (the routine below only draws mixed pixels)
-				client->graphics_screen->render_mixed_pages(canvas, client->memory + 0x4000, client->memory + 0x8000);
-
-			if ((display_context & 0x0008) == 0x0008)			// screen 1
-				client->screen_1->paint_text_page(canvas, text_flash_state);
-*/
 	}
 
 /*
