@@ -173,3 +173,22 @@ uint8_t *get_saa5050_font(void)
 //		return saa5050_font;
 	return saa5055_font;
 	}
+
+
+uint8_t z80_memory_read(uint16_t addr)
+	{
+	return 0;
+	}
+
+void z80_memory_write(uint16_t addr, uint8_t val)
+	{
+	}
+
+uint8_t z80_io_read(uint16_t addr)
+	{
+	return 0;
+	}
+	
+void z80_io_write(uint16_t addr, uint8_t val)
+	{
+	}

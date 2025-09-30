@@ -41,4 +41,10 @@ extern "C"
 
 #ifdef __cplusplus
 	}
+
+extern uint8_t z80_memory_read(uint16_t addr);
+extern void z80_memory_write(uint16_t addr, uint8_t val);
+extern uint8_t z80_io_read(uint16_t addr);
+extern void z80_io_write(uint16_t addr, uint8_t val);
+
 #endif

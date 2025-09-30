@@ -28,6 +28,12 @@
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
 		49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEF2674993E00860A83 /* saa5050_font.cpp */; };
 		49480DF62675DD4C00860A83 /* ide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DF42675DD4C00860A83 /* ide.cpp */; };
+		4956BA082E8B6B73001417BB /* daa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA032E8B6B73001417BB /* daa.cpp */; };
+		4956BA092E8B6B73001417BB /* daa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA032E8B6B73001417BB /* daa.cpp */; };
+		4956BA0A2E8B6B73001417BB /* z80.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA052E8B6B73001417BB /* z80.cpp */; };
+		4956BA0B2E8B6B73001417BB /* z80.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA052E8B6B73001417BB /* z80.cpp */; };
+		4956BA0F2E8B8010001417BB /* keycodes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA0D2E8B8010001417BB /* keycodes.cpp */; };
+		4956BA102E8B8010001417BB /* keycodes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA0D2E8B8010001417BB /* keycodes.cpp */; };
 		495A221926EB529700555F2B /* ROM_arrow_menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221826EB529700555F2B /* ROM_arrow_menu.cpp */; };
 		495A221A26EB52B900555F2B /* ROM_arrow_menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221826EB529700555F2B /* ROM_arrow_menu.cpp */; };
 		495A221E26EB54FD00555F2B /* computer_arrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 495A221D26EB54FD00555F2B /* computer_arrow.cpp */; };
@@ -144,6 +150,15 @@
 		49480DF12674993E00860A83 /* saa5050_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa5050_font.h; sourceTree = "<group>"; };
 		49480DF42675DD4C00860A83 /* ide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ide.cpp; sourceTree = "<group>"; };
 		49480DF52675DD4C00860A83 /* ide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ide.h; sourceTree = "<group>"; };
+		4956BA012E8B6B73001417BB /* z80regs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80regs.h; sourceTree = "<group>"; };
+		4956BA022E8B6B73001417BB /* z80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80.h; sourceTree = "<group>"; };
+		4956BA032E8B6B73001417BB /* daa.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = daa.cpp; sourceTree = "<group>"; };
+		4956BA042E8B6B73001417BB /* vice_z80_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vice_z80_interface.h; sourceTree = "<group>"; };
+		4956BA052E8B6B73001417BB /* z80.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = z80.cpp; sourceTree = "<group>"; };
+		4956BA062E8B6B73001417BB /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		4956BA072E8B6B73001417BB /* daa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = daa.h; sourceTree = "<group>"; };
+		4956BA0C2E8B7F88001417BB /* keycodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = keycodes.h; sourceTree = "<group>"; };
+		4956BA0D2E8B8010001417BB /* keycodes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = keycodes.cpp; sourceTree = "<group>"; };
 		495A221826EB529700555F2B /* ROM_arrow_menu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_arrow_menu.cpp; sourceTree = "<group>"; };
 		495A221B26EB52C800555F2B /* ROM_arrow_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_arrow_menu.h; sourceTree = "<group>"; };
 		495A221C26EB54FD00555F2B /* computer_arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_arrow.h; sourceTree = "<group>"; };
@@ -261,6 +276,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4956BA002E8B6AC3001417BB /* vice_z80 */ = {
+			isa = PBXGroup;
+			children = (
+				4956BA032E8B6B73001417BB /* daa.cpp */,
+				4956BA072E8B6B73001417BB /* daa.h */,
+				4956BA062E8B6B73001417BB /* types.h */,
+				4956BA042E8B6B73001417BB /* vice_z80_interface.h */,
+				4956BA052E8B6B73001417BB /* z80.cpp */,
+				4956BA022E8B6B73001417BB /* z80.h */,
+				4956BA012E8B6B73001417BB /* z80regs.h */,
+			);
+			path = vice_z80;
+			sourceTree = "<group>";
+		};
 		49D1C21826D9D03E00015409 /* Flex Emulator MacOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,6 +366,7 @@
 			children = (
 				491C837A26ABC04A00044575 /* flex_emulator.entitlements */,
 				49F70B0C266C523000408DAE /* flex_emulator.swift */,
+				4956BA002E8B6AC3001417BB /* vice_z80 */,
 				49F70B39266C527100408DAE /* cpp_methods.h */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
 				4944EF402670801900445780 /* computer.h */,
@@ -347,6 +377,9 @@
 				495A221C26EB54FD00555F2B /* computer_arrow.h */,
 				495C04BE2E863905005DE1C7 /* graphics.h */,
 				495C04BF2E863905005DE1C7 /* graphics.cpp */,
+				496F4D2626901F3900D18C22 /* keyboard.swift */,
+				4956BA0C2E8B7F88001417BB /* keycodes.h */,
+				4956BA0D2E8B8010001417BB /* keycodes.cpp */,
 				49CFF18C26F1EB95008C8668 /* keyboard_arrow.h */,
 				49CFF18D26F1EB95008C8668 /* keyboard_arrow.cpp */,
 				49B31D7A266F518D00706439 /* typedefs.h */,
@@ -390,7 +423,6 @@
 				492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */,
 				492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */,
 				49F70B0E266C523000408DAE /* ContentView.swift */,
-				496F4D2626901F3900D18C22 /* keyboard.swift */,
 				49FD34C5268F043000F56EF3 /* terminal.swift */,
 				49F70B10266C523100408DAE /* Assets.xcassets */,
 				49F70B15266C523100408DAE /* Info.plist */,
@@ -661,6 +693,7 @@
 				495C04C12E863905005DE1C7 /* graphics.cpp in Sources */,
 				492195702E824B1600136344 /* ROM_poly_BASIC_34_4.cpp in Sources */,
 				492195712E824B1600136344 /* ROM_poly_BIOS_34.cpp in Sources */,
+				4956BA102E8B8010001417BB /* keycodes.cpp in Sources */,
 				4910487726F6F8AA00C54511 /* screen_base.swift in Sources */,
 				49D1C24726DA056100015409 /* mc6850.cpp in Sources */,
 				49F336C526E205400075EEBA /* WebView.swift in Sources */,
@@ -670,6 +703,7 @@
 				495A221A26EB52B900555F2B /* ROM_arrow_menu.cpp in Sources */,
 				49D1C24A26DA056200015409 /* saa5050.cpp in Sources */,
 				49D1C24B26DA056200015409 /* saa5055_font.cpp in Sources */,
+				4956BA092E8B6B73001417BB /* daa.cpp in Sources */,
 				49CFF18F26F1EB95008C8668 /* keyboard_arrow.cpp in Sources */,
 				49D1C24626DA056100015409 /* computer.cpp in Sources */,
 				49B0649926F4761700153AE5 /* ROM_arrow_monitor.cpp in Sources */,
@@ -685,6 +719,7 @@
 				499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */,
 				49D1C24926DA056200015409 /* saa5050_font.cpp in Sources */,
 				49F336CB26E210760075EEBA /* mc6821.cpp in Sources */,
+				4956BA0B2E8B6B73001417BB /* z80.cpp in Sources */,
 				49D1C21A26D9D03E00015409 /* Flex_Emulator_MacOSApp.swift in Sources */,
 				49B0649B26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
 				49D1C24D26DA056200015409 /* usim.cpp in Sources */,
@@ -725,10 +760,12 @@
 				49B31D78266F50EF00706439 /* usim.cpp in Sources */,
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,
 				49480DF22674993E00860A83 /* saa5050.cpp in Sources */,
+				4956BA082E8B6B73001417BB /* daa.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				492195602E82200400136344 /* computer_poly_1.cpp in Sources */,
 				492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
 				49ED162627094EE900669717 /* screen_pinnated.swift in Sources */,
+				4956BA0A2E8B6B73001417BB /* z80.cpp in Sources */,
 				4921956B2E82215200136344 /* ROM_poly_BASIC_34_3.cpp in Sources */,
 				49C0985226EC34EF00C10535 /* screen_arrow.swift in Sources */,
 				492195692E82215200136344 /* ROM_poly_BASIC_34_1.cpp in Sources */,
@@ -739,6 +776,7 @@
 				496F4D2726901F3900D18C22 /* keyboard.swift in Sources */,
 				49B0649A26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
 				4944EF422670801A00445780 /* computer.cpp in Sources */,
+				4956BA0F2E8B8010001417BB /* keycodes.cpp in Sources */,
 				49FD34C6268F043000F56EF3 /* terminal.swift in Sources */,
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,
 				4910487626F6F8AA00C54511 /* screen_base.swift in Sources */,

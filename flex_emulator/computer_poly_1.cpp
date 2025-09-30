@@ -7,6 +7,7 @@
 #include <filesystem>
 
 #include "mc6840.h"
+#include "keycodes.h"
 #include "graphics.h"
 #include "ROM_poly.h"
 #include "computer_poly_1.h"
@@ -29,6 +30,8 @@ computer_poly_1::computer_poly_1() :
 	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
 	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
 	memcpy(memory + 0xF000, ROM_poly_BASIC_34_4, 0x1000);
+
+	poly_set_keyboard_scan_codes(2);			// emulate the Poly-2 keyboard
 	}
 
 /*
@@ -98,6 +101,15 @@ void computer_poly_1::step(uint64_t times)
 			I don't think anything is on FIRQ on the Poly!
 		*/
 //				do_firq();
+		}
+	/*
+		Check the keyboard buffer to see if there's anything in it - and if so then process it.
+	*/
+	if (!pia2.is_signaling_irq() && keyboard_input.size() != 0)			// if the pia buffer is empty we can shove the next key into the buffer
+		{
+		byte head = keyboard_input.front();
+		keyboard_input.pop_front();
+		pia2.arrived_b(head, 1 << 7, 0);				// the key has been pressed
 		}
 	}
 
@@ -531,16 +543,6 @@ bool computer_poly_1::did_screen_change(void)
 void computer_poly_1::queue_key_press(byte key)
 	{
 	keyboard_input.push_back(key);
-
-/*
-	FIX - get the character out of the buffer and shove into the keyboard strobe.
-*/
-//	if (!pia2.is_signaling_irq())			// if the pia buffer is empty we can shove the next key into the buffer
-		{
-		byte head = keyboard_input.front();
-		keyboard_input.pop_front();
-		pia2.arrived_b(head, 1 << 7, 0);				// the key has been pressed
-		}
 	}
 
 /*
