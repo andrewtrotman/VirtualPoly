@@ -61,21 +61,40 @@ struct key_event_handling: NSViewRepresentable
 								flex_key = CChar(poly_key_at)
 							case Character("|").asciiValue:
 								flex_key = CChar(poly_key_bar)
-							case Character("#").asciiValue:
-								flex_key = CChar(poly_key_pound)
 							case Character("^").asciiValue:
 								flex_key = CChar(poly_key_exp)
+							case 127:											// delete key on Mac keyboard
+								machine_queue_key_press(machine.pointer, CChar(poly_key_left))
+								flex_key = CChar(poly_key_char_del)
 /*
-	These ones don't work - debug the Poly BIOS to see why not.
+	These ones aren't on the Poly keyboard, so the BIOS has been hacked to make them work.
 */
-							case Character("}").asciiValue:
-								flex_key = CChar(125)
 							case Character("{").asciiValue:
-								flex_key = CChar(123)
+								flex_key = CChar(2)
+							case Character("}").asciiValue:
+								flex_key = CChar(3)
 							case Character("[").asciiValue:
-								flex_key = CChar(91)
+								flex_key = CChar(4)
 							case Character("]").asciiValue:
-								flex_key = CChar(93)
+								flex_key = CChar(5)
+							case Character("~").asciiValue:
+								flex_key = CChar(16)
+							case Character("`").asciiValue:
+								flex_key = CChar(12)
+/*
+	If we're using the SAA5055 ASCII ROM then use these
+*/
+//							case Character("#").asciiValue:						// SAA5055 US ASCII
+//								flex_key = CChar(poly_key_pound)
+//							case Character("\\").asciiValue:						// SAA5055 US ASCII
+//								flex_key = CChar(20)
+/*
+	But the Poly uses the SAA5050 ROM so use these
+*/
+							case Character("_").asciiValue:						// SAA5050 English Teletext
+								flex_key = CChar(poly_key_pound)
+							case Character("\\").asciiValue:						// SAA5050 English Teletext
+								flex_key = CChar(127)
 							default:
 								break
 							}
@@ -120,23 +139,30 @@ struct key_event_handling: NSViewRepresentable
 							machine_queue_key_press(machine.pointer, CChar(poly_key_keypad_dot))
 						case kVK_Help:
 							machine_queue_key_press(machine.pointer, CChar(poly_key_help))
+						case kVK_F1:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_pause))
+						case kVK_F2:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_shift_pause))
+						case kVK_F3:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_calc))
+						case kVK_F4:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_char_insert))
+						case kVK_F5:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_exit))
+						case kVK_F6:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_next))
+						case kVK_F7:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_line_del))
+						case kVK_F8:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_line_insert))
+						case kVK_F9:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_back))
+						case kVK_F10:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_repeat))
+						case kVK_F11:
+							machine_queue_key_press(machine.pointer, CChar(poly_key_char_del))
 						default:
 							break
-
-//	poly_key_line_insert = 0x7B;
-//	poly_key_char_insert = 0x5B;
-//	poly_key_line_del = 0x5E;
-//	poly_key_char_del = 0x7E;
-//	poly_key_calc = 0x12;
-//	poly_key_exit = 0x5C;
-//	poly_key_back = 0x7C;
-//	poly_key_repeat = 0x7D;
-//	poly_key_next = 0x5D;
-//	poly_key_pause = 0x0F;
-//	poly_key_shift_pause = 0x0E;
-
-
-
 						}
 					}
 				}

@@ -24,8 +24,34 @@ computer_poly_1::computer_poly_1() :
 	text_page_3(bios + 0xEC00)
 	{
 	memset(bios, 0, sizeof(bios));
-	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);
+	/*
+		Programming in 'C' will be a lot easier with curly brackets and square brackets, so we hack the BIOS
+		to allow these characters.  This is achieved by changing the key translation table so that these characters
+		have unique translations.  It cannot be done by using the actual key value because those are taken by
+		the screen editing keys (characer insert, line delete, etc).
 
+		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);
+	size_t translation_table_base = 0xFA8F;
+	bios[translation_table_base + 2 * 2] = '{';
+	bios[translation_table_base + 2 * 2 + 1] = 28;
+	bios[translation_table_base + 3 * 2] = '}';
+	bios[translation_table_base + 3 * 2 + 1] = 28;
+	bios[translation_table_base + 4 * 2] = '[';
+	bios[translation_table_base + 4 * 2 + 1] = 28;
+	bios[translation_table_base + 5 * 2] = ']';
+	bios[translation_table_base + 5 * 2 + 1] = 28;
+	bios[translation_table_base + 12 * 2] = '`';
+	bios[translation_table_base + 12 * 2 + 1] = 28;
+	bios[translation_table_base + 16 * 2] = '~';
+	bios[translation_table_base + 16 * 2 + 1] = 28;
+	bios[translation_table_base + 20 * 2] = '\\';
+	bios[translation_table_base + 20 * 2 + 1] = 28;
+
+	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
 	memcpy(memory + 0xC000, ROM_poly_BASIC_34_1, 0x1000);
 	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
 	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
