@@ -284,7 +284,7 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 /*
 	COMPUTER_POLY_1::READ()
 	-----------------------
-	0000-DFFF RAM user-mode decoded RAM (see below)
+	0000-DFFF RAM user-mode decoded RAM
 	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
 	E020-E027 PTM   (MC6840)			Real Time Clock
