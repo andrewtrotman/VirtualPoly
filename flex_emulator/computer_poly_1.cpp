@@ -3,6 +3,8 @@
 	-------------------
 	Copyright (c) 2025 Andrew Trotman
 */
+#include <unistd.h>
+
 #include <fstream>
 #include <filesystem>
 
@@ -21,7 +23,8 @@ computer_poly_1::computer_poly_1() :
 	dat_bank(1),
 	screen_changed(false),
 	text_page_1(bios + 0xE800),
-	text_page_3(bios + 0xEC00)
+	text_page_3(bios + 0xEC00),
+	drive_select(0)
 	{
 	memset(bios, 0, sizeof(bios));
 	/*
@@ -32,7 +35,8 @@ computer_poly_1::computer_poly_1() :
 
 		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);
+#ifdef NEVER
+	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);					// MAGENTA "830519"
 	size_t translation_table_base = 0xFA8F;
 	bios[translation_table_base + 2 * 2] = '{';
 	bios[translation_table_base + 2 * 2 + 1] = 28;
@@ -48,6 +52,17 @@ computer_poly_1::computer_poly_1() :
 	bios[translation_table_base + 16 * 2 + 1] = 28;
 	bios[translation_table_base + 20 * 2] = '\\';
 	bios[translation_table_base + 20 * 2 + 1] = 28;
+#else
+	memcpy(bios + 0xF000, ROM_poly_BIOS_34_local_disk, 0x1000);		// RED "831122 WP"
+	size_t translation_table_base = 0xFAA8;
+
+	/*
+		Load a disk into the disk drive.
+	*/
+	long error_code;
+	fdc[0].mount_disk("/Users/andrew/programming/VirtualPoly/polysys5.dsk", &error_code);
+
+#endif
 
 	/*
 		Load the BASIC interpreter into the ROM address space.
@@ -82,6 +97,7 @@ void computer_poly_1::reset(void)
 	prot = true;
 	screen_changed = false;
 	dat_bank = 1;
+	drive_select = 0;
 	}
 
 /*
@@ -287,6 +303,8 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 	0000-DFFF RAM user-mode decoded RAM
 	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
+	E014      DISK  (WD1771)         Disc Change Indicator
+	E018-E01B DISK  (WD1771)         Floppy Disk Drive Controller
 	E020-E027 PTM   (MC6840)			Real Time Clock
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
@@ -327,6 +345,26 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE00E:
 			case 0xE00F:
 				answer = pia2.read(raw_address - 0xE00C);
+				break;
+
+			/*
+				Disc Change Indicator
+				bit 1 (000000x0) indicated whether the current disk drive door has been opened since the drive was last deselected.
+				The bit is cleared when a new drive is selected
+			*/
+			case 0xE014:
+				answer = fdc[drive_select & 0x03].get_door_opened() ? 0x02 : 0x00;
+				break;
+
+			/*
+				FDC
+				WD1771 FDC (Floppy Drive Controller) at 0xE018-E01B
+			*/
+			case 0xE018:
+			case 0xE019:
+			case 0xE01A:
+			case 0xE01B:
+				answer = fdc[drive_select & 0x03].read(raw_address - 0xE018);
 				break;
 
 			/*
@@ -410,6 +448,8 @@ byte computer_poly_1::read(word raw_address)
 	0000-DFFF RAM user-mode decoded RAM (see below)
 	E000-E003 PIA   (MC6821)			Video Controller
 	E00C-E00F PIA   (MC6821)			Keyboard
+	E014      DISK  (WD1771)         Drive and Side Select
+	E018-E01B DISK  (WD1771)         Floppy Disk Drive Controller
 	E020-E027 PTM   (MC6840)			Real Time Clock
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
@@ -458,6 +498,32 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE00E:
 			case 0xE00F:
 				pia2.write(raw_address - 0xE00C, value);
+				break;
+
+			/*
+				Drive and Side Select
+				lower 2 bits are the drive; bit 6 is the side select (0x0000xx)
+			*/
+			case 0xE014:
+				if (value != drive_select)
+					{
+					/*
+						Only clear the status on deselect
+					*/
+					fdc[drive_select & 0x03].clear_door_opened();
+					drive_select = value;
+					}
+				break;
+
+			/*
+				FDC
+				WD1771 FDC (Floppy Drive Controller) at 0xE018-E01B
+			*/
+			case 0xE018:
+			case 0xE019:
+			case 0xE01A:
+			case 0xE01B:
+				fdc[drive_select & 0x03].write(raw_address - 0xE018, value);
 				break;
 
 			/*

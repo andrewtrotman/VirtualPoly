@@ -1,6 +1,6 @@
 /*
-	ROM_POLY_BASIC_34_3.C
-	---------------------
+	ROM_POLY_BASIC_34_3.CPP
+	-----------------------
 */
 unsigned char ROM_poly_BASIC_34_3[]={
 0xEF, 0xF5, 0xEF, 0x43, 0xEE, 0x50, 0xEA, 0xEC, 

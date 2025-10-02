@@ -6,6 +6,7 @@
 #pragma once
 
 #include "mc6840.h"
+#include "wd1771.h"
 #include "saa5050.h"
 #include "computer.h"
 
@@ -29,6 +30,8 @@ class computer_poly_1 : public computer
 		mc6821 pia1;					// Poly video control PIA, including background colours, which screens are displayed, etc.
 		mc6821 pia2;					// Poly keyboard interface is an ASCII-like keyboard attached to an mc6821
 		mc6840 timer;					// The Poly timer, used for sound (and other stuff too)
+		wd1771 fdc[4];				// The Poly (and Proteus) support up-to 4 disk drives (this appears to be a FLEX limit)
+		unsigned char drive_select;// Which disk drive is currently selected
 
 	private:
 		std::string get_serialised_filename();
