@@ -33,9 +33,12 @@ computer_poly_1::computer_poly_1() :
 		have unique translations.  It cannot be done by using the actual key value because those are taken by
 		the screen editing keys (characer insert, line delete, etc).
 
-		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table
+		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table.
 	*/
 #ifdef NEVER
+	/*
+		Standard Networked Poly.
+	*/
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);					// MAGENTA "830519"
 	size_t translation_table_base = 0xFA8F;
 	bios[translation_table_base + 2 * 2] = '{';
@@ -53,6 +56,9 @@ computer_poly_1::computer_poly_1() :
 	bios[translation_table_base + 20 * 2] = '\\';
 	bios[translation_table_base + 20 * 2 + 1] = 28;
 #else
+	/*
+		Standalone Poly with local disk drives.
+	*/
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34_local_disk, 0x1000);		// RED "831122 WP"
 	size_t translation_table_base = 0xFAA8;
 
