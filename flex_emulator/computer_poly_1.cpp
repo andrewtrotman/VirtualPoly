@@ -8,6 +8,7 @@
 #include <fstream>
 #include <filesystem>
 
+#include "ide.h"
 #include "mc6840.h"
 #include "keycodes.h"
 #include "graphics.h"
@@ -37,36 +38,42 @@ computer_poly_1::computer_poly_1() :
 	*/
 #ifdef NEVER
 	/*
-		Standard Networked Poly.
+		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);					// MAGENTA "830519"
-	size_t translation_table_base = 0xFA8F;
-	bios[translation_table_base + 2 * 2] = '{';
-	bios[translation_table_base + 2 * 2 + 1] = 28;
-	bios[translation_table_base + 3 * 2] = '}';
-	bios[translation_table_base + 3 * 2 + 1] = 28;
-	bios[translation_table_base + 4 * 2] = '[';
-	bios[translation_table_base + 4 * 2 + 1] = 28;
-	bios[translation_table_base + 5 * 2] = ']';
-	bios[translation_table_base + 5 * 2 + 1] = 28;
-	bios[translation_table_base + 12 * 2] = '`';
-	bios[translation_table_base + 12 * 2 + 1] = 28;
-	bios[translation_table_base + 16 * 2] = '~';
-	bios[translation_table_base + 16 * 2 + 1] = 28;
-	bios[translation_table_base + 20 * 2] = '\\';
-	bios[translation_table_base + 20 * 2 + 1] = 28;
+
+	/*
+		Load the BIOS
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);					// BIOS: MAGENTA "830519" has networking
+
+	/*
+		Set up the keyboard
+	*/
+	computer_poly_1::load_and_patch_keyboard(2, 0xFA8F);
+
 #else
 	/*
 		Standalone Poly with local disk drives.
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_34_local_disk, 0x1000);		// RED "831122 WP"
-	size_t translation_table_base = 0xFAA8;
+
+	/*
+		Load the BIOS
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_34_local_disk, 0x1000);		// BIOS: RED "831122 WP" has local disk
+
+	/*
+		Set up the keyboard
+	*/
+	computer_poly_1::load_and_patch_keyboard(1, 0xFAA8);
 
 	/*
 		Load a disk into the disk drive.
 	*/
-	long error_code;
-	fdc[0].mount_disk("/Users/andrew/programming/VirtualPoly/polysys5.dsk", &error_code);
+	ide::move_disk_to_user_space("polysys5.dsk");
+	change_disk(0, ide::get_local_filename("polysys5.dsk").string().c_str());
+
+	ide::move_disk_to_user_space("user.dsk");
+	change_disk(1, ide::get_local_filename("user.dsk").string().c_str());
 
 #endif
 
@@ -77,8 +84,6 @@ computer_poly_1::computer_poly_1() :
 	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
 	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
 	memcpy(memory + 0xF000, ROM_poly_BASIC_34_4, 0x1000);
-
-	poly_set_keyboard_scan_codes(2);			// emulate the Poly-2 keyboard
 	}
 
 /*
@@ -90,6 +95,37 @@ computer_poly_1::~computer_poly_1()
 	/*
 		Nothing
 	*/
+	}
+
+/*
+	COMPUTER_POLY_1::LOAD_AND_PATCH_KEYBOARD()
+	------------------------------------------
+*/
+void computer_poly_1::load_and_patch_keyboard(int poly_version, size_t translation_table_base)
+	{
+	/*
+		Set up the keyboard
+	*/
+	poly_set_keyboard_scan_codes(poly_version);			// emulate the Poly-1 keyboard
+
+	/*
+		Patch the keyboard translation table to allow curly and square brackets
+	*/
+	bios[translation_table_base + key_fake_open_curly * 2] = '{';
+	bios[translation_table_base + key_fake_open_curly * 2 + 1] = 28;
+	bios[translation_table_base + key_fake_close_curly * 2] = '}';
+	bios[translation_table_base + key_fake_close_curly * 2 + 1] = 28;
+	bios[translation_table_base + key_fake_open_square * 2] = '[';
+	bios[translation_table_base + key_fake_open_square * 2 + 1] = 28;
+	bios[translation_table_base + key_fake_close_square * 2] = ']';
+	bios[translation_table_base + key_fake_close_square * 2 + 1] = 28;
+
+	bios[translation_table_base + key_fake_close_open_single_quote * 2] = '`';
+	bios[translation_table_base + key_fake_close_open_single_quote * 2 + 1] = 28;
+	bios[translation_table_base + key_fake_tilde * 2] = '~';
+	bios[translation_table_base + key_fake_tilde * 2 + 1] = 28;
+	bios[translation_table_base + key_fake_backslash * 2] = '\\';
+	bios[translation_table_base + key_fake_backslash * 2 + 1] = 28;
 	}
 
 /*
@@ -273,7 +309,10 @@ void computer_poly_1::deserialise(void)
 */
 const char *computer_poly_1::change_disk(uint8_t drive, const char *filename)
 	{
-	return "No disk loaded";
+	long error_code;
+
+	fdc[drive].mount_disk(filename, &error_code);
+	return filename;
 	}
 
 /*

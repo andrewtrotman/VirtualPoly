@@ -63,9 +63,9 @@ class ide
 		bool disk_0_did_change;				// has the disk been written to?
 		bool disk_1_did_change;				// has the disk been written to?
 
-	protected:
-		std::filesystem::path get_local_filename(const std::string &filename);
-		std::string move_disks_to_user_space(const std::string &filename);
+	public:
+		static std::filesystem::path get_local_filename(const std::string &filename);
+		static std::string move_disk_to_user_space(const std::string &filename);
 
 	public:
 		ide();

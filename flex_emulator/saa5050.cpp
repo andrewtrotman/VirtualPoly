@@ -28,8 +28,8 @@ static uint32_t saa_5050_colour_table[] =
 */
 saa5050::saa5050(unsigned char *memory)
 {
-font = saa5055_font;
-//font = saa5050_font;
+//font = saa5055_font;
+font = saa5050_font;
 this->screen_memory = memory;
 text_colour = background_text_colour = 0;
 glyph_base = text_graphics_mode = text_double_height = conceal = 0;

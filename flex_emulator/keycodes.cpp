@@ -12,6 +12,14 @@ unsigned char poly_key_up, poly_key_down, poly_key_u0, poly_key_u1, poly_key_u2,
 unsigned char poly_key_u7, poly_key_u8, poly_key_u9, poly_key_at, poly_key_bar, poly_key_exp, poly_key_pound, poly_key_shift_pause;
 unsigned char poly_key_keypad_dot;
 
+unsigned char key_fake_open_square;
+unsigned char key_fake_close_square;
+unsigned char key_fake_open_curly;
+unsigned char key_fake_close_curly;
+unsigned char key_fake_tilde;
+unsigned char key_fake_close_open_single_quote;
+unsigned char key_fake_backslash;
+
 /*
 	POLY_SET_KEYBOARD_SCAN_CODES()
 	------------------------------
@@ -53,6 +61,19 @@ if (poly_type == 1)
 	// the following are not on the Poly 1 keyboard!
 	poly_key_shift_pause = 0x00;
 	poly_key_keypad_dot = 0x00;
+
+	/*
+		Keys not on the Poly keyboard that we fake because they're in the Poly character set and on the PC keyboard
+		and they're useful for programming in Pascal or C.  This is achieved by hacking the key translation table in
+		the BIOS when the BIOS is loaded
+	*/
+	key_fake_open_square = 5;
+	key_fake_close_square = 12;
+	key_fake_open_curly = 3;
+	key_fake_close_curly = 4;
+	key_fake_tilde = 14;
+	key_fake_close_open_single_quote = 15;
+	key_fake_backslash = 18;
 	}
 else if (poly_type == 2)
 	{
@@ -89,5 +110,18 @@ else if (poly_type == 2)
 	// Poly 2 keyboard only
 	poly_key_shift_pause = 0x0E;
 	poly_key_keypad_dot = 0x1E;
+
+	/*
+		Keys not on the Poly keyboard that we fake because they're in the Poly character set and on the PC keyboard
+		and they're useful for programming in Pascal or C.  This is achieved by hacking the key translation table in
+		the BIOS when the BIOS is loaded
+	*/
+	key_fake_open_square = 5;
+	key_fake_close_square = 12;
+	key_fake_open_curly = 3;
+	key_fake_close_curly = 4;
+	key_fake_tilde = 2;
+	key_fake_close_open_single_quote = 16;
+	key_fake_backslash = 20;
 	}
 }

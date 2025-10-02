@@ -35,6 +35,7 @@ class computer_poly_1 : public computer
 
 	private:
 		std::string get_serialised_filename();
+		void load_and_patch_keyboard(int poly_version, size_t translation_table_base);
 
 	public:
 		computer_poly_1();

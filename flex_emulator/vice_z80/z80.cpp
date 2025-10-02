@@ -77,8 +77,8 @@ static BYTE reg_l2 = 0;
 
 static int dma_request = 0;
 
-static BYTE *z80_bank_base;
-static int z80_bank_limit;
+//static BYTE *z80_bank_base;
+//static int z80_bank_limit;
 
 
 void z80_trigger_dma(void)
@@ -133,7 +133,7 @@ extern void z80_io_write(WORD addr, BYTE val);
 
 /* ------------------------------------------------------------------------- */
 
-static unsigned int z80_last_opcode_info;
+//static unsigned int z80_last_opcode_info;
 
 #define LAST_OPCODE_INFO z80_last_opcode_info
 
@@ -614,7 +614,7 @@ static void export_registers(void)
       if (cond) {                                                  \
           unsigned int dest_addr;                                  \
                                                                    \
-          dest_addr = z80_reg_pc + pc_inc + (signed char)(value);  \
+          dest_addr = (unsigned int)z80_reg_pc + pc_inc + (signed char)(value);  \
           z80_reg_pc = dest_addr & 0xffff;                         \
           CLK += 7;                                                \
       } else {                                                     \
@@ -6289,7 +6289,7 @@ DWORD z80_mainloop(ULONG uTotalCycles, ULONG uExecutedCycles)
 
     export_registers();
 
-	return ConvertZ80TStatesTo6502Cycles(maincpu_clk - uExecutedCycles);
+	return ConvertZ80TStatesTo6502Cycles((UINT)(maincpu_clk - uExecutedCycles));
 }
 
 

@@ -98,6 +98,8 @@
 		49F70B1F266C523100408DAE /* flex_emulatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B1E266C523100408DAE /* flex_emulatorTests.swift */; };
 		49F70B2A266C523100408DAE /* flex_emulatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B29266C523100408DAE /* flex_emulatorUITests.swift */; };
 		49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B38266C527100408DAE /* cpp_methods.cpp */; };
+		49FD1F0B2E8F1B0200889B62 /* polysys5.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */; };
+		49FD1F0C2E8F1B0200889B62 /* polysys5.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */; };
 		49FD34C6268F043000F56EF3 /* terminal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD34C5268F043000F56EF3 /* terminal.swift */; };
 		49FE869C26E060FB00B5D2F9 /* Acknowledgements.html in Resources */ = {isa = PBXBuildFile; fileRef = 49FE869B26E060B700B5D2F9 /* Acknowledgements.html */; };
 /* End PBXBuildFile section */
@@ -233,6 +235,7 @@
 		49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "flex_emulator-Bridging-Header.h"; sourceTree = "<group>"; };
 		49F70B38266C527100408DAE /* cpp_methods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpp_methods.cpp; sourceTree = "<group>"; };
 		49F70B39266C527100408DAE /* cpp_methods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cpp_methods.h; sourceTree = "<group>"; };
+		49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = polysys5.dsk; sourceTree = "<group>"; };
 		49FD34C5268F043000F56EF3 /* terminal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = terminal.swift; sourceTree = "<group>"; };
 		49FE869B26E060B700B5D2F9 /* Acknowledgements.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Acknowledgements.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -438,6 +441,7 @@
 				49F70B15266C523100408DAE /* Info.plist */,
 				496F1DD8267C80CD0036C9F6 /* flex.dsk */,
 				49D3980A26E4AD1A00A75F04 /* user.dsk */,
+				49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -645,6 +649,7 @@
 				49D1C25026DA056F00015409 /* flex.dsk in Resources */,
 				49D1C22126D9D03F00015409 /* Preview Assets.xcassets in Resources */,
 				49D3980C26E4ADFA00A75F04 /* user.dsk in Resources */,
+				49FD1F0C2E8F1B0200889B62 /* polysys5.dsk in Resources */,
 				49FE869C26E060FB00B5D2F9 /* Acknowledgements.html in Resources */,
 				49D1C21E26D9D03F00015409 /* Assets.xcassets in Resources */,
 			);
@@ -672,6 +677,7 @@
 				49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */,
 				49F70B11266C523100408DAE /* Assets.xcassets in Resources */,
 				49D3980B26E4AD1B00A75F04 /* user.dsk in Resources */,
+				49FD1F0B2E8F1B0200889B62 /* polysys5.dsk in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

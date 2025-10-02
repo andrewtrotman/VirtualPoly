@@ -67,34 +67,37 @@ struct key_event_handling: NSViewRepresentable
 								machine_queue_key_press(machine.pointer, CChar(poly_key_left))
 								flex_key = CChar(poly_key_char_del)
 /*
-	These ones aren't on the Poly keyboard, so the BIOS has been hacked to make them work.
+	These ones aren't on the Poly keyboard, so the BIOS gets hacked (on BIOS load) to make them work.
 */
+
 							case Character("{").asciiValue:
-								flex_key = CChar(2)
+								flex_key = CChar(key_fake_open_curly)
 							case Character("}").asciiValue:
-								flex_key = CChar(3)
+								flex_key = CChar(key_fake_close_curly)
 							case Character("[").asciiValue:
-								flex_key = CChar(4)
+								flex_key = CChar(key_fake_open_square)
 							case Character("]").asciiValue:
-								flex_key = CChar(5)
+								flex_key = CChar(key_fake_close_square)
+
 							case Character("~").asciiValue:
-								flex_key = CChar(16)
+								flex_key = CChar(key_fake_tilde)
 							case Character("`").asciiValue:
-								flex_key = CChar(12)
+								flex_key = CChar(key_fake_close_open_single_quote)
 /*
 	If we're using the SAA5055 ASCII ROM then use these
 */
 //							case Character("#").asciiValue:						// SAA5055 US ASCII
 //								flex_key = CChar(poly_key_pound)
 //							case Character("\\").asciiValue:						// SAA5055 US ASCII
-//								flex_key = CChar(20)
+//								flex_key = CChar(key_fake_backslash)
 /*
 	But the Poly uses the SAA5050 ROM so use these
 */
 							case Character("_").asciiValue:						// SAA5050 English Teletext
 								flex_key = CChar(poly_key_pound)
 							case Character("\\").asciiValue:						// SAA5050 English Teletext
-								flex_key = CChar(127)
+								flex_key = CChar(key_fake_backslash)
+								
 							default:
 								break
 							}

@@ -89,8 +89,8 @@ ide::ide()
 		By default we use the disk in the app's Documents folder, but if that doesn't exist then copy it from the
 		disk in the app's bundle.  This way the shipped disk is never modified, but the user's copy of that disk is.
 	*/
-	move_disks_to_user_space("flex.dsk");
-	move_disks_to_user_space("user.dsk");
+	move_disk_to_user_space("flex.dsk");
+	move_disk_to_user_space("user.dsk");
 
 	disk_load(0, get_local_filename("flex.dsk").string().c_str());
 	disk_load(1, get_local_filename("user.dsk").string().c_str());
@@ -120,10 +120,10 @@ std::filesystem::path ide::get_local_filename(const std::string &filename)
 	}
 
 /*
-	IDE::MOVE_DISKS_TO_USER_SPACE()
-	-------------------------------
+	IDE::MOVE_DISK_TO_USER_SPACE()
+	------------------------------
 */
-std::string ide::move_disks_to_user_space(const std::string &filename)
+std::string ide::move_disk_to_user_space(const std::string &filename)
 	{
 	auto full_filename = get_local_filename(filename);
 	std::error_code status;

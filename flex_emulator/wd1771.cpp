@@ -135,15 +135,15 @@ else if (operating_system == FLEX)
 	into = volume_name;
 
 	volume_number = (((unsigned)disk[0x200 + 27]) << 8) + ((unsigned)disk[0x200 + 28]);
-	into += sprintf((char *)into, "#%ld (", volume_number);
+	into += snprintf((char *)into, sizeof(volume_name), "#%ld (", volume_number);
 
 	for (pos = disk + 0x200 + 16; pos < disk + 0x200 + 26; pos++)
 		if (isprint(*pos))
 			*into++ = *pos;
 		else
 			break;
-
-	sprintf((char *)into, ")");
+	
+	snprintf((char *)into, 1, ")");
 	}
 
 *error_code = ERROR_NONE;

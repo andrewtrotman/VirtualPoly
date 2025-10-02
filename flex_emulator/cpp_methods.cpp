@@ -170,8 +170,8 @@ void machine_poly_1_render_screen(const void *object, void *screen_buffer, bool 
 */
 uint8_t *get_saa5050_font(void)
 	{
-//		return saa5050_font;
-	return saa5055_font;
+	return saa5050_font;
+//	return saa5055_font;
 	}
 
 
