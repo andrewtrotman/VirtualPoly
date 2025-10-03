@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4910487626F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
 		4910487726F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
+		491E159D2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */; };
+		491E159E2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */; };
 		492195602E82200400136344 /* computer_poly_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly_1.cpp */; };
 		492195672E82215200136344 /* ROM_poly_BIOS_34.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */; };
 		492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */; };
@@ -100,6 +102,14 @@
 		49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F70B38266C527100408DAE /* cpp_methods.cpp */; };
 		49FD1F0B2E8F1B0200889B62 /* polysys5.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */; };
 		49FD1F0C2E8F1B0200889B62 /* polysys5.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */; };
+		49FD1F112E8F651C00889B62 /* mc6854.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F0E2E8F651C00889B62 /* mc6854.cpp */; };
+		49FD1F122E8F651C00889B62 /* mc6854.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F0E2E8F651C00889B62 /* mc6854.cpp */; };
+		49FD1F132E8F651C00889B62 /* mc6854_channel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F102E8F651C00889B62 /* mc6854_channel.cpp */; };
+		49FD1F142E8F651C00889B62 /* mc6854_channel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F102E8F651C00889B62 /* mc6854_channel.cpp */; };
+		49FD1F1B2E8F6D3300889B62 /* proteus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F182E8F6D3300889B62 /* proteus.cpp */; };
+		49FD1F1C2E8F6D3300889B62 /* proteus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F182E8F6D3300889B62 /* proteus.cpp */; };
+		49FD1F1E2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F1D2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp */; };
+		49FD1F1F2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49FD1F1D2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp */; };
 		49FD34C6268F043000F56EF3 /* terminal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD34C5268F043000F56EF3 /* terminal.swift */; };
 		49FE869C26E060FB00B5D2F9 /* Acknowledgements.html in Resources */ = {isa = PBXBuildFile; fileRef = 49FE869B26E060B700B5D2F9 /* Acknowledgements.html */; };
 /* End PBXBuildFile section */
@@ -138,6 +148,7 @@
 /* Begin PBXFileReference section */
 		4910487526F6F8AA00C54511 /* screen_base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_base.swift; sourceTree = "<group>"; };
 		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
+		491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_proteus_BIOS_31.cpp; sourceTree = "<group>"; };
 		4921955E2E82200400136344 /* computer_poly_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_poly_1.cpp; sourceTree = "<group>"; };
 		4921955F2E82200400136344 /* computer_poly_1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_poly_1.h; sourceTree = "<group>"; };
 		492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BIOS_34.cpp; sourceTree = "<group>"; };
@@ -236,6 +247,14 @@
 		49F70B38266C527100408DAE /* cpp_methods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpp_methods.cpp; sourceTree = "<group>"; };
 		49F70B39266C527100408DAE /* cpp_methods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cpp_methods.h; sourceTree = "<group>"; };
 		49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = polysys5.dsk; sourceTree = "<group>"; };
+		49FD1F0D2E8F651C00889B62 /* mc6854.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6854.h; sourceTree = "<group>"; };
+		49FD1F0E2E8F651C00889B62 /* mc6854.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6854.cpp; sourceTree = "<group>"; };
+		49FD1F0F2E8F651C00889B62 /* mc6854_channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6854_channel.h; sourceTree = "<group>"; };
+		49FD1F102E8F651C00889B62 /* mc6854_channel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6854_channel.cpp; sourceTree = "<group>"; };
+		49FD1F162E8F6D3200889B62 /* ROM_proteus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_proteus.h; sourceTree = "<group>"; };
+		49FD1F172E8F6D3200889B62 /* proteus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = proteus.h; sourceTree = "<group>"; };
+		49FD1F182E8F6D3300889B62 /* proteus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = proteus.cpp; sourceTree = "<group>"; };
+		49FD1F1D2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_proteus_BIOS_30.cpp; sourceTree = "<group>"; };
 		49FD34C5268F043000F56EF3 /* terminal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = terminal.swift; sourceTree = "<group>"; };
 		49FE869B26E060B700B5D2F9 /* Acknowledgements.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Acknowledgements.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -379,6 +398,11 @@
 				4956BA002E8B6AC3001417BB /* vice_z80 */,
 				49F70B39266C527100408DAE /* cpp_methods.h */,
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
+				49FD1F182E8F6D3300889B62 /* proteus.cpp */,
+				49FD1F172E8F6D3200889B62 /* proteus.h */,
+				49FD1F162E8F6D3200889B62 /* ROM_proteus.h */,
+				49FD1F1D2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp */,
+				491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */,
 				4944EF402670801900445780 /* computer.h */,
 				4944EF412670801A00445780 /* computer.cpp */,
 				4921955F2E82200400136344 /* computer_poly_1.h */,
@@ -396,10 +420,10 @@
 				49B31D79266F512300706439 /* misc.h */,
 				49B31D77266F50EF00706439 /* usim.h */,
 				49B31D76266F50EF00706439 /* usim.cpp */,
-				49B31D73266F508400706439 /* mc6809.h */,
-				49B31D74266F508400706439 /* mc6809.cpp */,
 				49480DF52675DD4C00860A83 /* ide.h */,
 				49480DF42675DD4C00860A83 /* ide.cpp */,
+				49B31D73266F508400706439 /* mc6809.h */,
+				49B31D74266F508400706439 /* mc6809.cpp */,
 				49F336C926E210760075EEBA /* mc6821.h */,
 				49F336C826E210760075EEBA /* mc6821.cpp */,
 				496B2FA42E84FD2C00B4FC19 /* mc6840.h */,
@@ -407,6 +431,10 @@
 				49B31D7D266F550C00706439 /* mc6850.h */,
 				49B31D7C266F550C00706439 /* mc6850.cpp */,
 				49480DEF2674993E00860A83 /* saa5050_font.cpp */,
+				49FD1F0F2E8F651C00889B62 /* mc6854_channel.h */,
+				49FD1F102E8F651C00889B62 /* mc6854_channel.cpp */,
+				49FD1F0D2E8F651C00889B62 /* mc6854.h */,
+				49FD1F0E2E8F651C00889B62 /* mc6854.cpp */,
 				49480DF12674993E00860A83 /* saa5050_font.h */,
 				49E35E2D267F1D670078058B /* saa5055_font.cpp */,
 				49E35E2E267F1D670078058B /* saa5055_font.h */,
@@ -702,20 +730,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49E2629B2E8E264F008C9903 /* ROM_poly_BIOS_34_local_disk.cpp in Sources */,
-				4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */,
 				4921956D2E824B1600136344 /* ROM_poly_BASIC_34_1.cpp in Sources */,
+				4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */,
 				4921956E2E824B1600136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
 				4921956F2E824B1600136344 /* ROM_poly_BASIC_34_3.cpp in Sources */,
-				495C04C12E863905005DE1C7 /* graphics.cpp in Sources */,
 				492195702E824B1600136344 /* ROM_poly_BASIC_34_4.cpp in Sources */,
+				495C04C12E863905005DE1C7 /* graphics.cpp in Sources */,
+				49E2629B2E8E264F008C9903 /* ROM_poly_BIOS_34_local_disk.cpp in Sources */,
+				49FD1F1F2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp in Sources */,
 				492195712E824B1600136344 /* ROM_poly_BIOS_34.cpp in Sources */,
 				4956BA102E8B8010001417BB /* keycodes.cpp in Sources */,
 				4910487726F6F8AA00C54511 /* screen_base.swift in Sources */,
 				49D1C24726DA056100015409 /* mc6850.cpp in Sources */,
 				49F336C526E205400075EEBA /* WebView.swift in Sources */,
+				49FD1F142E8F651C00889B62 /* mc6854_channel.cpp in Sources */,
 				49D1C24C26DA056200015409 /* ide.cpp in Sources */,
 				49C0985326EC34EF00C10535 /* screen_arrow.swift in Sources */,
+				491E159E2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */,
 				49D1C24426DA054D00015409 /* cpp_methods.cpp in Sources */,
 				495A221A26EB52B900555F2B /* ROM_arrow_menu.cpp in Sources */,
 				49D1C24A26DA056200015409 /* saa5050.cpp in Sources */,
@@ -732,6 +763,7 @@
 				49ED162727094EE900669717 /* screen_pinnated.swift in Sources */,
 				49D1C24826DA056100015409 /* mc6809.cpp in Sources */,
 				49D1C24526DA056100015409 /* ROM_FLEX.cpp in Sources */,
+				49FD1F122E8F651C00889B62 /* mc6854.cpp in Sources */,
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
 				496B2FA92E84FD2D00B4FC19 /* mc6840.cpp in Sources */,
 				499B50F626DF60F3002F8D66 /* Acknowledgements.swift in Sources */,
@@ -740,6 +772,7 @@
 				4956BA0B2E8B6B73001417BB /* z80.cpp in Sources */,
 				49D1C21A26D9D03E00015409 /* Flex_Emulator_MacOSApp.swift in Sources */,
 				49B0649B26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
+				49FD1F1C2E8F6D3300889B62 /* proteus.cpp in Sources */,
 				49D1C24D26DA056200015409 /* usim.cpp in Sources */,
 				49D1C25326DA065900015409 /* Compatibility.swift in Sources */,
 				492195742E82518900136344 /* screen_poly_1.swift in Sources */,
@@ -775,13 +808,16 @@
 				49F336CA26E210760075EEBA /* mc6821.cpp in Sources */,
 				49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */,
 				495A221E26EB54FD00555F2B /* computer_arrow.cpp in Sources */,
+				491E159D2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */,
 				49B31D78266F50EF00706439 /* usim.cpp in Sources */,
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,
 				49480DF22674993E00860A83 /* saa5050.cpp in Sources */,
+				49FD1F1E2E8F749100889B62 /* ROM_proteus_BIOS_30.cpp in Sources */,
 				4956BA082E8B6B73001417BB /* daa.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				49E2629E2E8E27D8008C9903 /* wd1771.cpp in Sources */,
 				492195602E82200400136344 /* computer_poly_1.cpp in Sources */,
+				49FD1F132E8F651C00889B62 /* mc6854_channel.cpp in Sources */,
 				49E2629A2E8E2464008C9903 /* ROM_poly_BIOS_34_local_disk.cpp in Sources */,
 				492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
 				49ED162627094EE900669717 /* screen_pinnated.swift in Sources */,
@@ -796,6 +832,8 @@
 				496F4D2726901F3900D18C22 /* keyboard.swift in Sources */,
 				49B0649A26F4761700153AE5 /* ROM_arrow_BASIC.cpp in Sources */,
 				4944EF422670801A00445780 /* computer.cpp in Sources */,
+				49FD1F1B2E8F6D3300889B62 /* proteus.cpp in Sources */,
+				49FD1F112E8F651C00889B62 /* mc6854.cpp in Sources */,
 				4956BA0F2E8B8010001417BB /* keycodes.cpp in Sources */,
 				49FD34C6268F043000F56EF3 /* terminal.swift in Sources */,
 				49B31D7E266F550C00706439 /* mc6850.cpp in Sources */,

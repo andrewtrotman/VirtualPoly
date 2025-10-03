@@ -37,7 +37,7 @@ class computer_poly_1 : public computer
 		std::deque<uint8_t> acia1_input;
 		std::deque<uint8_t> acia1_output;
 		mc6850 acia1;
-		unsigned char baud_rate_register;		// exactly that!
+		unsigned char baud_rate_register;
 
 	private:
 		std::string get_serialised_filename();

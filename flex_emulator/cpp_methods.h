@@ -18,7 +18,8 @@ extern "C"
 		{
 		PINNATED,
 		ARROW,
-		POLY_1
+		POLY_1,
+		PROTEUS
 		} machine_type;
 
 	const void *machine_construct(machine_type type);

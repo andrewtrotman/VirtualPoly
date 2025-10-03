@@ -44,7 +44,8 @@ struct ContentView: View
 	{
 	@StateObject var app_state : AppState
 
-	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+//	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -129,6 +130,9 @@ struct ContentView: View
 
 						if end_cycle > machine_cycles_spent(machine.pointer) + 10 * UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz))
 							{
+							/*
+								Set the number of clock cycles since power on
+							*/
 							machine_set_cycles_spent(machine.pointer, UInt64(Double(ContentView.CPU_speed) * total_seconds_count) - UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz)))
 							}
 
@@ -142,6 +146,7 @@ struct ContentView: View
 								screen!.print_character(raw_character: UInt8(response & 0xFF))
 
 //print(Character(UnicodeScalar(UInt8(response))), terminator:"")
+
 								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
 								}
@@ -191,13 +196,19 @@ struct ContentView: View
 //							screen = screen_pinnated()
 							screen = terminal()
 							}
-						else	// must be a Poly emulator
+						else if (AppState.shared.emulated_machine == POLY_1)
 							{
 							machine.pointer = machine_construct(POLY_1)
 							let poly_screen = screen_poly_1()
 							poly_screen.set_machine(poly: machine.pointer)
 							screen = poly_screen
 							}
+						else			// emulate a proteus
+							{
+							machine.pointer = machine_construct(PROTEUS)
+							screen = terminal()
+							}
+
 
 						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer

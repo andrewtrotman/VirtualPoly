@@ -6,6 +6,7 @@
 #include "cpp_methods.h"
 #include "computer_arrow.h"
 #include "computer_poly_1.h"
+#include "proteus.h"
 
 /*
 	MACHINE_CONSTRUCT()
@@ -19,8 +20,10 @@ const void *machine_construct(machine_type type)
 		machine = new computer();
 	else if (type == ARROW)
 		machine = new computer_arrow();
-	else
+	else if (type == POLY_1)
 		machine = new computer_poly_1();
+	else
+		machine = new proteus();
 
 	machine->reset();
 	return (const void *)machine;
