@@ -12,8 +12,8 @@
 */
 void mc6850::reset(void)
 	{
-//	input.clear();
-//	output.clear();
+	input.clear();
+	output.clear();
 	}
 
 /*
@@ -44,6 +44,7 @@ byte mc6850::poll(void)
 void mc6850::out(byte value)
 	{
 	output.push_back(value);
+	putchar(value);
 	}
 
 /*

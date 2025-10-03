@@ -25,7 +25,8 @@ computer_poly_1::computer_poly_1() :
 	screen_changed(false),
 	text_page_1(bios + 0xE800),
 	text_page_3(bios + 0xEC00),
-	drive_select(0)
+	drive_select(0),
+	acia1(acia1_input, acia1_output)
 	{
 	memset(bios, 0, sizeof(bios));
 	/*
@@ -162,7 +163,7 @@ void computer_poly_1::step(uint64_t times)
 		*/
 		execute();
 
-		if (leave_prot_now )
+		if (leave_prot_now)
 			{
 			leave_prot = false;
 			prot = false;
@@ -347,18 +348,22 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 	-----------------------
 	0000-DFFF RAM user-mode decoded RAM
 	E000-E003 PIA   (MC6821)			Video Controller
+
+	E004-E005 ACIA  (MC6850)			Serial Port
+	E006      Baud Rate Register		Baud Rate Controller
+
 	E00C-E00F PIA   (MC6821)			Keyboard
 	E014      DISK  (WD1771)         Disc Change Indicator
 	E018-E01B DISK  (WD1771)         Floppy Disk Drive Controller
 	E020-E027 PTM   (MC6840)			Real Time Clock
-	E040      PROT switch
-	E050-E05F Dynamic Address Translator (page table)
-	E060      Memory Map 1 select
-	E070      Memory Map 2 select
-	E800-EBBF Teletext 1 screen
-	EBC0-EBFF RAM System data
-	EC00-EFBF Teletext 2 screen
-	EFC0-EFFF RAM System data
+	E040      PROT                   Prot switch
+	E050-E05F DAT                    Dynamic Address Translator (page table)
+	E060      MMU                    Memory Map 1 select
+	E070      MMU                    Memory Map 2 select
+	E800-EBBF TEXT (SAA5050)         Teletext 1 screen
+	EBC0-EBFF RAM                    System data
+	EC00-EFBF TEXT (SAA5050)         Teletext 2 screen
+	EFC0-EFFF RAM                     System data
 	F000-FFFF ROM
 */
 byte computer_poly_1::read(word raw_address)
@@ -379,6 +384,23 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE002:
 			case 0xE003:
 				answer = pia1.read(raw_address - 0xE000);
+				break;
+
+			/*
+				Serial port (optional)
+				Used as a cassette interface on Poly 1 (with early BASIC versions)
+				MC6850 ACIA (Serial Controller) at E004-E00
+			*/
+			case 0xE004:
+			case 0xE005:
+				answer = acia1.read(raw_address - 0xE004);
+				break;
+
+			/*
+				Baud rate register at 0xE006
+			*/
+			case 0xE006:
+				answer = baud_rate_register;
 				break;
 
 			/*
@@ -532,6 +554,23 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE002:
 			case 0xE003:
 				pia1.write(raw_address - 0xE000, value);
+				break;
+
+			/*
+				Serial port (optional)
+				Used as a cassette interface on Poly 1 (with early BASIC versions)
+				MC6850 ACIA (Serial Controller) at E004-E00
+			*/
+			case 0xE004:
+			case 0xE005:
+				acia1.write(raw_address - 0xE004, value);
+				break;
+
+			/*
+				Baud rate register at 0xE006
+			*/
+			case 0xE006:
+				baud_rate_register = value;
 				break;
 
 			/*
