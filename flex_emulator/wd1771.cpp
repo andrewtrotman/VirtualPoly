@@ -88,6 +88,8 @@ else if (size_of_disk_in_bytes == 102400)		// FLEX 5.25" disk (39 tracks of 10 s
 	operating_system = FLEX;
 else if (size_of_disk_in_bytes == 204800)		// FLEX 5.25" disk (39 tracks of 20 sectors (double sided))
 	operating_system = FLEX;
+else if (size_of_disk_in_bytes == 4194304)	// FLEX hard drive of maximum possible capacity
+	operating_system = FLEX;
 else if (size_of_disk_in_bytes == 622592)		// CP/M 3" disk (76 tracks of 16 sectors)
 	{
 	max_track = 76;
