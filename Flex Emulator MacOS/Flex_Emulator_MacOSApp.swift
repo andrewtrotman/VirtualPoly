@@ -12,8 +12,8 @@ class AppState: ObservableObject
 	var screen: screen_base? = nil
 //	let emulated_machine = ARROW
 //	let emulated_machine = PINNATED
-	let emulated_machine = POLY_1
-//	let emulated_machine = PROTEUS
+//	let emulated_machine = POLY_1
+	let emulated_machine = PROTEUS
 	}
 
 class AppDelegate: NSObject, NSApplicationDelegate

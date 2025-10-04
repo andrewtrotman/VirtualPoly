@@ -30,6 +30,8 @@
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
 		49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEF2674993E00860A83 /* saa5050_font.cpp */; };
 		49480DF62675DD4C00860A83 /* ide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DF42675DD4C00860A83 /* ide.cpp */; };
+		4951FB042E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */; };
+		4951FB052E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */; };
 		4956BA082E8B6B73001417BB /* daa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA032E8B6B73001417BB /* daa.cpp */; };
 		4956BA092E8B6B73001417BB /* daa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA032E8B6B73001417BB /* daa.cpp */; };
 		4956BA0A2E8B6B73001417BB /* z80.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4956BA052E8B6B73001417BB /* z80.cpp */; };
@@ -167,6 +169,7 @@
 		49480DF12674993E00860A83 /* saa5050_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa5050_font.h; sourceTree = "<group>"; };
 		49480DF42675DD4C00860A83 /* ide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ide.cpp; sourceTree = "<group>"; };
 		49480DF52675DD4C00860A83 /* ide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ide.h; sourceTree = "<group>"; };
+		4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = ProteusFlex.dsk; sourceTree = "<group>"; };
 		4956BA012E8B6B73001417BB /* z80regs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80regs.h; sourceTree = "<group>"; };
 		4956BA022E8B6B73001417BB /* z80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80.h; sourceTree = "<group>"; };
 		4956BA032E8B6B73001417BB /* daa.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = daa.cpp; sourceTree = "<group>"; };
@@ -470,6 +473,7 @@
 				496F1DD8267C80CD0036C9F6 /* flex.dsk */,
 				49D3980A26E4AD1A00A75F04 /* user.dsk */,
 				49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */,
+				4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -673,6 +677,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4951FB052E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
 				492E929726DB825F000DA1F9 /* Credits.rtf in Resources */,
 				49D1C25026DA056F00015409 /* flex.dsk in Resources */,
 				49D1C22126D9D03F00015409 /* Preview Assets.xcassets in Resources */,
@@ -701,6 +706,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4951FB042E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
 				496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */,
 				49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */,
 				49F70B11266C523100408DAE /* Assets.xcassets in Resources */,

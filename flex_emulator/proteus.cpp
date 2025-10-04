@@ -17,7 +17,7 @@ extern long mc6854_channel_logging;				// remove this and everything to do with 
 */
 proteus::proteus() :
 	computer(),
-	acia1(acia1_in, acia1_out),
+	acia1(keyboard_input, serial_output),
 	acia2(acia2_in, acia2_out),
 	acia3(acia3_in, acia3_out)
 	{

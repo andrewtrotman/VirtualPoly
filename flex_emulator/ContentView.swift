@@ -52,7 +52,8 @@ struct ContentView: View
 	{
 	@Environment(\.scenePhase) var scene_phase
 
-	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
+//	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
+	let CPU_speed: UInt64 = 1000000			// 1,000,000 is 1 MHz
 	let iOS_timer_hz: UInt64 = 25		// interrupts per second
     
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -61,7 +62,7 @@ struct ContentView: View
 
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
-	@State var inactive = false						// iOS has made us inactive or background
+	@State var inactive = false							// iOS has made us inactive or background
 
 	@State var screen = terminal()
 	@State var keypad = keyboard()

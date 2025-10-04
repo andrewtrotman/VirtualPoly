@@ -25,7 +25,7 @@ public:
 public:
 	long cpu_active;					// is the 6809 or the Z80 active?
 	long cpu_frequency;				// what is the frequency of the CPU?
-	std::deque<uint8_t> acia1_in, acia1_out;
+//	std::deque<uint8_t> acia1_in, acia1_out;			// use the std::deque in the ::computer class
 	mc6850 acia1;						// RS232 Terminal
 	std::deque<uint8_t> acia2_in, acia2_out;
 	mc6850 acia2;						// RS232 Printer
