@@ -40,6 +40,10 @@ public:
 	unsigned char *current_rom;					// 6809 ROM (at address $F000-$FFFF when in 6809 mode)
 	unsigned char z80_eprom_shadow[0x1000];	//  Z80 RAM (at address $F000-$FFFF when in 6809 mode)
 
+protected:
+	const char *change_disk(uint8_t drive, const char *filename);
+
+
 public:
 	proteus();
 	~proteus() {}

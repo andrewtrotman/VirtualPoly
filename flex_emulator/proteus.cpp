@@ -21,9 +21,40 @@ proteus::proteus() :
 	acia2(acia2_in, acia2_out),
 	acia3(acia3_in, acia3_out)
 	{
-	cpu_frequency = 1000000;												// the 6809 is clocked at 1MHz
+	/*
+		Load the ROM
+	*/
 	load_rom(30982);
+
+	/*
+		Set the clock frequency then reset the machine
+	*/
+	cpu_frequency = 1000000;						// the 6809 is clocked at 1MHz
 	reset();
+
+	/*
+		Load the Proteus FLEX boot disk into drive 0
+	*/
+	ide::move_disk_to_user_space("ProteusFlex.dsk");
+	change_disk(0, ide::get_local_filename("ProteusFlex.dsk").string().c_str());
+
+	/*
+		Load a blank FLEX disk into drive 1
+	*/
+	ide::move_disk_to_user_space("user.dsk");
+	change_disk(1, ide::get_local_filename("user.dsk").string().c_str());
+	}
+
+/*
+	PROTEUS::CHANGE_DISK()
+	----------------------
+*/
+const char *proteus::change_disk(uint8_t drive, const char *filename)
+	{
+	long error_code;
+
+	fdc[drive].mount_disk(filename, &error_code);
+	return filename;
 	}
 
 /*
