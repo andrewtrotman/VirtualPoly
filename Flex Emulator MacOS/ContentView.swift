@@ -138,6 +138,7 @@ struct ContentView: View
 
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
+//print(machine_cycles_spent(machine.pointer), " < ", end_cycle)
 							machine_step(machine.pointer, UInt64(ContentView.CPU_speed / ContentView.iOS_timer_hz) / 8);
 
 							var response = machine_dequeue_serial_output(machine.pointer)

@@ -43,6 +43,9 @@ extern "C"
 #ifdef __cplusplus
 	}
 
+class computer_proteus;
+extern computer_proteus *proteus_server;
+
 extern uint8_t z80_memory_read(uint16_t addr);
 extern void z80_memory_write(uint16_t addr, uint8_t val);
 extern uint8_t z80_io_read(uint16_t addr);

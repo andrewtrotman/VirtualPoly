@@ -6,7 +6,13 @@
 #include "cpp_methods.h"
 #include "computer_arrow.h"
 #include "computer_poly_1.h"
-#include "proteus.h"
+#include "computer_proteus.h"
+
+/*
+	This is necessary in order for the Z80 emulator to be able to access the 6809 address space.
+*/
+computer_proteus *proteus_server;
+
 
 /*
 	MACHINE_CONSTRUCT()
@@ -23,7 +29,7 @@ const void *machine_construct(machine_type type)
 	else if (type == POLY_1)
 		machine = new computer_poly_1();
 	else
-		machine = new proteus();
+		machine = new computer_proteus();
 
 	machine->reset();
 	return (const void *)machine;
@@ -177,21 +183,38 @@ uint8_t *get_saa5050_font(void)
 //	return saa5055_font;
 	}
 
+/*
+	Z80_MEMORY_READ()
+	-----------------
+*/
+byte z80_memory_read(word addr)
+{
+return proteus_server->memory[addr];			// doesn't call read() to avoid ROM and device-space decoding
+}
 
-uint8_t z80_memory_read(uint16_t addr)
-	{
-	return 0;
-	}
+/*
+	Z80_MEMORY_WRITE()
+	------------------
+*/
+void z80_memory_write(word addr, byte val)
+{
+proteus_server->memory[addr] = val;			// doesn't call write() to avoid ROM and device-space decoding
+}
 
-void z80_memory_write(uint16_t addr, uint8_t val)
-	{
-	}
+/*
+	Z80_IO_READ()
+	-------------
+*/
+byte z80_io_read(word addr)
+{
+return proteus_server->read(0xE000 + (addr & 0xFF));
+}
 
-uint8_t z80_io_read(uint16_t addr)
-	{
-	return 0;
-	}
-	
-void z80_io_write(uint16_t addr, uint8_t val)
-	{
-	}
+/*
+	Z80_IO_WRITE()
+	--------------
+*/
+void z80_io_write(word addr, byte val)
+{
+return proteus_server->write(0xE000 + (addr & 0xFF), val);
+}

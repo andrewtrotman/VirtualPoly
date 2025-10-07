@@ -4,7 +4,7 @@
 */
 #pragma once
 
-class proteus;
+class computer_proteus;
 
 /*
 	class MC6854_CHANNEL
@@ -21,7 +21,7 @@ private:
 	unsigned short *write;
 	unsigned short *read;
 
-	proteus *reciever;
+	computer_proteus *reciever;
 
 	unsigned short write_fifo[3];		// 3 byte write_fifo
 	long write_fifo_pos;
@@ -30,7 +30,7 @@ private:
 	void place_on_wire(unsigned short val);
 
 public:
-	mc6854_channel(proteus *reciever);
+	mc6854_channel(computer_proteus *reciever);
 	virtual  ~mc6854_channel() {}
 
 	void send(unsigned short val);

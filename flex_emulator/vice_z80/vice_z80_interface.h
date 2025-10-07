@@ -1,7 +1,7 @@
 /*
 	VICE_Z80_INTERFACE.H
 	--------------------
-	Written (w) 2010 Andrew Trotman (andrew@cs.otago.ac.nz)
+	Written (w) 2010 Andrew Trotman
 
 	This file contains the necessary parts to build the VICE z80
 	emulator so that we can attach it to the Proteus Emulator

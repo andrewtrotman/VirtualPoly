@@ -72,7 +72,7 @@ protected:
 	void write_byte(unsigned char val);
 
 public:
-	mc6854(proteus *machine);
+	mc6854(computer_proteus *machine);
 	virtual ~mc6854() {}
 
 	void write(unsigned short address, unsigned char value);

@@ -11,7 +11,7 @@
 	MC6854::MC6854()
 	----------------
 */
-mc6854::mc6854(proteus *machine)
+mc6854::mc6854(computer_proteus *machine)
 {
 /*
 	MC6854 registers

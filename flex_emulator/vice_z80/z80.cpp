@@ -6279,7 +6279,7 @@ DWORD z80_mainloop(ULONG uTotalCycles, ULONG uExecutedCycles)
 
         //cpu_int_status->num_dma_per_opcode = 0;	// [AppleWin-TC] Not used
 
-#ifdef NEVER				// POLY_UNIT
+#ifdef NEVER				// POLY_UNIT doesn't need this
         if (g_ActiveCPU != CPU_Z80)					// [AppleWin-TC]
             break;
 #endif

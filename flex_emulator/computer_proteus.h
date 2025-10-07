@@ -1,6 +1,6 @@
 /*
-	PROTEUS.H
-	---------
+	COMPUTER_PROTEUS.H
+	------------------
 */
 #pragma once
 
@@ -14,10 +14,10 @@
 #include "wd1771.h"
 
 /*
-	PROTEUS
-	-------
+	COMPUTER_PROTEUS
+	----------------
 */
-class proteus : public computer
+class computer_proteus : public computer
 {
 public:
 	enum { CPU_6809, CPU_Z80 };
@@ -25,7 +25,6 @@ public:
 public:
 	long cpu_active;					// is the 6809 or the Z80 active?
 	long cpu_frequency;				// what is the frequency of the CPU?
-//	std::deque<uint8_t> acia1_in, acia1_out;			// use the std::deque in the ::computer class
 	mc6850 acia1;						// RS232 Terminal
 	std::deque<uint8_t> acia2_in, acia2_out;
 	mc6850 acia2;						// RS232 Printer
@@ -43,10 +42,9 @@ public:
 protected:
 	const char *change_disk(uint8_t drive, const char *filename);
 
-
 public:
-	proteus();
-	~proteus() {}
+	computer_proteus();
+	~computer_proteus() {}
 
 	virtual byte read(word address);
 	virtual void write(word address, byte val);

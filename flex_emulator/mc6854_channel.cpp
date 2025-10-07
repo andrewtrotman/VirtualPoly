@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "proteus.h"
 #include "mc6854_channel.h"
+#include "computer_proteus.h"
 
 //#define DEBUG 1
 
@@ -108,7 +108,7 @@ if (mc6854_channel_logging)
 	MC6854_CHANNEL()
 	----------------
 */
-mc6854_channel::mc6854_channel(proteus *reciever)
+mc6854_channel::mc6854_channel(computer_proteus *reciever)
 { 
 read = write = buffer = new unsigned short[SIZE];
 buffer_end = buffer + SIZE;
