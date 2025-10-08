@@ -8,6 +8,7 @@
 #include <deque>
 
 #include "mc6840.h"
+#include "mc6854.h"
 #include "wd1771.h"
 #include "saa5050.h"
 #include "computer.h"
@@ -38,6 +39,7 @@ class computer_poly_1 : public computer
 		std::deque<uint8_t> acia1_output;
 		mc6850 acia1;
 		unsigned char baud_rate_register;
+		mc6854 network;
 
 	private:
 		std::string get_serialised_filename();

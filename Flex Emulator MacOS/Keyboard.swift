@@ -53,7 +53,7 @@ struct key_event_handling: NSViewRepresentable
 							flex_key = 0x08
 							}
 						}
-					else if AppState.shared.emulated_machine == POLY_1
+					else if (AppState.shared.emulated_machine == POLY_1) || (AppState.shared.emulated_machine == POLY_WITH_PROTEUS)
 						{
 						switch ascii
 							{

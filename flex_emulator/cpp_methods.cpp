@@ -7,6 +7,7 @@
 #include "computer_arrow.h"
 #include "computer_poly_1.h"
 #include "computer_proteus.h"
+#include "computer_poly_with_proteus.h"
 
 /*
 	This is necessary in order for the Z80 emulator to be able to access the 6809 address space.
@@ -28,8 +29,10 @@ const void *machine_construct(machine_type type)
 		machine = new computer_arrow();
 	else if (type == POLY_1)
 		machine = new computer_poly_1();
-	else
+	else if (type == PROTEUS)
 		machine = new computer_proteus();
+	else
+		machine = new computer_poly_with_proteus();
 
 	machine->reset();
 	return (const void *)machine;

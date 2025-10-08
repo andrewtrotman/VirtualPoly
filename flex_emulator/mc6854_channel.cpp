@@ -3,18 +3,18 @@
 	----------------
 */
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+
+#include "mc6854.h"
 #include "mc6854_channel.h"
-#include "computer_proteus.h"
 
-//#define DEBUG 1
+#define DEBUG 1
 
-long mc6854_channel_logging = false;
+long mc6854_channel_logging = true;
 unsigned char log_buffer[1024 * 1024];
 unsigned char *log_buffer_pos = log_buffer;
-
 
 /*
 	LOG_DECODE_MESSAGE()
@@ -42,7 +42,7 @@ switch (message[1])
 			if (end - message > 2)
 				fprintf(out, "MyROMid is %02X %02X", message[2], message[3]);
 			else
-				fprintf(out, "You're message Looped Back");
+				fprintf(out, "Your message Looped Back");
 			}
 		break;
 	case 0x17:
@@ -78,7 +78,9 @@ static long last_direction = -1;
 
 if (mc6854_channel_logging)
 	{
-	fp = fopen("log.txt", "a+");
+//	fp = fopen("log.txt", "a+");
+fp = stdout;
+
 	if (direction != last_direction)
 		{
 		log_buffer_pos = log_buffer;
@@ -86,8 +88,8 @@ if (mc6854_channel_logging)
 		last_direction = direction;
 		}
 
-	fprintf(fp, "%02x ", byte & 0xFF);
-//	fprintf(fp, "%02x %c ", byte & 0xFF, isalnum(byte & 0xFF) ? byte & 0xFF : '.');
+//	fprintf(fp, "%02x ", byte & 0xFF);
+	fprintf(fp, "%02x %c ", byte & 0xFF, isalnum(byte & 0xFF) ? byte & 0xFF : '.');
 //	fprintf(fp, "%c", isprint(byte & 0xFF) ? byte & 0xFF : '.');
 	*log_buffer_pos++ = (unsigned char)(byte & 0xFF);
 
@@ -100,7 +102,7 @@ if (mc6854_channel_logging)
 		log_buffer_pos = log_buffer;
 		}
 
-	fclose(fp);
+//	fclose(fp);
 	}
 }
 
@@ -108,11 +110,10 @@ if (mc6854_channel_logging)
 	MC6854_CHANNEL()
 	----------------
 */
-mc6854_channel::mc6854_channel(computer_proteus *reciever)
+mc6854_channel::mc6854_channel()
 { 
 read = write = buffer = new unsigned short[SIZE];
 buffer_end = buffer + SIZE;
-this->reciever = reciever;
 write_fifo_pos = 0;
 memset(write_fifo, 0, sizeof(write_fifo));
 }
@@ -131,9 +132,6 @@ void mc6854_channel::place_on_wire(unsigned short val)
 
 if (write >= buffer_end)
 	write = buffer;
-
-if (reciever != NULL)
-	reciever->network_irq();
 }
 
 /*
@@ -193,10 +191,6 @@ if (read >= buffer_end)
 #ifdef DEBUG
 	log(this, false, answer);
 #endif
-
-if (read == write)
-	if (reciever != NULL) 
-		reciever->network_d_irq();
 
 return answer;
 }

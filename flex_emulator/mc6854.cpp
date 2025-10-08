@@ -11,7 +11,7 @@
 	MC6854::MC6854()
 	----------------
 */
-mc6854::mc6854(computer_proteus *machine)
+mc6854::mc6854()
 {
 /*
 	MC6854 registers
@@ -22,8 +22,7 @@ lcf = c_ex = a_ex = idle_01_11 = fdse = loop = gap = online = 0;
 ff_f = tx_word_len = rx_word_len = transmit_abort = abort_ex = nrzi = 0;
 discontinue = 0;
 
-channel_out = channel_in = new mc6854_channel(machine);
-channel_up = NULL;					// upstream to the next poly
+channel_out = channel_in = new mc6854_channel();			// start with loopback, change the destination later with set_outstream()
 }
 
 /*

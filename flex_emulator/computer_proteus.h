@@ -32,15 +32,12 @@ public:
 	mc6850 acia3;						// RS232 Modem
 	mc6821 pia;							// Parallel port (apparently this can be a printer or a hard disk drive!)
 	mc6840 timer;						// System Clock
-//	mc6854 network;					// Communicaitons to the Poly network
+	mc6854 network;					// Communicaitons to the Poly network
 	wd1771 fdc[4];						// Floppy disk drives
 	unsigned char drive_select;	// Which disk drive is selected
 
 	unsigned char *current_rom;					// 6809 ROM (at address $F000-$FFFF when in 6809 mode)
 	unsigned char z80_eprom_shadow[0x1000];	//  Z80 RAM (at address $F000-$FFFF when in 6809 mode)
-
-protected:
-	const char *change_disk(uint8_t drive, const char *filename);
 
 public:
 	computer_proteus();
@@ -52,8 +49,6 @@ public:
 	virtual void step(uint64_t times);
 	virtual void reset(void);
 
-	virtual void network_irq(void) {}
-	virtual void network_d_irq(void) {}
-
+	const char *change_disk(uint8_t drive, const char *filename);
 	virtual unsigned char *load_rom(long version);
 } ;

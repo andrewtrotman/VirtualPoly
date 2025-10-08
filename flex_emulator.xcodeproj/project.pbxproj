@@ -59,6 +59,10 @@
 		49B31D75266F508400706439 /* mc6809.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D74266F508400706439 /* mc6809.cpp */; };
 		49B31D78266F50EF00706439 /* usim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D76266F50EF00706439 /* usim.cpp */; };
 		49B31D7E266F550C00706439 /* mc6850.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B31D7C266F550C00706439 /* mc6850.cpp */; };
+		49BD1F772E95E67F000C2AEE /* computer_poly_with_proteus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49BD1F752E95E67F000C2AEE /* computer_poly_with_proteus.cpp */; };
+		49BD1F782E95E67F000C2AEE /* computer_poly_with_proteus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49BD1F752E95E67F000C2AEE /* computer_poly_with_proteus.cpp */; };
+		49BD1F7A2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49BD1F792E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk */; };
+		49BD1F7B2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 49BD1F792E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk */; };
 		49C0985226EC34EF00C10535 /* screen_arrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0985126EC34EF00C10535 /* screen_arrow.swift */; };
 		49C0985326EC34EF00C10535 /* screen_arrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0985126EC34EF00C10535 /* screen_arrow.swift */; };
 		49CFF18E26F1EB95008C8668 /* keyboard_arrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49CFF18D26F1EB95008C8668 /* keyboard_arrow.cpp */; };
@@ -208,6 +212,9 @@
 		49B31D7A266F518D00706439 /* typedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typedefs.h; sourceTree = "<group>"; };
 		49B31D7C266F550C00706439 /* mc6850.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mc6850.cpp; sourceTree = "<group>"; };
 		49B31D7D266F550C00706439 /* mc6850.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mc6850.h; sourceTree = "<group>"; };
+		49BD1F752E95E67F000C2AEE /* computer_poly_with_proteus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_poly_with_proteus.cpp; sourceTree = "<group>"; };
+		49BD1F762E95E67F000C2AEE /* computer_poly_with_proteus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_poly_with_proteus.h; sourceTree = "<group>"; };
+		49BD1F792E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = POLYSYS300_BASIC34.dsk; sourceTree = "<group>"; };
 		49C0985126EC34EF00C10535 /* screen_arrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_arrow.swift; sourceTree = "<group>"; };
 		49CFF18C26F1EB95008C8668 /* keyboard_arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyboard_arrow.h; sourceTree = "<group>"; };
 		49CFF18D26F1EB95008C8668 /* keyboard_arrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = keyboard_arrow.cpp; sourceTree = "<group>"; };
@@ -406,6 +413,8 @@
 				49F70B38266C527100408DAE /* cpp_methods.cpp */,
 				4944EF402670801900445780 /* computer.h */,
 				4944EF412670801A00445780 /* computer.cpp */,
+				49BD1F762E95E67F000C2AEE /* computer_poly_with_proteus.h */,
+				49BD1F752E95E67F000C2AEE /* computer_poly_with_proteus.cpp */,
 				49FD1F172E8F6D3200889B62 /* computer_proteus.h */,
 				49FD1F182E8F6D3300889B62 /* computer_proteus.cpp */,
 				4921955F2E82200400136344 /* computer_poly_1.h */,
@@ -478,6 +487,7 @@
 				49FD1F0A2E8F1B0200889B62 /* polysys5.dsk */,
 				4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */,
 				49DFFFEA2E94B7F0005EBE97 /* ProteusCPM.dsk */,
+				49BD1F792E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -681,6 +691,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49BD1F7B2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */,
 				49DFFFEC2E94B7F0005EBE97 /* ProteusCPM.dsk in Resources */,
 				4951FB052E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
 				492E929726DB825F000DA1F9 /* Credits.rtf in Resources */,
@@ -711,6 +722,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49BD1F7A2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */,
 				49DFFFEB2E94B7F0005EBE97 /* ProteusCPM.dsk in Resources */,
 				4951FB042E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
 				496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */,
@@ -774,6 +786,7 @@
 				49D1C24F26DA056900015409 /* terminal.swift in Sources */,
 				49ED162727094EE900669717 /* screen_pinnated.swift in Sources */,
 				49D1C24826DA056100015409 /* mc6809.cpp in Sources */,
+				49BD1F782E95E67F000C2AEE /* computer_poly_with_proteus.cpp in Sources */,
 				49D1C24526DA056100015409 /* ROM_FLEX.cpp in Sources */,
 				49FD1F122E8F651C00889B62 /* mc6854.cpp in Sources */,
 				49D1C21C26D9D03E00015409 /* ContentView.swift in Sources */,
@@ -820,6 +833,7 @@
 				49F336CA26E210760075EEBA /* mc6821.cpp in Sources */,
 				49480DF32674993E00860A83 /* saa5050_font.cpp in Sources */,
 				495A221E26EB54FD00555F2B /* computer_arrow.cpp in Sources */,
+				49BD1F772E95E67F000C2AEE /* computer_poly_with_proteus.cpp in Sources */,
 				491E159D2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */,
 				49B31D78266F50EF00706439 /* usim.cpp in Sources */,
 				49B31D75266F508400706439 /* mc6809.cpp in Sources */,

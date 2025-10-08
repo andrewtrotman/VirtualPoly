@@ -15,6 +15,8 @@
 #include "ROM_poly.h"
 #include "computer_poly_1.h"
 
+extern long mc6854_channel_logging;				// remove this and everything to do with it.
+
 /*
 	COMPUTER_POLY_1::COMPUTER_POLY_1()
 	----------------------------------
@@ -37,7 +39,7 @@ computer_poly_1::computer_poly_1() :
 
 		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table.
 	*/
-#ifdef NEVER
+#ifndef NEVER
 	/*
 		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
 	*/
@@ -179,9 +181,13 @@ void computer_poly_1::step(uint64_t times)
 			check FIRQ first, then only check IRQ if there was no FIRQ.  The next instruction will
 			happen then IRQ will be checked (and might not happen).
 		*/
-		if (pia2.is_signaling_irq() || timer.is_signaling_irq())
+		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network.is_signaling_irq())
 			do_irq();
 
+		if (network.is_signaling_irq())
+			{
+			puts("***POLY IRQ");
+			}
 		/*
 			I don't think anything is on FIRQ on the Poly!
 		*/
@@ -351,11 +357,11 @@ qword computer_poly_1::raw_to_physical(word raw_address)
 
 	E004-E005 ACIA  (MC6850)			Serial Port
 	E006      Baud Rate Register		Baud Rate Controller
-
 	E00C-E00F PIA   (MC6821)			Keyboard
 	E014      DISK  (WD1771)         Disc Change Indicator
 	E018-E01B DISK  (WD1771)         Floppy Disk Drive Controller
 	E020-E027 PTM   (MC6840)			Real Time Clock
+	E030-E036 ADLC  (MC6854)         Networking
 	E040      PROT                   Prot switch
 	E050-E05F DAT                    Dynamic Address Translator (page table)
 	E060      MMU                    Memory Map 1 select
@@ -450,6 +456,22 @@ byte computer_poly_1::read(word raw_address)
 				break;
 
 			/*
+				Network
+				MC6854 ADLC (network) at E030-E036
+			*/
+			case 0xE030:
+			case 0xE031:
+			case 0xE032:
+			case 0xE033:
+			case 0xE034:
+			case 0xE035:
+			case 0xE036:
+				mc6854_channel_logging = true;
+				answer = network.read((raw_address - 0xE030) / 2);
+				mc6854_channel_logging = false;
+				break;
+
+			/*
 				Prot switch at 0xE040
 			*/
 			case 0xE040:
@@ -518,6 +540,7 @@ byte computer_poly_1::read(word raw_address)
 	E014      DISK  (WD1771)         Drive and Side Select
 	E018-E01B DISK  (WD1771)         Floppy Disk Drive Controller
 	E020-E027 PTM   (MC6840)			Real Time Clock
+	E030-E036 ADLC  (MC6854)         Networking
 	E040      PROT switch
 	E050-E05F Dynamic Address Translator (page table)
 	E060      Memory Map 1 select
@@ -623,6 +646,22 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE026:
 			case 0xE027:
 				timer.write(raw_address - 0xE020, value);
+				break;
+
+			/*
+				Network
+				MC6854 ADLC (network) at E030-E036
+			*/
+			case 0xE030:
+			case 0xE031:
+			case 0xE032:
+			case 0xE033:
+			case 0xE034:
+			case 0xE035:
+			case 0xE036:
+				mc6854_channel_logging = true;
+				network.write((raw_address - 0xE030) / 2, value);
+				mc6854_channel_logging = false;
 				break;
 
 			/*

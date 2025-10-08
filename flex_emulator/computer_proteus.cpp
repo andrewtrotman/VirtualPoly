@@ -27,6 +27,7 @@ computer_proteus::computer_proteus() :
 		Point the global pointer to this object so that the Z80 emulator callbacks work.
 	*/
 	proteus_server = this;
+	
 	/*
 		Load the ROM
 	*/
@@ -210,8 +211,6 @@ switch (address)
 		answer = timer.read(address - 0xE020);
 		break;
 
-
-#ifdef NEVER
 	/*
 		Network
 		MC6854 ADLC (network) at E030-E036
@@ -223,11 +222,10 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = 1;
-		answer = network->read((address - 0xE030) / 2);
-		mc6854_channel_logging = 0;
+		mc6854_channel_logging = false;
+		answer = network.read((address - 0xE030) / 2);
+		mc6854_channel_logging = true;
 		break;
-#endif
 
 	/*
 		Proteus Memory
@@ -329,7 +327,6 @@ switch (address)
 		timer.write(address - 0xE020, value);
 		break;
 
-#ifdef NEVER
 	/*
 		Network
 		MC6854 ADLC (network) at E030-E036
@@ -341,11 +338,10 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = 1;
-		network->write((address - 0xE030) / 2, value);
-		mc6854_channel_logging = 0;
+		mc6854_channel_logging = false;
+		network.write((address - 0xE030) / 2, value);
+		mc6854_channel_logging = true;
 		break;
-#endif
 
 	/*
 		CPU Switch
@@ -385,6 +381,7 @@ void computer_proteus::step(uint64_t times)
 {
 uint64_t cycle = 0;
 
+//printf("%04X\n", pc);
 while (cycle < times)
 	{
 	if (cpu_active == CPU_6809)
@@ -399,5 +396,12 @@ while (cycle < times)
 		timer.step();
 
 	cycle++;
+
+	if (network.is_signaling_irq())
+		{
+		// see: "Specifications for Polywog Operating Systems (25 February 1981)"
+		puts("***PROTEUS IRQ");
+		do_irq();
+		}
 	}
 }

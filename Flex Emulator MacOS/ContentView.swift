@@ -204,12 +204,18 @@ struct ContentView: View
 							poly_screen.set_machine(poly: machine.pointer)
 							screen = poly_screen
 							}
-						else			// emulate a proteus
+						else if (AppState.shared.emulated_machine == PROTEUS)
 							{
 							machine.pointer = machine_construct(PROTEUS)
 							screen = terminal()
 							}
-
+						else				// Poly with Proteus
+							{
+							machine.pointer = machine_construct(POLY_WITH_PROTEUS)
+							let poly_screen = screen_poly_1()
+							poly_screen.set_machine(poly: machine.pointer)
+							screen = poly_screen
+							}
 
 						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
 						AppState.shared.machine = machine.pointer
