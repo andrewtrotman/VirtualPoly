@@ -184,10 +184,6 @@ void computer_poly_1::step(uint64_t times)
 		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network.is_signaling_irq())
 			do_irq();
 
-		if (network.is_signaling_irq())
-			{
-			puts("***POLY IRQ");
-			}
 		/*
 			I don't think anything is on FIRQ on the Poly!
 		*/
@@ -466,9 +462,9 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE034:
 			case 0xE035:
 			case 0xE036:
-				mc6854_channel_logging = true;
-				answer = network.read((raw_address - 0xE030) / 2);
 				mc6854_channel_logging = false;
+				answer = network.read((raw_address - 0xE030) / 2);
+				mc6854_channel_logging = true;
 				break;
 
 			/*
@@ -659,9 +655,9 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE034:
 			case 0xE035:
 			case 0xE036:
-				mc6854_channel_logging = true;
-				network.write((raw_address - 0xE030) / 2, value);
 				mc6854_channel_logging = false;
+				network.write((raw_address - 0xE030) / 2, value);
+				mc6854_channel_logging = true;
 				break;
 
 			/*

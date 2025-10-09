@@ -222,9 +222,9 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = false;
-		answer = network.read((address - 0xE030) / 2);
 		mc6854_channel_logging = true;
+		answer = network.read((address - 0xE030) / 2);
+		mc6854_channel_logging = false;
 		break;
 
 	/*
@@ -338,9 +338,9 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = false;
-		network.write((address - 0xE030) / 2, value);
 		mc6854_channel_logging = true;
+		network.write((address - 0xE030) / 2, value);
+		mc6854_channel_logging = false;
 		break;
 
 	/*

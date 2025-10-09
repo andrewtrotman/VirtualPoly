@@ -4,6 +4,8 @@
 */
 #pragma once
 
+class mc6854;
+
 /*
 	class MC6854_CHANNEL
 	--------------------
@@ -21,6 +23,9 @@ private:
 
 	unsigned short write_fifo[3];		// 3 byte write_fifo
 	long write_fifo_pos;
+
+public:
+	mc6854 *end;							// the recieving end of the channel
 
 private:
 	void place_on_wire(unsigned short val);

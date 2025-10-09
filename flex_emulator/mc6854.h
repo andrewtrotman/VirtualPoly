@@ -77,7 +77,7 @@ public:
 	void write(unsigned short address, unsigned char value);
 	unsigned char read(unsigned short address);
 
-	void set_outstream(mc6854 *up) { channel_out = up->channel_in; }
+	void set_outstream(mc6854 *up);
 	
 	virtual bool is_signaling_irq(void) { return channel_in->peek() & r_interrupt; }
 } ;

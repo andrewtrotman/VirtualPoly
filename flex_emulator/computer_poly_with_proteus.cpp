@@ -13,7 +13,7 @@ computer_poly_with_proteus::computer_poly_with_proteus()
 	ide::move_disk_to_user_space("POLYSYS300_BASIC34.dsk");
 	proteus.change_disk(0, ide::get_local_filename("POLYSYS300_BASIC34.dsk").string().c_str());
 
-	network.set_outstream(&proteus.network);
+//	network.set_outstream(&proteus.network);
 	proteus.network.set_outstream(&network);
 	}
 
@@ -23,6 +23,11 @@ computer_poly_with_proteus::computer_poly_with_proteus()
 */
 void computer_poly_with_proteus::step(uint64_t times)
 	{
+//static bool first_time = true;
+//
+//if (first_time)
+//	computer_poly_1::step(10000);
+
 	proteus.cycles = cycles;
 	for (uint64_t cycle = 0; cycle < times; cycle++)
 		{

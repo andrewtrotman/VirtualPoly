@@ -22,6 +22,15 @@ unsigned char *log_buffer_pos = log_buffer;
 */
 static void log_decode_message(FILE *out, long direction, unsigned char *message, unsigned char *end)
 {
+static const uint8_t UI = 0x13;				// Unumbered Information (used in loop setup)
+static const uint8_t SIM = 0x17;				// From Proteuc: Set Initialisation Mode.  From Poly: Request Initialisation Mode
+static const uint8_t UA = 0x73;				// Unnumbered Acknowledge (used in loop setup)
+static const uint8_t XID = 0xBF;				// Exchange ID (used in loop setup)
+
+static const uint8_t UP = 0x33;				// Unnumbered Poll (used for polling Poly)
+static const uint8_t LGF = 0x1B;				// Logoff Request (force Poly to logoff)
+
+
 if (direction)
 	fprintf(out, "TELL ");
 else
@@ -34,7 +43,8 @@ else
 
 switch (message[1])
 	{
-	case 0x13:
+	case UI:
+		fprintf(out, "UI: Unnumbered Informaton ");
 		if (direction)
 			fprintf(out, "EstablishLoopback (as you're end of ring)");
 		else
@@ -45,11 +55,11 @@ switch (message[1])
 				fprintf(out, "Your message Looped Back");
 			}
 		break;
-	case 0x17:
-		fprintf(out, "RingShutdown, EstablishLoopback");
+	case SIM:
+		fprintf(out, "SIM: Set Initialisation Mode");
 		break;
-	case 0x73:
-		fprintf(out, "EstablishRing, You're ");
+	case UA:
+		fprintf(out, "UA: Unnumbered Acknowledge. You're ");
 		if (message[2] == 0)
 			fprintf(out, "Not Logged In");
 		else if (message[2] == 1)
@@ -59,12 +69,28 @@ switch (message[1])
 		else
 			fprintf(out, "In an unknown state");
 		break;
-	case 0xBF:
-		fprintf(out, "SetID to %d", message[2]);
+
+	case XID:
+		fprintf(out, "XID: SetID to %d", message[2]);
 		break;
+
+	case LGF:
+		fprintf(out, "LGF: Force Logoff");
+		break;
+
+	case UP:
+		fprintf(out, "UP: Unnumbered Poll");
+		break;
+		
 	default:
 		break;
 	}
+
+if ((message[1] & 0x0101) == 0x0101)				// RR = $rrr1001 where rrr is the frame number
+	fprintf(out, "RR(%02X): Ready to Recieve", message[1] >> 5);
+
+if ((message[1] & 0x0100) == 0x0100)				// I = $rrr1sss0 where rrr is the "ready to recieve" frame number and sss is the frame numner
+	fprintf(out, "I(%02X, %02X): Information", message[1] >> 5, message[1] >> 1);
 }
 
 /*
@@ -111,7 +137,8 @@ fp = stdout;
 	----------------
 */
 mc6854_channel::mc6854_channel()
-{ 
+{
+end = NULL;
 read = write = buffer = new unsigned short[SIZE];
 buffer_end = buffer + SIZE;
 write_fifo_pos = 0;
