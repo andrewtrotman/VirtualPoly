@@ -28,7 +28,9 @@ computer_poly_1::computer_poly_1() :
 	text_page_1(bios + 0xE800),
 	text_page_3(bios + 0xEC00),
 	drive_select(0),
-	acia1(acia1_input, acia1_output)
+	acia1(acia1_input, acia1_output),
+	network(this),
+	network_irqpend(0)
 	{
 	memset(bios, 0, sizeof(bios));
 	/*
@@ -181,7 +183,7 @@ void computer_poly_1::step(uint64_t times)
 			check FIRQ first, then only check IRQ if there was no FIRQ.  The next instruction will
 			happen then IRQ will be checked (and might not happen).
 		*/
-		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network.is_signaling_irq())
+		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network_irqpend)
 			do_irq();
 
 		/*
@@ -823,4 +825,61 @@ void computer_poly_1::do_irq(void)
 	{
 	prot = true;
 	mc6809::do_irq();
+	}
+
+/*
+	COMPUTER_POLY_1::NETWORK_IRQ()
+	------------------------------
+*/
+void computer_poly_1::network_irq(void)
+	{
+	extern long mc6854_channel_logging;
+	long was_logging = mc6854_channel_logging;
+	unsigned short relay_value;
+
+	if (!network.discontinue)
+		network_irqpend = 1;
+
+	if (network.loop)
+		{
+		if (!network.rts)
+			{
+			/*
+				Send back to the server
+			*/
+			mc6854_channel_logging = false;
+			relay_value = network.channel_in->last_write();
+			network.channel_out->resend(relay_value);
+			mc6854_channel_logging = was_logging;
+			}
+		else if (network.channel_up != NULL)
+			{
+			/*
+				Send upstream to the next Poly
+			*/
+			mc6854_channel_logging  = false;
+			relay_value = network.channel_in->last_write();
+			network.channel_up->resend(relay_value);
+			mc6854_channel_logging = was_logging;
+			}
+		}
+
+	if (network.discontinue)
+		{
+		mc6854_channel_logging  = false;
+		relay_value = network.channel_in->last_write();
+		network.channel_in->recieve();
+		if (relay_value & mc6854::flag_eot)
+			network.discontinue = 0;
+		mc6854_channel_logging = was_logging;
+		}
+	}
+
+/*
+	COMPUTER_POLY_1::NETWORK_D_IRQ()
+	--------------------------------
+*/
+void computer_poly_1::network_d_irq(void)
+	{
+	network_irqpend = 0;
 	}

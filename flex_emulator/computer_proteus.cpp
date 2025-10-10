@@ -21,7 +21,8 @@ computer_proteus::computer_proteus() :
 	computer(),
 	acia1(keyboard_input, serial_output),
 	acia2(acia2_in, acia2_out),
-	acia3(acia3_in, acia3_out)
+	acia3(acia3_in, acia3_out),
+	network(this)
 	{
 	/*
 		Point the global pointer to this object so that the Z80 emulator callbacks work.
@@ -396,12 +397,5 @@ while (cycle < times)
 		timer.step();
 
 	cycle++;
-
-	if (network.is_signaling_irq())
-		{
-		// see: "Specifications for Polywog Operating Systems (25 February 1981)"
-		puts("***PROTEUS IRQ");
-		do_irq();
-		}
 	}
 }

@@ -1,10 +1,11 @@
 /*
 	MC6854_CHANNEL.H
 	----------------
+	Copyright (c) 2025 Andrew Trotman
 */
 #pragma once
 
-class mc6854;
+class computer;
 
 /*
 	class MC6854_CHANNEL
@@ -21,17 +22,16 @@ private:
 	unsigned short *write;
 	unsigned short *read;
 
+	computer *reciever;
+
 	unsigned short write_fifo[3];		// 3 byte write_fifo
 	long write_fifo_pos;
-
-public:
-	mc6854 *end;							// the recieving end of the channel
 
 private:
 	void place_on_wire(unsigned short val);
 
 public:
-	mc6854_channel();
+	mc6854_channel(computer *reciever);
 	virtual  ~mc6854_channel() {}
 
 	void send(unsigned short val);

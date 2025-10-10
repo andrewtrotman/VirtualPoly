@@ -6,6 +6,8 @@
 #pragma once
 
 #include <stdio.h>
+
+#include "computer.h"
 #include "mc6854_channel.h"
 
 /*
@@ -22,10 +24,11 @@ public:
 public:
 	mc6854_channel *channel_out;
 	mc6854_channel *channel_in;
+	mc6854_channel *channel_up;
 
 public:
 	// control register 1
-	long ac;						// AC		(which register is at 2/3 and 4/ft)
+	long ac;					// AC		(which register is at 2/3 and 4/ft)
 	long r_interrupt;			// RIE
 	long t_interrupt;			// TIE
 	long rdsr;					// RDSR
@@ -71,14 +74,14 @@ protected:
 	void write_byte(unsigned char val);
 
 public:
-	mc6854();
+	mc6854(computer *machine);
 	virtual ~mc6854() {}
 
 	void write(unsigned short address, unsigned char value);
 	unsigned char read(unsigned short address);
 
-	void set_outstream(mc6854 *up);
-	
-	virtual bool is_signaling_irq(void) { return channel_in->peek() & r_interrupt; }
-} ;
+	void set_outstream(mc6854 *up) { channel_out = up->channel_in; }
 
+	void set_outoutstream(mc6854 *up) { channel_out = up->channel_out; }
+	void set_upstream(mc6854 *up) { channel_up = up->channel_in; }
+} ;

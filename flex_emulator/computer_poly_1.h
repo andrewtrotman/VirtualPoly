@@ -78,6 +78,10 @@ class computer_poly_1 : public computer
 
 		virtual bool did_screen_change(void);
 		virtual void render(uint32_t *screen_buffer, bool flash_state);
+
+		bool network_irqpend;
+		virtual void network_irq(void);
+		virtual void network_d_irq(void);
 	};
 
 /*

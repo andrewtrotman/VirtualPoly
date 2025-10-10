@@ -69,6 +69,17 @@ class computer : public mc6809
 		virtual bool did_screen_change(void);
 		virtual void render(uint32_t *screen_buffer, bool flash_state)
 			{
+			// Nothing
+			}
+			
+		virtual void network_irq(void)
+			{
+			// Nothing
+			}
+
+		virtual void network_d_irq(void)
+			{
+			// Nothing
 			}
 	};
 

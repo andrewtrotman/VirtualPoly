@@ -11,7 +11,7 @@
 	MC6854::MC6854()
 	----------------
 */
-mc6854::mc6854()
+mc6854::mc6854(computer *machine)
 {
 /*
 	MC6854 registers
@@ -22,18 +22,9 @@ lcf = c_ex = a_ex = idle_01_11 = fdse = loop = gap = online = 0;
 ff_f = tx_word_len = rx_word_len = transmit_abort = abort_ex = nrzi = 0;
 discontinue = 0;
 
-channel_out = channel_in = new mc6854_channel();			// start with loopback, change the destination later with set_outstream()
+channel_out = channel_in = new mc6854_channel(machine);
+channel_up = NULL;					// upstream to the next poly
 }
-
-/*
-	MC6854::SET_OUTSTREAM()
-	-----------------------
-*/
-void mc6854::set_outstream(mc6854 *up)
-	{
-	channel_out = up->channel_in;
-	up->channel_in->end = up;
-	}
 
 /*
 	MC6854::CONTROL1()
@@ -89,14 +80,13 @@ if (val & 0x40)
 rts = val & 0x80;
 }
 
+
 /*
 	MC6854::CONTROL3()
 	------------------
 */
 void mc6854::control3(unsigned char val)
 {
-auto was_loop = loop;
-
 lcf = val & 0x01;
 c_ex = val & 0x02;
 a_ex = val & 0x04;
@@ -105,12 +95,6 @@ fdse = val & 0x10;
 loop = val & 0x20;
 gap = val & 0x40;
 online = val & 0x80;
-
-if (loop)
-	puts("POLY:ENTER:LOOP");
-
-if (was_loop && !loop)
-	puts("POLY:EXIT:LOOP");
 }
 
 /*
@@ -246,26 +230,6 @@ return ans;
 void mc6854::write_byte(unsigned char val)
 {
 channel_out->send(val);
-
-/*
-	If we're in loopback mode then we write back to the input channel too
-*/
-//if (channel_out->end->loop)
-//	{
-////	if (!channel_out->end->rts)
-//		{
-////		printf("[%02X] ", val);
-////		printf("POLY:loopback to PROTEUS: %02X ", val);
-//		extern long mc6854_channel_logging;
-//		auto was = mc6854_channel_logging;
-//		mc6854_channel_logging = false;
-//		channel_in->send(val);
-//		mc6854_channel_logging = was;
-//		}
-//	}
-//if (channel_out->end->discontinue)
-//	if (val & mc6854::flag_eot)
-//		discontinue = 0;
 }
 
 /*
@@ -331,3 +295,4 @@ switch (address)
 		return 0;
 	}
 }
+

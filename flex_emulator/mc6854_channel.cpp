@@ -1,20 +1,22 @@
 /*
 	MC6854_CHANNEL.C
 	----------------
+	Copyright (c) 2025 Andrew Trotman
 */
 #include <stdio.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 #include "mc6854.h"
+#include "computer.h"
 #include "mc6854_channel.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
-long mc6854_channel_logging = true;
-unsigned char log_buffer[1024 * 1024];
+long mc6854_channel_logging = false;
+unsigned char log_buffer[1024*1024];
 unsigned char *log_buffer_pos = log_buffer;
+
 
 /*
 	LOG_DECODE_MESSAGE()
@@ -22,15 +24,6 @@ unsigned char *log_buffer_pos = log_buffer;
 */
 static void log_decode_message(FILE *out, long direction, unsigned char *message, unsigned char *end)
 {
-static const uint8_t UI = 0x13;				// Unumbered Information (used in loop setup)
-static const uint8_t SIM = 0x17;				// From Proteuc: Set Initialisation Mode.  From Poly: Request Initialisation Mode
-static const uint8_t UA = 0x73;				// Unnumbered Acknowledge (used in loop setup)
-static const uint8_t XID = 0xBF;				// Exchange ID (used in loop setup)
-
-static const uint8_t UP = 0x33;				// Unnumbered Poll (used for polling Poly)
-static const uint8_t LGF = 0x1B;				// Logoff Request (force Poly to logoff)
-
-
 if (direction)
 	fprintf(out, "TELL ");
 else
@@ -43,8 +36,7 @@ else
 
 switch (message[1])
 	{
-	case UI:
-		fprintf(out, "UI: Unnumbered Informaton ");
+	case 0x13:
 		if (direction)
 			fprintf(out, "EstablishLoopback (as you're end of ring)");
 		else
@@ -52,14 +44,14 @@ switch (message[1])
 			if (end - message > 2)
 				fprintf(out, "MyROMid is %02X %02X", message[2], message[3]);
 			else
-				fprintf(out, "Your message Looped Back");
+				fprintf(out, "You're message Looped Back");
 			}
 		break;
-	case SIM:
-		fprintf(out, "SIM: Set Initialisation Mode");
+	case 0x17:
+		fprintf(out, "RingShutdown, EstablishLoopback");
 		break;
-	case UA:
-		fprintf(out, "UA: Unnumbered Acknowledge. You're ");
+	case 0x73:
+		fprintf(out, "EstablishRing, You're ");
 		if (message[2] == 0)
 			fprintf(out, "Not Logged In");
 		else if (message[2] == 1)
@@ -69,28 +61,12 @@ switch (message[1])
 		else
 			fprintf(out, "In an unknown state");
 		break;
-
-	case XID:
-		fprintf(out, "XID: SetID to %d", message[2]);
+	case 0xBF:
+		fprintf(out, "SetID to %d", message[2]);
 		break;
-
-	case LGF:
-		fprintf(out, "LGF: Force Logoff");
-		break;
-
-	case UP:
-		fprintf(out, "UP: Unnumbered Poll");
-		break;
-		
 	default:
 		break;
 	}
-
-if ((message[1] & 0x0101) == 0x0101)				// RR = $rrr1001 where rrr is the frame number
-	fprintf(out, "RR(%02X): Ready to Recieve", message[1] >> 5);
-
-if ((message[1] & 0x0100) == 0x0100)				// I = $rrr1sss0 where rrr is the "ready to recieve" frame number and sss is the frame numner
-	fprintf(out, "I(%02X, %02X): Information", message[1] >> 5, message[1] >> 1);
 }
 
 /*
@@ -104,9 +80,7 @@ static long last_direction = -1;
 
 if (mc6854_channel_logging)
 	{
-//	fp = fopen("log.txt", "a+");
-fp = stdout;
-
+	fp = fopen("log.txt", "a+");
 	if (direction != last_direction)
 		{
 		log_buffer_pos = log_buffer;
@@ -114,8 +88,8 @@ fp = stdout;
 		last_direction = direction;
 		}
 
-//	fprintf(fp, "%02x ", byte & 0xFF);
-	fprintf(fp, "%02x %c ", byte & 0xFF, isalnum(byte & 0xFF) ? byte & 0xFF : '.');
+	fprintf(fp, "%02x ", byte & 0xFF);
+//	fprintf(fp, "%02x %c ", byte & 0xFF, isalnum(byte & 0xFF) ? byte & 0xFF : '.');
 //	fprintf(fp, "%c", isprint(byte & 0xFF) ? byte & 0xFF : '.');
 	*log_buffer_pos++ = (unsigned char)(byte & 0xFF);
 
@@ -128,7 +102,7 @@ fp = stdout;
 		log_buffer_pos = log_buffer;
 		}
 
-//	fclose(fp);
+	fclose(fp);
 	}
 }
 
@@ -136,11 +110,11 @@ fp = stdout;
 	MC6854_CHANNEL()
 	----------------
 */
-mc6854_channel::mc6854_channel()
-{
-end = NULL;
+mc6854_channel::mc6854_channel(computer *reciever)
+{ 
 read = write = buffer = new unsigned short[SIZE];
 buffer_end = buffer + SIZE;
+this->reciever = reciever;
 write_fifo_pos = 0;
 memset(write_fifo, 0, sizeof(write_fifo));
 }
@@ -159,6 +133,9 @@ void mc6854_channel::place_on_wire(unsigned short val)
 
 if (write >= buffer_end)
 	write = buffer;
+
+if (reciever != NULL)
+	reciever->network_irq();
 }
 
 /*
@@ -218,6 +195,10 @@ if (read >= buffer_end)
 #ifdef DEBUG
 	log(this, false, answer);
 #endif
+
+if (read == write)
+	if (reciever != NULL) 
+		reciever->network_d_irq();
 
 return answer;
 }
