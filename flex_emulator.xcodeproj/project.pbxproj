@@ -25,6 +25,8 @@
 		492195712E824B1600136344 /* ROM_poly_BIOS_34.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */; };
 		492195732E82518900136344 /* screen_poly_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492195722E82518900136344 /* screen_poly_1.swift */; };
 		492195742E82518900136344 /* screen_poly_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492195722E82518900136344 /* screen_poly_1.swift */; };
+		4924156B2E98A72500E12864 /* PolyCPM.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 4924156A2E98A72500E12864 /* PolyCPM.dsk */; };
+		4924156C2E98A72500E12864 /* PolyCPM.dsk in Resources */ = {isa = PBXBuildFile; fileRef = 4924156A2E98A72500E12864 /* PolyCPM.dsk */; };
 		492E929726DB825F000DA1F9 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 492E929626DB825F000DA1F9 /* Credits.rtf */; };
 		4944EF422670801A00445780 /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4944EF412670801A00445780 /* computer.cpp */; };
 		49480DF22674993E00860A83 /* saa5050.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49480DEE2674993E00860A83 /* saa5050.cpp */; };
@@ -166,6 +168,7 @@
 		492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_4.cpp; sourceTree = "<group>"; };
 		492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_3.cpp; sourceTree = "<group>"; };
 		492195722E82518900136344 /* screen_poly_1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_poly_1.swift; sourceTree = "<group>"; };
+		4924156A2E98A72500E12864 /* PolyCPM.dsk */ = {isa = PBXFileReference; lastKnownFileType = file; path = PolyCPM.dsk; sourceTree = "<group>"; };
 		492E929626DB825F000DA1F9 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		4944EF402670801900445780 /* computer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer.h; sourceTree = "<group>"; };
 		4944EF412670801A00445780 /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer.cpp; sourceTree = "<group>"; };
@@ -488,6 +491,7 @@
 				4951FB032E90EA9800DFA6BA /* ProteusFlex.dsk */,
 				49DFFFEA2E94B7F0005EBE97 /* ProteusCPM.dsk */,
 				49BD1F792E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk */,
+				4924156A2E98A72500E12864 /* PolyCPM.dsk */,
 				49F70B12266C523100408DAE /* Preview Content */,
 				49F70B37266C527100408DAE /* flex_emulator-Bridging-Header.h */,
 			);
@@ -692,6 +696,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				49BD1F7B2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */,
+				4924156C2E98A72500E12864 /* PolyCPM.dsk in Resources */,
 				49DFFFEC2E94B7F0005EBE97 /* ProteusCPM.dsk in Resources */,
 				4951FB052E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
 				492E929726DB825F000DA1F9 /* Credits.rtf in Resources */,
@@ -725,6 +730,7 @@
 				49BD1F7A2E95EBA8000C2AEE /* POLYSYS300_BASIC34.dsk in Resources */,
 				49DFFFEB2E94B7F0005EBE97 /* ProteusCPM.dsk in Resources */,
 				4951FB042E90EA9800DFA6BA /* ProteusFlex.dsk in Resources */,
+				4924156B2E98A72500E12864 /* PolyCPM.dsk in Resources */,
 				496F1DD9267C80CD0036C9F6 /* flex.dsk in Resources */,
 				49F70B14266C523100408DAE /* Preview Assets.xcassets in Resources */,
 				49F70B11266C523100408DAE /* Assets.xcassets in Resources */,

@@ -10,9 +10,29 @@
 */
 computer_poly_with_proteus::computer_poly_with_proteus()
 	{
+#ifdef NEVER
+	/*
+		Poly running as a terminal to CP/M
+	*/
+	ide::move_disk_to_user_space("PolyCPM.dsk");
+	proteus.change_disk(0, ide::get_local_filename("PolyCPM.dsk").string().c_str());
+#else
+	/*
+		Poly running POLYSYS
+	*/
 	ide::move_disk_to_user_space("POLYSYS300_BASIC34.dsk");
 	proteus.change_disk(0, ide::get_local_filename("POLYSYS300_BASIC34.dsk").string().c_str());
 
+	/*
+		Load a blank FLEX disk into drive 1
+	*/
+	ide::move_disk_to_user_space("user.dsk");
+	change_disk(1, ide::get_local_filename("user.dsk").string().c_str());
+#endif
+
+	/*
+		Connect the Poly to the Proteus
+	*/
 	proteus.network.set_outstream(&network);
 	network.set_outstream(&proteus.network);
 	}
@@ -23,11 +43,6 @@ computer_poly_with_proteus::computer_poly_with_proteus()
 */
 void computer_poly_with_proteus::step(uint64_t times)
 	{
-//static bool first_time = true;
-//
-//if (first_time)
-//	computer_poly_1::step(10000);
-
 	proteus.cycles = cycles;
 	for (uint64_t cycle = 0; cycle < times; cycle++)
 		{

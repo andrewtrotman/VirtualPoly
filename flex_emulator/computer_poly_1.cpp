@@ -15,8 +15,6 @@
 #include "ROM_poly.h"
 #include "computer_poly_1.h"
 
-extern long mc6854_channel_logging;				// remove this and everything to do with it.
-
 /*
 	COMPUTER_POLY_1::COMPUTER_POLY_1()
 	----------------------------------
@@ -182,9 +180,16 @@ void computer_poly_1::step(uint64_t times)
 			Note that FIRQ takes precidence over IRQ, and might immediately disable IRQ so we
 			check FIRQ first, then only check IRQ if there was no FIRQ.  The next instruction will
 			happen then IRQ will be checked (and might not happen).
+
+			pia2 is the keyboard. timer is the clock.  network is the 6854.
 		*/
-		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network_irqpend)
-			do_irq();
+		if (cycles % 1000 == 0)
+			{
+			if (pia2.is_signaling_irq())
+				do_irq();
+			}
+		else if (timer.is_signaling_irq() || network_irqpend)
+				do_irq();
 
 		/*
 			I don't think anything is on FIRQ on the Poly!
@@ -464,9 +469,7 @@ byte computer_poly_1::read(word raw_address)
 			case 0xE034:
 			case 0xE035:
 			case 0xE036:
-				mc6854_channel_logging = false;
 				answer = network.read((raw_address - 0xE030) / 2);
-				mc6854_channel_logging = true;
 				break;
 
 			/*
@@ -657,9 +660,7 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE034:
 			case 0xE035:
 			case 0xE036:
-				mc6854_channel_logging = false;
 				network.write((raw_address - 0xE030) / 2, value);
-				mc6854_channel_logging = true;
 				break;
 
 			/*
@@ -833,8 +834,6 @@ void computer_poly_1::do_irq(void)
 */
 void computer_poly_1::network_irq(void)
 	{
-	extern long mc6854_channel_logging;
-	long was_logging = mc6854_channel_logging;
 	unsigned short relay_value;
 
 	if (!network.discontinue)
@@ -847,31 +846,25 @@ void computer_poly_1::network_irq(void)
 			/*
 				Send back to the server
 			*/
-			mc6854_channel_logging = false;
 			relay_value = network.channel_in->last_write();
 			network.channel_out->resend(relay_value);
-			mc6854_channel_logging = was_logging;
 			}
 		else if (network.channel_up != NULL)
 			{
 			/*
 				Send upstream to the next Poly
 			*/
-			mc6854_channel_logging  = false;
 			relay_value = network.channel_in->last_write();
 			network.channel_up->resend(relay_value);
-			mc6854_channel_logging = was_logging;
 			}
 		}
 
 	if (network.discontinue)
 		{
-		mc6854_channel_logging  = false;
 		relay_value = network.channel_in->last_write();
 		network.channel_in->recieve();
 		if (relay_value & mc6854::flag_eot)
 			network.discontinue = 0;
-		mc6854_channel_logging = was_logging;
 		}
 	}
 

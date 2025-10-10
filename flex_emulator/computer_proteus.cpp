@@ -11,8 +11,6 @@
 #include "computer_proteus.h"
 #include "vice_z80/vice_z80_interface.h"
 
-extern long mc6854_channel_logging;				// remove this and everything to do with it.
-
 /*
 	COMPUTER_PROTEUS::COMPUTER_PROTEUS()
 	------------------------------------
@@ -223,9 +221,7 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = true;
 		answer = network.read((address - 0xE030) / 2);
-		mc6854_channel_logging = false;
 		break;
 
 	/*
@@ -339,9 +335,7 @@ switch (address)
 	case 0xE034:
 	case 0xE035:
 	case 0xE036:
-		mc6854_channel_logging = true;
 		network.write((address - 0xE030) / 2, value);
-		mc6854_channel_logging = false;
 		break;
 
 	/*
@@ -380,22 +374,26 @@ switch (address)
 */
 void computer_proteus::step(uint64_t times)
 {
+uint64_t took = 0;
 uint64_t cycle = 0;
 
-//printf("%04X\n", pc);
 while (cycle < times)
 	{
 	if (cpu_active == CPU_6809)
+		{
 		USim::step(1);
+		took = 1;
+		}
 	else
-		cycles += z80_step();
+		took = z80_step();
 
 	/*
 		Send ticks to the timer
 	*/
-//	for (uint64_t current = 0; current < cycle; current++)
+	for (uint64_t which = 0; which < took; which++)
 		timer.step();
 
-	cycle++;
+	cycles += took;
+	cycle += took;
 	}
 }
