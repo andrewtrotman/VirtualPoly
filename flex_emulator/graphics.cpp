@@ -6,34 +6,34 @@
 
 static uint32_t graphics_mixed_colour_table[] =
 	{
-	// 00 = mix blue
-	0x00FF00FF,
-	0x00FFFF00,
-	0x00FF0000,
-	0x00FFFFFF,
-	// 01 = mix green
-	0x0000FFFF,
-	0x0000FF00,
-	0x00FFFF00,
-	0x00FFFFFF,
 	// 10 = mix red
-	0x000000FF,
-	0x0000FFFF,
-	0x00FF00FF,
-	0x00FFFFFF,
+	0x00FF0000,			// Red + red = red
+	0x00FFFF00,			// Green + red = yellow
+	0x00FF00FF,			// Blue + red = magenta
+	0x00FFFFFF,			// White + red = red
+	// 01 = mix green
+	0x00FFFF00,			// Red + green = yellow
+	0x0000FF00,			// Green + green = green
+	0x0000FFFF,			// Blue + green = cyan
+	0x00FFFFFF,			// White + green = white
+	// 00 = mix blue
+	0x00FF00FF,			// Red + blue = magenta
+	0x0000FFFF,			// Green + blue = cyan
+	0x000000FF,			// Blue + blue = blue
+	0x00FFFFFF,			// White + blue = white
 	// 11 = mix nothing
-	0x000000FF,
-	0x0000FF00,
-	0x00FF0000,
-	0x00FFFFFF
+	0x00FF0000,			// Red
+	0x0000FF00,			// Green
+	0x000000FF,			// Blue
+	0x00FFFFFF			// White
 	};
 
 static uint32_t graphics_colour_table[] =
 	{
-	0x000000FF,
-	0x0000FF00,
-	0x00FF0000,
-	0x00FFFFFF
+	0x00FF0000,			// Red
+	0x0000FF00,			// Green
+	0x000000FF,			// Blue
+	0x00FFFFFF			// White
 	};
 
 
