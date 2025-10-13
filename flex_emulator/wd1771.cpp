@@ -16,7 +16,8 @@
 */
 wd1771::wd1771(void)
 {
-strcpy(dsk_filename, "disk0.dsk");			// default filename
+size_of_disk_in_bytes = 0;
+*dsk_filename = '\0';
 door_opened = false;
 
 disk = NULL;
@@ -68,7 +69,17 @@ unsigned char *wd1771::load_dsk(const char *filename, long *error_code)
 {
 unsigned char *pos, *into;
 
+/*
+	If a disk is already in the drive then unmount (write the
+	disk image back to the host filesystem) and free it up
+*/
+if (size_of_disk_in_bytes != 0)
+	unmount_disk();
+
 delete [] disk;
+
+size_of_disk_in_bytes = 0;
+strncpy(dsk_filename, filename, sizeof(dsk_filename));
 
 if ((disk = read_entire_file(filename, &size_of_disk_in_bytes)) == NULL)
 	{
@@ -173,6 +184,22 @@ write_protected =  stats.st_mode & S_IWRITE ? false : true;
 return load_dsk(dsk_filename, error_code);
 }
 
+/*
+	WD1771::UNMOUNT_DISK()
+	--------------------
+*/
+long wd1771::unmount_disk(void)
+{
+FILE *fp;
+
+if (size_of_disk_in_bytes != 0)
+	{
+	if ((fp = fopen(dsk_filename, "wb")) != NULL)
+		fwrite(disk, 1, size_of_disk_in_bytes, fp);
+	fclose(fp);
+	}
+return ERROR_NONE;
+}
 
 /*
 	WD1771::SET_BYTE()

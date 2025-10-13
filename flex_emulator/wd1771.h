@@ -5,6 +5,8 @@
 */
 #pragma once
 
+#include <sys/syslimits.h>
+
 #include "typedefs.h"
 
 /*
@@ -23,7 +25,6 @@ public:
 	unsigned char track, sector, side, data_register;
 	long direction;
 	unsigned char *disk;
-	long long size_of_disk_in_bytes;
 	long operating_system;
 	long bytepos;
 	long max_track, max_sector, sector_size;
@@ -34,7 +35,8 @@ public:
 	long write_protected;
 	long door_opened;
 
-	char dsk_filename[1024];
+	long long size_of_disk_in_bytes;
+	char dsk_filename[PATH_MAX];			// on MacOS this appears to be 1024
 	unsigned char volume_name[80];
 	long volume_number;
 
@@ -56,9 +58,10 @@ protected:
 
 public:
 	wd1771();
-	~wd1771() { delete [] disk; }
+	~wd1771() { unmount_disk(); delete [] disk; }
 
 	unsigned char *mount_disk(const char *dsk_filename, long *error_code);
+	long unmount_disk(void);
 
 	void clear_door_opened(void) { door_opened = 0; }
 	long get_door_opened(void) { return door_opened; }
