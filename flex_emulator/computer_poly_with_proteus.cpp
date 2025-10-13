@@ -20,8 +20,10 @@ computer_poly_with_proteus::computer_poly_with_proteus()
 	/*
 		Poly running POLYSYS
 	*/
-	ide::move_disk_to_user_space("POLYSYS300_BASIC34.dsk");
-	proteus.change_disk(0, ide::get_local_filename("POLYSYS300_BASIC34.dsk").string().c_str());
+//	ide::move_disk_to_user_space("POLYSYS300_BASIC34.dsk");
+//	proteus.change_disk(0, ide::get_local_filename("POLYSYS300_BASIC34.dsk").string().c_str());
+	ide::move_disk_to_user_space("POLYSYS340_BASIC30.dsk");
+	proteus.change_disk(0, ide::get_local_filename("POLYSYS340_BASIC30.dsk").string().c_str());
 
 	/*
 		Load a blank FLEX disk into drive 1

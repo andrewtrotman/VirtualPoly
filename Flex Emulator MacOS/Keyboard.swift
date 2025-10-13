@@ -172,6 +172,22 @@ struct key_event_handling: NSViewRepresentable
 			}
 
 		/*
+			KEYUP()
+			-------
+		*/
+		override func keyUp(with event: NSEvent)
+			{
+			if event.characters?.count == 1
+				{
+				if let ascii = Character(event.characters!).asciiValue
+					{
+					var flex_key = CChar(ascii)
+					machine_queue_key_release(machine.pointer, flex_key)
+					}
+				}
+			}
+
+		/*
 			INIT()
 			------
 		*/

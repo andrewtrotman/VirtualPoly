@@ -16,6 +16,7 @@
 */
 wd1771::wd1771(void)
 {
+disk_contents_changed = false;
 size_of_disk_in_bytes = 0;
 *dsk_filename = '\0';
 door_opened = false;
@@ -185,14 +186,14 @@ return load_dsk(dsk_filename, error_code);
 }
 
 /*
-	WD1771::UNMOUNT_DISK()
+	WD1771::MOUNT_DISK()
 	--------------------
 */
 long wd1771::unmount_disk(void)
 {
 FILE *fp;
 
-if (size_of_disk_in_bytes != 0)
+if (disk_contents_changed && size_of_disk_in_bytes != 0)
 	{
 	if ((fp = fopen(dsk_filename, "wb")) != NULL)
 		fwrite(disk, 1, size_of_disk_in_bytes, fp);
@@ -241,7 +242,10 @@ if (writing)		// write to disk
 			}
 
 		if (pos < size_of_disk_in_bytes)
+			{
 			disk[pos] = val;
+			disk_contents_changed = true;
+			}
 		}
 	}
 }
@@ -284,7 +288,7 @@ else
 }
 
 /*
-  WD1771::GET_STATUS()
+	WD1771::GET_STATUS()
 	-------------------
 */
 unsigned char wd1771::get_status(void)

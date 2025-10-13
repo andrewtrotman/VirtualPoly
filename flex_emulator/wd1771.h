@@ -35,6 +35,7 @@ public:
 	long write_protected;
 	long door_opened;
 
+	bool disk_contents_changed;
 	long long size_of_disk_in_bytes;
 	char dsk_filename[PATH_MAX];			// on MacOS this appears to be 1024
 	unsigned char volume_name[80];

@@ -39,7 +39,83 @@ computer_poly_1::computer_poly_1() :
 
 		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table.
 	*/
-#ifndef NEVER
+#define POLY_VERSION 34
+
+#if (POLY_VERSION == 23)
+
+	/*
+		Standard Networked Poly 1 running BASIC version 2.3 with a BIOS that came with that verison of BASIC
+	*/
+
+	/*
+		Load the BIOS
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_23, 0x1000);					// BIOS: MAGENTA "830519" has networking
+
+	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
+	memcpy(memory + 0xC000, ROM_poly_BASIC_23_1, 0x1000);
+	memcpy(memory + 0xD000, ROM_poly_BASIC_23_2, 0x1000);
+	memcpy(memory + 0xE000, ROM_poly_BASIC_23_3, 0x1000);
+	memcpy(memory + 0xF000, ROM_poly_BASIC_23_4, 0x1000);
+
+	/*
+		Set up the keyboard
+	*/
+	computer_poly_1::load_and_patch_keyboard(1, 0xFA8F);
+
+
+#elif (POLY_VERSION == 30)
+	/*
+		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
+		running BASIC version 3.0 with a BIOS that came with that verison of BASIC
+	*/
+
+	/*
+		Load the BIOS
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_30, 0x1000);					// BIOS: MAGENTA "830519" has networking
+
+	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
+	memcpy(memory + 0xC000, ROM_poly_BASIC_30_1, 0x1000);
+	memcpy(memory + 0xD000, ROM_poly_BASIC_30_2, 0x1000);
+	memcpy(memory + 0xE000, ROM_poly_BASIC_30_3, 0x1000);
+	memcpy(memory + 0xF000, ROM_poly_BASIC_30_4, 0x1000);
+
+	/*
+		Set up the keyboard
+	*/
+	computer_poly_1::load_and_patch_keyboard(2, 0xFA8F);
+
+#elif (POLY_VERSION == 31)
+
+	/*
+		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
+		running BASIC version 3.1 with a BIOS that came with that verison of BASIC
+	*/
+
+	/*
+		Load the BIOS
+	*/
+	memcpy(bios + 0xF000, ROM_poly_BIOS_31, 0x1000);					// BIOS: MAGENTA "830519" has networking
+
+	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
+	memcpy(memory + 0xC000, ROM_poly_BASIC_31_1, 0x1000);
+	memcpy(memory + 0xD000, ROM_poly_BASIC_31_2, 0x1000);
+	memcpy(memory + 0xE000, ROM_poly_BASIC_31_3, 0x1000);
+	memcpy(memory + 0xF000, ROM_poly_BASIC_31_4, 0x1000);
+
+	/*
+		Set up the keyboard
+	*/
+	computer_poly_1::load_and_patch_keyboard(2, 0xFA8F);
+
+#elif (POLY_VERSION == 34)
 	/*
 		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
 	*/
@@ -48,6 +124,14 @@ computer_poly_1::computer_poly_1() :
 		Load the BIOS
 	*/
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34, 0x1000);					// BIOS: MAGENTA "830519" has networking
+
+	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
+	memcpy(memory + 0xC000, ROM_poly_BASIC_34_1, 0x1000);
+	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
+	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
+	memcpy(memory + 0xF000, ROM_poly_BASIC_34_4, 0x1000);
 
 	/*
 		Set up the keyboard
@@ -65,6 +149,14 @@ computer_poly_1::computer_poly_1() :
 	memcpy(bios + 0xF000, ROM_poly_BIOS_34_local_disk, 0x1000);		// BIOS: RED "831122 WP" has local disk
 
 	/*
+		Load the BASIC interpreter into the ROM address space.
+	*/
+	memcpy(memory + 0xC000, ROM_poly_BASIC_34_1, 0x1000);
+	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
+	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
+	memcpy(memory + 0xF000, ROM_poly_BASIC_34_4, 0x1000);
+
+	/*
 		Set up the keyboard
 	*/
 	computer_poly_1::load_and_patch_keyboard(1, 0xFAA8);
@@ -79,14 +171,6 @@ computer_poly_1::computer_poly_1() :
 	change_disk(1, ide::get_local_filename("user.dsk").string().c_str());
 
 #endif
-
-	/*
-		Load the BASIC interpreter into the ROM address space.
-	*/
-	memcpy(memory + 0xC000, ROM_poly_BASIC_34_1, 0x1000);
-	memcpy(memory + 0xD000, ROM_poly_BASIC_34_2, 0x1000);
-	memcpy(memory + 0xE000, ROM_poly_BASIC_34_3, 0x1000);
-	memcpy(memory + 0xF000, ROM_poly_BASIC_34_4, 0x1000);
 	}
 
 /*
@@ -111,6 +195,7 @@ void computer_poly_1::load_and_patch_keyboard(int poly_version, size_t translati
 	*/
 	poly_set_keyboard_scan_codes(poly_version);			// emulate the Poly-1 keyboard
 
+#ifdef NEVER
 	/*
 		Patch the keyboard translation table to allow curly and square brackets
 	*/
@@ -129,6 +214,7 @@ void computer_poly_1::load_and_patch_keyboard(int poly_version, size_t translati
 	bios[translation_table_base + key_fake_tilde * 2 + 1] = 28;
 	bios[translation_table_base + key_fake_backslash * 2] = '\\';
 	bios[translation_table_base + key_fake_backslash * 2 + 1] = 28;
+#endif
 	}
 
 /*
@@ -165,6 +251,9 @@ void computer_poly_1::step(uint64_t times)
 		*/
 		execute();
 
+if (pc == 0xF162)
+	puts("GOT KEY PRESS");
+
 		if (leave_prot_now)
 			{
 			leave_prot = false;
@@ -185,6 +274,17 @@ void computer_poly_1::step(uint64_t times)
 		*/
 		if (cycles % 1000 == 0)
 			{
+			/*
+				Check the keyboard buffer to see if there's anything in it - and if so then process it.
+			*/
+			if (!pia2.is_signaling_irq() && keyboard_input.size() != 0)			// if the pia buffer is empty we can shove the next key into the buffer
+				{
+				key_event head = keyboard_input.front();
+				keyboard_input.pop_front();
+				pia2.arrived_b(head.key, head.up_down << 7, 0);				// the key has been pressed or released
+//printf("%04X: %d %d\n", pc, head.key, head.up_down);
+				}
+
 			if (pia2.is_signaling_irq())
 				do_irq();
 			}
@@ -195,15 +295,6 @@ void computer_poly_1::step(uint64_t times)
 			I don't think anything is on FIRQ on the Poly!
 		*/
 //				do_firq();
-		}
-	/*
-		Check the keyboard buffer to see if there's anything in it - and if so then process it.
-	*/
-	if (!pia2.is_signaling_irq() && keyboard_input.size() != 0)			// if the pia buffer is empty we can shove the next key into the buffer
-		{
-		byte head = keyboard_input.front();
-		keyboard_input.pop_front();
-		pia2.arrived_b(head, 1 << 7, 0);				// the key has been pressed
 		}
 	}
 
@@ -756,7 +847,7 @@ bool computer_poly_1::did_screen_change(void)
 */
 void computer_poly_1::queue_key_press(byte key)
 	{
-	keyboard_input.push_back(key);
+	keyboard_input.push_back(key_event(key, 1));	// The key was pressed
 	}
 
 /*
@@ -765,7 +856,7 @@ void computer_poly_1::queue_key_press(byte key)
 */
 void computer_poly_1::queue_key_release(byte key)
 	{
-//	pia2.arrived_b(key, 0, 0);						// the key has been released
+	keyboard_input.push_back(key_event(key, 0));	// The key was released
 	}
 
 /*
