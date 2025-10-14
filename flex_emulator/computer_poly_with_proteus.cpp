@@ -10,7 +10,7 @@
 */
 computer_poly_with_proteus::computer_poly_with_proteus()
 	{
-#ifdef NEVER
+#ifndef NEVER
 	/*
 		Poly running as a terminal to CP/M
 	*/
