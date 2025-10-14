@@ -41,11 +41,30 @@ struct key_event_handling: NSViewRepresentable
 		*/
 		override func keyDown(with event: NSEvent)
 			{
+			process_key(with: event, pressed:true)
+			}
+
+		/*
+			KEYUP()
+			-------
+		*/
+		override func keyUp(with event: NSEvent)
+			{
+			process_key(with: event, pressed:false)
+			}
+
+		/*
+			PROCESS_KEY()
+			-------------
+		*/
+		func process_key(with event: NSEvent, pressed: Bool)
+			{
+			var flex_key = CChar(32)
 			if event.characters?.count == 1
 				{
 				if let ascii = Character(event.characters!).asciiValue
 					{
-					var flex_key = CChar(ascii)
+					flex_key = CChar(ascii)
 					if AppState.shared.emulated_machine == PINNATED
 						{
 						if (ascii == 0x7F)
@@ -63,8 +82,12 @@ struct key_event_handling: NSViewRepresentable
 								flex_key = CChar(poly_key_bar)
 							case Character("^").asciiValue:
 								flex_key = CChar(poly_key_exp)
-							case 127:											// delete key on Mac keyboard
-								machine_queue_key_press(machine.pointer, CChar(poly_key_left))
+							case 127:
+								if (pressed)									// delete key on Mac keyboard (turn this into left_arrow then delete_right)
+									{
+									machine_queue_key_press(machine.pointer, CChar(poly_key_left))
+									machine_queue_key_release(machine.pointer, CChar(poly_key_left))
+									}
 								flex_key = CChar(poly_key_char_del)
 /*
 	These ones aren't on the Poly keyboard, so the BIOS gets hacked (on BIOS load) to make them work.
@@ -102,8 +125,6 @@ struct key_event_handling: NSViewRepresentable
 								break
 							}
 						}
-
-					machine_queue_key_press(machine.pointer, flex_key)
 					}
 				else
 					{
@@ -111,82 +132,74 @@ struct key_event_handling: NSViewRepresentable
 					switch character
 						{
 						case kVK_LeftArrow:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_left))
+							flex_key = CChar(poly_key_left)
 						case kVK_RightArrow:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_right))
+							flex_key = CChar(poly_key_right)
 						case kVK_DownArrow:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_down))
+							flex_key = CChar(poly_key_down)
 						case kVK_UpArrow:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_up))
+							flex_key = CChar(poly_key_up)
 						case kVK_ANSI_Keypad0:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u0))
+							flex_key = CChar(poly_key_u0)
 						case kVK_ANSI_Keypad1:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u1))
+							flex_key = CChar(poly_key_u1)
 						case kVK_ANSI_Keypad2:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u2))
+							flex_key = CChar(poly_key_u2)
 						case kVK_ANSI_Keypad3:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u3))
+							flex_key = CChar(poly_key_u3)
 						case kVK_ANSI_Keypad4:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u4))
+							flex_key = CChar(poly_key_u4)
 						case kVK_ANSI_Keypad5:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u5))
+							flex_key = CChar(poly_key_u5)
 						case kVK_ANSI_Keypad6:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u6))
+							flex_key = CChar(poly_key_u6)
 						case kVK_ANSI_Keypad7:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u7))
+							flex_key = CChar(poly_key_u7)
 						case kVK_ANSI_Keypad8:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u8))
+							flex_key = CChar(poly_key_u8)
 						case kVK_ANSI_Keypad9:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_u9))
+							flex_key = CChar(poly_key_u9)
 						case kVK_ANSI_KeypadDecimal:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_keypad_dot))
+							flex_key = CChar(poly_key_keypad_dot)
 						case kVK_Help:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_help))
+							flex_key = CChar(poly_key_help)
 						case kVK_F1:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_pause))
+							flex_key = CChar(poly_key_pause)
 						case kVK_F2:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_shift_pause))
+							flex_key = CChar(poly_key_shift_pause)
 						case kVK_F3:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_calc))
+							flex_key = CChar(poly_key_calc)
 						case kVK_F4:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_char_insert))
+							flex_key = CChar(poly_key_char_insert)
 						case kVK_F5:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_exit))
+							flex_key = CChar(poly_key_exit)
 						case kVK_F6:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_next))
+							flex_key = CChar(poly_key_next)
 						case kVK_F7:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_line_del))
+							flex_key = CChar(poly_key_line_del)
 						case kVK_F8:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_line_insert))
+							flex_key = CChar(poly_key_line_insert)
 						case kVK_F9:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_back))
+							flex_key = CChar(poly_key_back)
 						case kVK_F10:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_repeat))
+							flex_key = CChar(poly_key_repeat)
 						case kVK_F11:
-							machine_queue_key_press(machine.pointer, CChar(poly_key_char_del))
+							flex_key = CChar(poly_key_char_del)
 						default:
 							break
 						}
 					}
 				}
-			}
 
-		/*
-			KEYUP()
-			-------
-		*/
-		override func keyUp(with event: NSEvent)
-			{
-			if event.characters?.count == 1
+			if pressed
 				{
-				if let ascii = Character(event.characters!).asciiValue
-					{
-					var flex_key = CChar(ascii)
-					machine_queue_key_release(machine.pointer, flex_key)
-					}
+				machine_queue_key_press(machine.pointer, flex_key)
+				}
+			else		// released
+				{
+				machine_queue_key_release(machine.pointer, flex_key)
 				}
 			}
-
 		/*
 			INIT()
 			------

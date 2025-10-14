@@ -21,7 +21,7 @@
 */
 computer_poly_1::computer_poly_1() :
 	prot(true),
-	dat_bank(1),
+	dat_bank(0),
 	screen_changed(false),
 	text_page_1(bios + 0xE800),
 	text_page_3(bios + 0xEC00),
@@ -31,15 +31,11 @@ computer_poly_1::computer_poly_1() :
 	network_irqpend(0)
 	{
 	memset(bios, 0, sizeof(bios));
-	/*
-		Programming in 'C' will be a lot easier with curly brackets and square brackets, so we hack the BIOS
-		to allow these characters.  This is achieved by changing the key translation table so that these characters
-		have unique translations.  It cannot be done by using the actual key value because those are taken by
-		the screen editing keys (characer insert, line delete, etc).
-
-		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table.
-	*/
-#define POLY_VERSION 34
+//#define POLY_VERSION 23
+#define POLY_VERSION 30				/* Works with the Poly CP/M disk where the Poly network is the terminal to the Proteus */
+//#define POLY_VERSION 31			/* Poly 2 Login screen */
+//#define POLY_VERSION 34
+//#define POLY_VERSION 341		/* v3.4 local disk drive */
 
 #if (POLY_VERSION == 23)
 
@@ -50,7 +46,7 @@ computer_poly_1::computer_poly_1() :
 	/*
 		Load the BIOS
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_23, 0x1000);					// BIOS: MAGENTA "830519" has networking
+	memcpy(bios + 0xF000, ROM_poly_BIOS_23, 0x1000);
 
 	/*
 		Load the BASIC interpreter into the ROM address space.
@@ -68,14 +64,14 @@ computer_poly_1::computer_poly_1() :
 
 #elif (POLY_VERSION == 30)
 	/*
-		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
+		Standard Networked Poly 1.
 		running BASIC version 3.0 with a BIOS that came with that verison of BASIC
 	*/
 
 	/*
 		Load the BIOS
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_30, 0x1000);					// BIOS: MAGENTA "830519" has networking
+	memcpy(bios + 0xF000, ROM_poly_BIOS_30, 0x1000);
 
 	/*
 		Load the BASIC interpreter into the ROM address space.
@@ -93,14 +89,14 @@ computer_poly_1::computer_poly_1() :
 #elif (POLY_VERSION == 31)
 
 	/*
-		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
+		Standard Networked Poly 2.
 		running BASIC version 3.1 with a BIOS that came with that verison of BASIC
 	*/
 
 	/*
 		Load the BIOS
 	*/
-	memcpy(bios + 0xF000, ROM_poly_BIOS_31, 0x1000);					// BIOS: MAGENTA "830519" has networking
+	memcpy(bios + 0xF000, ROM_poly_BIOS_31, 0x1000);
 
 	/*
 		Load the BASIC interpreter into the ROM address space.
@@ -117,7 +113,8 @@ computer_poly_1::computer_poly_1() :
 
 #elif (POLY_VERSION == 34)
 	/*
-		Standard Networked Poly 2 (usually in a Poly-1 case, but with numeric keypad).
+		Standard Networked Poly 1
+		running BASIC version 3.4 with a BIOS that came with that verison of BASIC
 	*/
 
 	/*
@@ -138,7 +135,7 @@ computer_poly_1::computer_poly_1() :
 	*/
 	computer_poly_1::load_and_patch_keyboard(2, 0xFA8F);
 
-#else
+#elif (POLY_VERSION == 341)
 	/*
 		Standalone Poly with local disk drives.
 	*/
@@ -190,6 +187,14 @@ computer_poly_1::~computer_poly_1()
 */
 void computer_poly_1::load_and_patch_keyboard(int poly_version, size_t translation_table_base)
 	{
+	/*
+		Programming in 'C' will be a lot easier with curly brackets and square brackets, so we hack the BIOS
+		to allow these characters.  This is achieved by changing the key translation table so that these characters
+		have unique translations.  It cannot be done by using the actual key value because those are taken by
+		the screen editing keys (characer insert, line delete, etc).
+
+		On ROM 3.4, this means changing positions 2, 3, 4, 5, 7, 12, 16, and 20 in the key translation table.
+	*/
 	/*
 		Set up the keyboard
 	*/
@@ -249,10 +254,13 @@ void computer_poly_1::step(uint64_t times)
 		/*
 			Execute the next instruction
 		*/
+//if (tron)
+//	auto old_pc = pc;
+
 		execute();
 
-if (pc == 0xF162)
-	puts("GOT KEY PRESS");
+//if (tron)
+//	printf("PC:%04X U:%04X S:%04X X:%04X Y:%04X DP::%02X D(A:B):%02X:%02X CC:%02X\n", old_pc, u, s, x, y, dp, a, b, cc.all);
 
 		if (leave_prot_now)
 			{
@@ -272,7 +280,7 @@ if (pc == 0xF162)
 
 			pia2 is the keyboard. timer is the clock.  network is the 6854.
 		*/
-		if (cycles % 1000 == 0)
+		if (cycles % 2000 == 0)
 			{
 			/*
 				Check the keyboard buffer to see if there's anything in it - and if so then process it.
@@ -282,7 +290,6 @@ if (pc == 0xF162)
 				key_event head = keyboard_input.front();
 				keyboard_input.pop_front();
 				pia2.arrived_b(head.key, head.up_down << 7, 0);				// the key has been pressed or released
-//printf("%04X: %d %d\n", pc, head.key, head.up_down);
 				}
 
 			if (pia2.is_signaling_irq())
@@ -419,25 +426,23 @@ const char *computer_poly_1::change_disk(uint8_t drive, const char *filename)
 /*
 	COMPUTER_POLY_1::RAW_TO_PHYSICAL()
 	----------------------------------
-	Translate a logical address into a physical address
-	dat_bank selects which of the 2 DAT banks we use
-	the top 3 bits of the address select the DAT register
-	the dat register forms the top 8 address bits
-	the bottom 13 bits of the address are the offset
-	remember... the DAT is in 1's compliment
+	Translate a logical address into a physical address dat_bank selects which of the 2 DAT banks we use
+	the top 3 bits of the address select the DAT register the dat register forms the top 8 address bits
+	the bottom 13 bits of the address are the offset remember... the DAT is in 1's compliment
 
 	[DAT][ADDRESS] = DDDD DDDA AAAA AAAA AAAA
 	where DAT = [B][ADDRESS] B AAA
-
-	Windows Emulator version:
-		return (((~dat[(dat_bank << 3) | (address >> 13)]) & 0x0F) << 13) | (address & 0x1FFF);
-
-	Note that this emulator expands the address space to 2MB but the Poly only had 128KB
 */
 qword computer_poly_1::raw_to_physical(word raw_address)
 	{
-	qword dat_register = (raw_address >> 13) + 8 * (dat_bank - 1);
-	qword top_bits = ~bios[0xE050 + dat_register] & 0xFF;
+	qword dat_register = (raw_address >> 13) + 8 * (dat_bank);
+	/*
+		If we want more than 16 pages of 8KB each (128KB total), we'd change this "&" to mask in how much we want,
+		with 1-byte page table, 256 pages of 8KB is 2MB maximum addressable space.  This does not work in verison 2.3
+		of the Poly ROMs.  So we're stuck with 128KB RAM (at the moment).  To expand that to 2MB, change " & 0x0F" to
+		"& 0xFF" (but this doesn't work with verison 2.3, and probably other versions too)!
+	*/
+	qword top_bits = ~bios[0xE050 + dat_register] & 0x0F;
 	qword physical_address =  (raw_address & 0x1FFF) | (top_bits << 13);
 
 	return physical_address;
@@ -782,21 +787,21 @@ void computer_poly_1::write(word raw_address, byte value)
 			case 0xE05D:
 			case 0xE05E:
 			case 0xE05F:
-				bios[raw_address] = value;
+				bios[raw_address] = value;      // this is the page lookup table (in 1s compliment);
 				break;
 
 			/*
 				Memory Map 1 select at 0xE060
 			*/
 			case 0xE060:
-				dat_bank = 1;
+				dat_bank = 0;
 				break;
 
 			/*
 				Memory Map 2 select at 0xE70
 			*/
 			case 0xE070:
-				dat_bank = 2;
+				dat_bank = 1;
 				break;
 
 			/*
@@ -847,7 +852,11 @@ bool computer_poly_1::did_screen_change(void)
 */
 void computer_poly_1::queue_key_press(byte key)
 	{
-	keyboard_input.push_back(key_event(key, 1));	// The key was pressed
+	/*
+		The key was pressed so set the high bit on the key code.  This wasn't a very wise choice as it limits
+		the use of special characters.
+	*/
+	keyboard_input.push_back(key_event(key | 0x80, 1));
 	}
 
 /*
