@@ -31,6 +31,12 @@ computer_poly_1::computer_poly_1() :
 	network_irqpend(0)
 	{
 	memset(bios, 0, sizeof(bios));
+
+/*
+	Poly CP/M won't run on verson 3.4 or later because those versions leave protected
+	mode on login and so the Poly CP/M BIOS can't access the device space (protected
+	mode addresses $E000-$F000).
+*/
 //#define POLY_VERSION 23
 //#define POLY_VERSION 30				/* Works with the Poly CP/M disk where the Poly network is the terminal to the Proteus */
 //#define POLY_VERSION 31				/* Poly 2 Login screen */
