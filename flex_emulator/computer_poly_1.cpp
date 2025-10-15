@@ -32,10 +32,10 @@ computer_poly_1::computer_poly_1() :
 	{
 	memset(bios, 0, sizeof(bios));
 //#define POLY_VERSION 23
-#define POLY_VERSION 30				/* Works with the Poly CP/M disk where the Poly network is the terminal to the Proteus */
-//#define POLY_VERSION 31			/* Poly 2 Login screen */
-//#define POLY_VERSION 34
-//#define POLY_VERSION 341		/* v3.4 local disk drive */
+//#define POLY_VERSION 30				/* Works with the Poly CP/M disk where the Poly network is the terminal to the Proteus */
+//#define POLY_VERSION 31				/* Poly 2 Login screen */
+#define POLY_VERSION 34
+//#define POLY_VERSION 341				/* v3.4 disk drive locap to the Poly (the Scott family Poly) */
 
 #if (POLY_VERSION == 23)
 
