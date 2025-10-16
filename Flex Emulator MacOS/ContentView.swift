@@ -44,14 +44,14 @@ struct ContentView: View
 	{
 	@StateObject var app_state : AppState
 
-	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
-//	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
+//	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
+	static let VDU_timer_hz: Double = 12
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 	@State var cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
-	@State var vdu_timer = Timer.publish(every: 1.0 / 12.0, on: .main, in: .common).autoconnect()
-	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+	@State var vdu_timer = Timer.publish(every: 1.0 / VDU_timer_hz, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
 	@State var paused = false							// the 6809 is paused
@@ -86,10 +86,9 @@ struct ContentView: View
 	*/
 	func start_timers()
 		{
-		one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
-		flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 		cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
-		vdu_timer = Timer.publish(every: 1.0 / 12.0, on: .main, in: .common).autoconnect()
+		vdu_timer = Timer.publish(every: 1.0 / ContentView.VDU_timer_hz, on: .main, in: .common).autoconnect()
+		flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 		}
 
 	/*
@@ -101,7 +100,6 @@ struct ContentView: View
 		cpu_timer.upstream.connect().cancel()
 		vdu_timer.upstream.connect().cancel()
 		flash_timer.upstream.connect().cancel()
-		one_second_timer.upstream.connect().cancel()
 		}
 
 	/*
@@ -114,26 +112,21 @@ struct ContentView: View
 			{
 			Image(nsImage: img_screen.image)
 				.resizable()
-				.onAppear(perform:
-					{
-					render_text_screen()
-					})
 				.background(key_event_handling(machine: $machine))
 
 			Spacer()
 				.frame(maxHeight: 0)
 				.onReceive(cpu_timer)
 					{ _ in
-					if (!paused)
+					if !paused
 						{
-						var screen_did_change = false
-
                   let total_seconds_count = -initial_time.timeIntervalSinceNow
 						let end_cycle = UInt64(ContentView.CPU_speed * total_seconds_count)
 
 						if end_cycle > machine_cycles_spent(machine.pointer) + 10 * UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz))
 							{
 							/*
+								This is the case where the the clock is ticking but the CPU is not (for example, breakpoints when debugging).
 								Set the number of clock cycles since power on
 							*/
 							machine_set_cycles_spent(machine.pointer, UInt64(Double(ContentView.CPU_speed) * total_seconds_count) - UInt64((ContentView.CPU_speed / ContentView.iOS_timer_hz)))
@@ -142,24 +135,18 @@ struct ContentView: View
 						while (machine_cycles_spent(machine.pointer) < end_cycle)
 							{
 //print(machine_cycles_spent(machine.pointer), " < ", end_cycle)
-							machine_step(machine.pointer, UInt64(ContentView.CPU_speed / ContentView.iOS_timer_hz) / 8);
+							/*
+								CPU_speed is the number of cycles per second, iOS_timer_hz is the number of time-slices per second, so
+								to done 1 second worth of processing we do CPU_speed / iOS_timer_hz each time slice.
+							*/
+							machine_step(machine.pointer, UInt64(ContentView.CPU_speed / ContentView.iOS_timer_hz));
 
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
 								{
+//								print(Character(UnicodeScalar(UInt8(response))), terminator:"")
 								screen!.print_character(raw_character: UInt8(response & 0xFF))
-
-//print(Character(UnicodeScalar(UInt8(response))), terminator:"")
-
-								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
-								}
-
-							if screen_did_change || machine_did_screen_change(machine.pointer)
-								{
-								screen_did_change = false;
-								render_text_screen()
-								break;
 								}
 							}
 						}
@@ -178,19 +165,6 @@ struct ContentView: View
 						{
 						render_text_screen()
 						}
-					}
-				.onReceive(one_second_timer)
-					{ _ in
-//					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
-//					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
-//
-//					let total_seconds_count = -initial_time.timeIntervalSinceNow
-//					let current_seconds_count = -previous_time.timeIntervalSinceNow
-//
-//					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
-//
-//					previous_time = NSDate()
-//					previous_cycle_count = machine_cycles_spent(machine.pointer)
 					}
 				.onAppear
 					{
