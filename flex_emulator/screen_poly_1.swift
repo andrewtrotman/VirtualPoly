@@ -1,15 +1,15 @@
 /*
-	SCREEN_POLY_1.SWIFT
-	-------------------
+	SCREEN_POLY.SWIFT
+	-----------------
 	Copyright (c) 2025 Andrew Trotman
 */
 import Foundation
 
 /*
-	CLASS SCREEN_POLY_1
-	-------------------
+	CLASS SCREEN_POLY
+	-----------------
 */
-class screen_poly_1 : screen_base
+class screen_poly : screen_base
 	{
 	var machine : UnsafeRawPointer?
 	
@@ -45,7 +45,7 @@ class screen_poly_1 : screen_base
 				{
 				bitmap[which] = 0;
 				}
-			machine_poly_1_render_screen(machine, &bitmap, flash_state)
+			machine_poly_render_screen(machine, &bitmap, flash_state)
 			}
 		}
 	}

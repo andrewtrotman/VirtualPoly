@@ -15,7 +15,7 @@
 	COMPUTER_PROTEUS::COMPUTER_PROTEUS()
 	------------------------------------
 */
-computer_proteus::computer_proteus() :
+computer_proteus::computer_proteus(int rom_version) :
 	computer(),
 	acia1(keyboard_input, serial_output),
 	acia2(acia2_in, acia2_out),
@@ -28,9 +28,12 @@ computer_proteus::computer_proteus() :
 	proteus_server = this;
 	
 	/*
-		Load the ROM
+		Load the ROM (these numbers look like dates: 030982 ->  03/09/82)
 	*/
-	load_rom(30982);
+	if (rom_version == 30982)
+		load_rom(30982);
+	else
+		load_rom(300986);
 
 	/*
 		Set the clock frequency then reset the machine

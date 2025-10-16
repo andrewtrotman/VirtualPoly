@@ -18,12 +18,12 @@ extern "C"
 		{
 		PINNATED,
 		ARROW,
-		POLY_1,
+		POLY,
 		PROTEUS,
 		POLY_WITH_PROTEUS
 		} machine_type;
 
-	const void *machine_construct(machine_type type);
+	const void *machine_construct(machine_type type, int computer_rom_version, int server_rom_version);
 	void machine_destruct(const void *object);
 	void machine_step(const void *object, uint64_t times);
 	void machine_reset(const void *object);
@@ -39,7 +39,7 @@ extern "C"
 	const char *machine_change_disk(const void *object, uint8_t drive, const char *filename);
 	const uint8_t *machine_get_screen_buffer(const void *object);
 	bool machine_did_screen_change(const void *object);
-	void machine_poly_1_render_screen(const void *object, void *screen_buffer, bool flash_state);
+	void machine_poly_render_screen(const void *object, void *screen_buffer, bool flash_state);
 
 #ifdef __cplusplus
 	}

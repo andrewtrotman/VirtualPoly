@@ -10,7 +10,7 @@ import Foundation
 
 let KEYBOARD_POLY = "Poly"
 let KEYBOARD_ASCII = "ASCII"
-let keyboard_mode = KEYBOARD_ASCII
+let keyboard_mode = KEYBOARD_POLY
 
 /*
 	CLASS KEYBOARD

@@ -40,7 +40,7 @@ public:
 	unsigned char z80_eprom_shadow[0x1000];	//  Z80 RAM (at address $F000-$FFFF when in 6809 mode)
 
 public:
-	computer_proteus();
+	computer_proteus(int rom_version);
 	~computer_proteus() {}
 
 	virtual byte read(word address);

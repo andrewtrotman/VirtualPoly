@@ -5,14 +5,14 @@
 */
 #pragma once
 
-#include "computer_poly_1.h"
+#include "computer_poly.h"
 #include "computer_proteus.h"
 
 /*
 	CLASS COMPUTER_POLY_WITH_PROTEUS
 	--------------------------------
 */
-class computer_poly_with_proteus : public computer_poly_1
+class computer_poly_with_proteus : public computer_poly
 	{
 	friend std::ostream &operator<<(std::ostream &into, const computer_poly_with_proteus &simulator);
 	friend std::istream &operator>>(std::istream &from, computer_poly_with_proteus &simulator);
@@ -21,7 +21,7 @@ class computer_poly_with_proteus : public computer_poly_1
 		computer_proteus proteus;
 		
 	public:
-		computer_poly_with_proteus();
+		computer_poly_with_proteus(int poly_rom, int proteus_rom);
 		virtual ~computer_poly_with_proteus() {}
 
 		virtual void step(uint64_t times);

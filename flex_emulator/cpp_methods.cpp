@@ -5,7 +5,7 @@
 */
 #include "cpp_methods.h"
 #include "computer_arrow.h"
-#include "computer_poly_1.h"
+#include "computer_poly.h"
 #include "computer_proteus.h"
 #include "computer_poly_with_proteus.h"
 
@@ -19,7 +19,7 @@ computer_proteus *proteus_server;
 	MACHINE_CONSTRUCT()
 	-------------------
 */
-const void *machine_construct(machine_type type)
+const void *machine_construct(machine_type type, int computer_rom_version, int server_rom_version)
 	{
 	computer *machine;
 
@@ -27,12 +27,12 @@ const void *machine_construct(machine_type type)
 		machine = new computer();
 	else if (type == ARROW)
 		machine = new computer_arrow();
-	else if (type == POLY_1)
-		machine = new computer_poly_1();
+	else if (type == POLY)
+		machine = new computer_poly(computer_rom_version);
 	else if (type == PROTEUS)
-		machine = new computer_proteus();
+		machine = new computer_proteus(server_rom_version);
 	else
-		machine = new computer_poly_with_proteus();
+		machine = new computer_poly_with_proteus(computer_rom_version, server_rom_version);
 
 	machine->reset();
 	return (const void *)machine;
@@ -168,10 +168,10 @@ bool machine_did_screen_change(const void *object)
 	}
 
 /*
-	MACHINE_POLY_1_RENDER_SCREEN()
+	MACHINE_POLY_RENDER_SCREEN()
 	------------------------------
 */
-void machine_poly_1_render_screen(const void *object, void *screen_buffer, bool flash_state)
+void machine_poly_render_screen(const void *object, void *screen_buffer, bool flash_state)
 	{
 	((computer *)object)->render((uint32_t *)screen_buffer, flash_state);
 	}

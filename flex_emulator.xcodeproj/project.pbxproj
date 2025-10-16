@@ -11,13 +11,13 @@
 		4910487726F6F8AA00C54511 /* screen_base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4910487526F6F8AA00C54511 /* screen_base.swift */; };
 		491E159D2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */; };
 		491E159E2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */; };
-		492195602E82200400136344 /* computer_poly_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly_1.cpp */; };
+		492195602E82200400136344 /* computer_poly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly.cpp */; };
 		492195672E82215200136344 /* ROM_poly_BIOS_34.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */; };
 		492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */; };
 		492195692E82215200136344 /* ROM_poly_BASIC_34_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */; };
 		4921956A2E82215200136344 /* ROM_poly_BASIC_34_4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195652E82215200136344 /* ROM_poly_BASIC_34_4.cpp */; };
 		4921956B2E82215200136344 /* ROM_poly_BASIC_34_3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */; };
-		4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly_1.cpp */; };
+		4921956C2E824B1600136344 /* computer_poly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4921955E2E82200400136344 /* computer_poly.cpp */; };
 		4921956D2E824B1600136344 /* ROM_poly_BASIC_34_1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195642E82215200136344 /* ROM_poly_BASIC_34_1.cpp */; };
 		4921956E2E824B1600136344 /* ROM_poly_BASIC_34_2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */; };
 		4921956F2E824B1600136344 /* ROM_poly_BASIC_34_3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492195662E82215200136344 /* ROM_poly_BASIC_34_3.cpp */; };
@@ -193,8 +193,8 @@
 		4910487526F6F8AA00C54511 /* screen_base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = screen_base.swift; sourceTree = "<group>"; };
 		491C837A26ABC04A00044575 /* flex_emulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = flex_emulator.entitlements; sourceTree = "<group>"; };
 		491E159C2E8F7EF000923A76 /* ROM_proteus_BIOS_31.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_proteus_BIOS_31.cpp; sourceTree = "<group>"; };
-		4921955E2E82200400136344 /* computer_poly_1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_poly_1.cpp; sourceTree = "<group>"; };
-		4921955F2E82200400136344 /* computer_poly_1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_poly_1.h; sourceTree = "<group>"; };
+		4921955E2E82200400136344 /* computer_poly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = computer_poly.cpp; sourceTree = "<group>"; };
+		4921955F2E82200400136344 /* computer_poly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computer_poly.h; sourceTree = "<group>"; };
 		492195612E82215200136344 /* ROM_poly_BIOS_34.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BIOS_34.cpp; sourceTree = "<group>"; };
 		492195622E82215200136344 /* ROM_poly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROM_poly.h; sourceTree = "<group>"; };
 		492195632E82215200136344 /* ROM_poly_BASIC_34_2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ROM_poly_BASIC_34_2.cpp; sourceTree = "<group>"; };
@@ -471,8 +471,8 @@
 				49BD1F752E95E67F000C2AEE /* computer_poly_with_proteus.cpp */,
 				49FD1F172E8F6D3200889B62 /* computer_proteus.h */,
 				49FD1F182E8F6D3300889B62 /* computer_proteus.cpp */,
-				4921955F2E82200400136344 /* computer_poly_1.h */,
-				4921955E2E82200400136344 /* computer_poly_1.cpp */,
+				4921955F2E82200400136344 /* computer_poly.h */,
+				4921955E2E82200400136344 /* computer_poly.cpp */,
 				495A221D26EB54FD00555F2B /* computer_arrow.cpp */,
 				495A221C26EB54FD00555F2B /* computer_arrow.h */,
 				495C04BE2E863905005DE1C7 /* graphics.h */,
@@ -834,7 +834,7 @@
 			files = (
 				4921956D2E824B1600136344 /* ROM_poly_BASIC_34_1.cpp in Sources */,
 				495176292E9CAAAC0032D11E /* ROM_poly_BASIC_23_3.cpp in Sources */,
-				4921956C2E824B1600136344 /* computer_poly_1.cpp in Sources */,
+				4921956C2E824B1600136344 /* computer_poly.cpp in Sources */,
 				4921956E2E824B1600136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,
 				4921956F2E824B1600136344 /* ROM_poly_BASIC_34_3.cpp in Sources */,
 				492195702E824B1600136344 /* ROM_poly_BASIC_34_4.cpp in Sources */,
@@ -938,7 +938,7 @@
 				4951762A2E9CAAAC0032D11E /* ROM_poly_BASIC_31_4.cpp in Sources */,
 				49F70B3A266C527100408DAE /* cpp_methods.cpp in Sources */,
 				49E2629E2E8E27D8008C9903 /* wd1771.cpp in Sources */,
-				492195602E82200400136344 /* computer_poly_1.cpp in Sources */,
+				492195602E82200400136344 /* computer_poly.cpp in Sources */,
 				49FD1F132E8F651C00889B62 /* mc6854_channel.cpp in Sources */,
 				49E2629A2E8E2464008C9903 /* ROM_poly_BIOS_34_local_disk.cpp in Sources */,
 				492195682E82215200136344 /* ROM_poly_BASIC_34_2.cpp in Sources */,

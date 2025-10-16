@@ -44,12 +44,13 @@ struct ContentView: View
 	{
 	@StateObject var app_state : AppState
 
-//	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
-	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
+//	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 	@State var cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
+	@State var vdu_timer = Timer.publish(every: 1.0 / 12.0, on: .main, in: .common).autoconnect()
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
@@ -88,6 +89,7 @@ struct ContentView: View
 		one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 		flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 		cpu_timer = Timer.publish(every: 1.0 / ContentView.iOS_timer_hz, on: .main, in: .common).autoconnect()
+		vdu_timer = Timer.publish(every: 1.0 / 12.0, on: .main, in: .common).autoconnect()
 		}
 
 	/*
@@ -97,6 +99,7 @@ struct ContentView: View
 	func stop_timers()
 		{
 		cpu_timer.upstream.connect().cancel()
+		vdu_timer.upstream.connect().cancel()
 		flash_timer.upstream.connect().cancel()
 		one_second_timer.upstream.connect().cancel()
 		}
@@ -169,6 +172,13 @@ struct ContentView: View
 						render_text_screen()
 						}
 					}
+				.onReceive(vdu_timer)
+					{ _ in
+					if !paused
+						{
+						render_text_screen()
+						}
+					}
 				.onReceive(one_second_timer)
 					{ _ in
 //					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
@@ -188,31 +198,43 @@ struct ContentView: View
 						{
 						if (AppState.shared.emulated_machine == ARROW)
 							{
-							machine.pointer = machine_construct(ARROW)
+							machine.pointer = machine_construct(ARROW, 1, 1)
 							screen = screen_arrow()
 							}
 						else if (AppState.shared.emulated_machine == PINNATED)
 							{
-							machine.pointer = machine_construct(PINNATED)
+							machine.pointer = machine_construct(PINNATED, 1, 1)
 //							screen = screen_pinnated()
 							screen = terminal()
 							}
-						else if (AppState.shared.emulated_machine == POLY_1)
+						else if (AppState.shared.emulated_machine == POLY)
 							{
-							machine.pointer = machine_construct(POLY_1)
-							let poly_screen = screen_poly_1()
+							/*
+								Poly ROM versions are: 23, 30, 31, 34, 341.  341 is 34 with local disk drive and RED login screen
+							*/
+							machine.pointer = machine_construct(POLY, 34, 1)		// ROM version 3.4
+							let poly_screen = screen_poly()
 							poly_screen.set_machine(poly: machine.pointer)
 							screen = poly_screen
 							}
 						else if (AppState.shared.emulated_machine == PROTEUS)
 							{
-							machine.pointer = machine_construct(PROTEUS)
+							/*
+								Proteus ROM versions are: 30982, or 300986
+							*/
+							machine.pointer = machine_construct(PROTEUS, 30982, 1)
 							screen = terminal()
 							}
 						else				// Poly with Proteus
 							{
-							machine.pointer = machine_construct(POLY_WITH_PROTEUS)
-							let poly_screen = screen_poly_1()
+							/*
+								Poly ROM versions are: 23, 30, 31, 34, 341.  341 is 34 with local disk drive and RED login screen
+								Proteus ROM versions are: 30982, or 300986
+							*/
+
+							machine.pointer = machine_construct(POLY_WITH_PROTEUS, 34, 30982)
+
+							let poly_screen = screen_poly()
 							poly_screen.set_machine(poly: machine.pointer)
 							screen = poly_screen
 							}

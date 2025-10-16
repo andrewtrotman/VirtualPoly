@@ -12,7 +12,7 @@ class AppState: ObservableObject
 	var screen: screen_base? = nil
 //	let emulated_machine = ARROW
 //	let emulated_machine = PINNATED
-//	let emulated_machine = POLY_1
+//	let emulated_machine = POLY
 //	let emulated_machine = PROTEUS
 	let emulated_machine = POLY_WITH_PROTEUS
 	}
@@ -119,6 +119,7 @@ struct cut_copy_paste_menu: View
 					if let ascii = char.asciiValue
 						{
 						machine_queue_key_press(AppState.shared.machine, CChar(ascii))
+						machine_queue_key_release(AppState.shared.machine, CChar(ascii))
 						}
 					}
 				}

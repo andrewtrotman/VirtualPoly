@@ -52,8 +52,8 @@ struct ContentView: View
 	{
 	@Environment(\.scenePhase) var scene_phase
 
-//	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
-	let CPU_speed: UInt64 = 1000000			// 1,000,000 is 1 MHz
+	let CPU_speed: UInt64 = 20000000			// 1,000,000 is 1 MHz
+//	let CPU_speed: UInt64 = 1000000			// 1,000,000 is 1 MHz
 	let iOS_timer_hz: UInt64 = 25		// interrupts per second
     
 	@State var flash_timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
@@ -61,10 +61,11 @@ struct ContentView: View
 	@State var one_second_timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
 
 	@State var machine = machine_changer()
-	@State var paused = false							// the 6809 is paused
+	@State var paused = false								// the 6809 is paused
 	@State var inactive = false							// iOS has made us inactive or background
 
-	@State var screen = terminal()
+	@State var screen: screen_base? = nil
+
 	@State var keypad = keyboard()
 
 	@StateObject var img_screen = image_changer()
@@ -99,7 +100,10 @@ struct ContentView: View
 			{
 			machine_reset(machine.pointer);
 			}
-		screen.reset()
+		if (screen != nil)
+			{
+			screen!.reset()
+			}
 		keypad.reset()
 		}
 
@@ -199,15 +203,16 @@ struct ContentView: View
 											/*
 												Turn the cursor on and render the screen state as it is.
 											*/
-											screen.flash_state = true
+											screen!.flash_state = true
 											render_text_screen()
 										case keyboard.key.KEY_40_80.rawValue:		// 40 / 80 Column switch
-											screen.set_width(new_width: screen.get_width() == .eighty ? .fourty : .eighty)
+											screen!.set_width(new_width: screen!.get_width() == .eighty ? .fourty : .eighty)
 											render_text_screen()
 										case keyboard.key.KEY_RESET.rawValue:		// Reset button
 											reset();
 										default:
 											machine_queue_key_press(machine.pointer, CChar(ascii))
+											machine_queue_key_release(machine.pointer, CChar(ascii))
 										}
 									}
 							)
@@ -259,7 +264,7 @@ struct ContentView: View
 							var response = machine_dequeue_serial_output(machine.pointer)
 							while (response <= 0xFF)
 								{
-								screen.print_character(raw_character: UInt8(response & 0xFF))
+								screen!.print_character(raw_character: UInt8(response & 0xFF))
 								screen_did_change = true
 								response = machine_dequeue_serial_output(machine.pointer)
 								}
@@ -276,30 +281,47 @@ struct ContentView: View
 					{ _ in
 					if !paused
 						{
-						screen.flash_state.toggle()
+						screen!.flash_state.toggle()
 						render_text_screen()
 						}
 					}
 				.onReceive(one_second_timer)
 					{ _ in
-					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
-					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
+//					let total_cycles_spent: UInt64 = UInt64(machine_cycles_spent(machine.pointer))
+//					let slice_cycles_spent: UInt64 = total_cycles_spent - previous_cycle_count
+//
+//					let total_seconds_count = -initial_time.timeIntervalSinceNow
+//					let current_seconds_count = -previous_time.timeIntervalSinceNow
+//
+//					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
 
-					let total_seconds_count = -initial_time.timeIntervalSinceNow
-					let current_seconds_count = -previous_time.timeIntervalSinceNow
-
-					print("total=\((Double(total_cycles_spent) / total_seconds_count / 1000.0).rounded()) KHz now=\((Double(slice_cycles_spent) / current_seconds_count / 1000.0).rounded()) KHz \n");
-
-					previous_time = NSDate()
-					previous_cycle_count = machine_cycles_spent(machine.pointer)
+//					previous_time = NSDate()
+//					previous_cycle_count = machine_cycles_spent(machine.pointer)
 					}
 				.onAppear
 					{
 					if (machine.pointer == nil)
 						{
-						machine.pointer = machine_construct(POLY_1)
-						machine_deserialise(machine.pointer)
-						deserialise(path: get_serialised_filename())
+//						machine.pointer = machine_construct(ARROW, 1, 1)
+//						screen = screen_arrow()
+
+//						machine.pointer = machine_construct(PINNATED, 1, 1)
+//						screen = terminal()
+
+						/*
+							Poly ROM versions are: 23, 30, 31, 34, 341.  341 is 34 with local disk drive and RED login screen
+						*/
+//						machine.pointer = machine_construct(POLY, 34, 1)		// ROM version 3.4
+
+						machine.pointer = machine_construct(POLY_WITH_PROTEUS, 34, 30982)		// ROM version 3.4
+						let poly_screen = screen_poly()
+						poly_screen.set_machine(poly: machine.pointer)
+						screen = poly_screen
+
+						screen!.set_screen_buffer(screen_buffer: machine_get_screen_buffer(machine.pointer))
+//						machine_deserialise(machine.pointer)
+//						deserialise(path: get_serialised_filename())
+						reset()
 						}
 					}
 				.onChange(of: scene_phase)
@@ -330,9 +352,12 @@ struct ContentView: View
 	*/
 	func render_text_screen()
 		{
-		screen.render_entire_screen()
-		memcpy(img_screen.frame_buffer, screen.bitmap, 480 * 240 * 4)
-		img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+		if (screen != nil)
+			{
+			screen!.render_entire_screen()
+			memcpy(img_screen.frame_buffer, screen!.bitmap, 480 * 240 * 4)
+			img_screen.image = UIImage(cgImage: img_screen.offscreen_bitmap.makeImage()!)
+			}
 		}
 
 	/*
@@ -357,7 +382,7 @@ struct ContentView: View
 			let file = try FileHandle(forWritingTo: path)
 			try file.seekToEnd()
 
-			screen.serialise(file: file)
+			screen!.serialise(file: file)
 			keypad.serialise(file: file)
 
 			file.write(Data(bytes: &paused, count:MemoryLayout.size(ofValue:paused)))
@@ -380,7 +405,7 @@ struct ContentView: View
 			{
 			let file = try FileHandle(forReadingFrom: path)
 
-			try screen.deserialise(file: file)
+			try screen!.deserialise(file: file)
 			try keypad.deserialise(file: file)
 
 			let data = try file.read(upToCount: MemoryLayout.size(ofValue:paused))
