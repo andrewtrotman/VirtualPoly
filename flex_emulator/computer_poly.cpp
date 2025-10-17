@@ -286,28 +286,30 @@ void computer_poly::step(uint64_t times)
 
 			pia2 is the keyboard. timer is the clock.  network is the 6854.
 		*/
-		if (cycles % 2000 == 0)
-			{
-			/*
-				Check the keyboard buffer to see if there's anything in it - and if so then process it.
-			*/
-			if (!pia2.is_signaling_irq() && keyboard_input.size() != 0)			// if the pia buffer is empty we can shove the next key into the buffer
-				{
-				key_event head = keyboard_input.front();
-				keyboard_input.pop_front();
-				pia2.arrived_b(head.key, head.up_down << 7, 0);				// the key has been pressed or released
-				}
-
-			if (pia2.is_signaling_irq())
-				do_irq();
-			}
-		else if (timer.is_signaling_irq() || network_irqpend)
-				do_irq();
+		if (pia2.is_signaling_irq() || timer.is_signaling_irq() || network_irqpend)
+			do_irq();
 
 		/*
 			I don't think anything is on FIRQ on the Poly!
 		*/
 //				do_firq();
+		}
+	}
+
+/*
+	COMPUTER_POLY::KEYBOARD_TICK()
+	------------------------------
+*/
+void computer_poly::keyboard_tick(void)
+	{
+	/*
+		Check the keyboard buffer to see if there's anything in it - and if so then process it.
+	*/
+	if (keyboard_input.size() != 0 && !pia2.is_signaling_irq())			// if the pia buffer is empty we can shove the next key into the buffer
+		{
+		key_event head = keyboard_input.front();
+		keyboard_input.pop_front();
+		pia2.arrived_b(head.key, head.up_down << 7, 0);				// the key has been pressed or released
 		}
 	}
 

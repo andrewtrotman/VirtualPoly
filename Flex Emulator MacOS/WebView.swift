@@ -17,10 +17,10 @@ struct WebView: NSViewRepresentable
 		MAKECOORDINATOR()
 		-----------------
 	*/
-    func makeCoordinator() -> WebView.Coordinator
-    	{
-        Coordinator(self)
-        }
+	func makeCoordinator() -> WebView.Coordinator
+		{
+		Coordinator(self)
+		}
 
 	/*
 		MAKENSVIEW()

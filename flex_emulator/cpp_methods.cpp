@@ -129,6 +129,15 @@ void machine_queue_key_release(const void *object, char key)
 	((computer *)object)->queue_key_release(key);
 	}
 
+/*
+	MACHINE_TICK_KEY()
+	------------------
+*/
+void machine_tick_key(const void *object)
+	{
+	((computer *)object)->keyboard_tick();
+	}
+
 
 /*
 	MACHINE_DEQUEUE_SERIAL_OUTPUT()

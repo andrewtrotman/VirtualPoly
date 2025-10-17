@@ -41,6 +41,10 @@ struct key_event_handling: NSViewRepresentable
 		*/
 		override func keyDown(with event: NSEvent)
 			{
+//let now = Date()
+//let milliseconds = Int64(now.timeIntervalSince1970 * 1000)
+//print(milliseconds)
+
 			process_key(with: event, pressed:true)
 			}
 

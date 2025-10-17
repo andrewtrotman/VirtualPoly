@@ -28,6 +28,7 @@ extern "C"
 	void machine_step(const void *object, uint64_t times);
 	void machine_reset(const void *object);
 	void machine_set_cycles_spent(const void *object, uint64_t new_value);
+	void machine_tick_key(const void *object);
 	void machine_queue_key_press(const void *object, char key);
 	void machine_queue_key_release(const void *object, char key);
 	int machine_dequeue_serial_output(const void *object);

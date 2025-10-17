@@ -85,6 +85,7 @@ class computer_poly : public computer
 
 		virtual void queue_key_press(byte key);
 		virtual void queue_key_release(byte key);
+		virtual void keyboard_tick(void);
 
 		virtual void timer_irq() {}
 		virtual void timer_d_irq() {}

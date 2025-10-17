@@ -44,6 +44,7 @@ uint8_t mc6821::read(uint16_t address)
 				{
 				d_irqb();
 				answer = in_b();		// should this be: answer = in_b() & ~ddb;
+				byte_b = 0;				// clear the byte once read
 				}
 			return answer;
 
