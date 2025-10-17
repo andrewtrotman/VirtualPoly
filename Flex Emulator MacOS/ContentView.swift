@@ -45,7 +45,7 @@ struct ContentView: View
 	@StateObject var app_state : AppState
 
 //	static let CPU_speed: Double = 20000000			// 1,000,000 is 1 MHz
-	static let CPU_speed: Double = 1000000			// 1,000,000 is 1 MHz
+	static let CPU_speed: Double = 20_000_000			// 1,000,000 is 1 MHz
 	static let iOS_timer_hz: Double = 25		// interrupts per second
 	static let VDU_timer_hz: Double = 12
 
